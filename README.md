@@ -19,9 +19,12 @@ sudo apt install nodejs npm
 ```
 nodejs --version
 ```
+Initialize package.json file
+```
+npm init
+```
 
 Install electron in the app's directory
-
 ```
 npm install --save-dev electron
 ```
