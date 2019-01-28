@@ -1,0 +1,26 @@
+{
+  "name": "tab",
+  "version": "1.0.0",
+  "description": "tab",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noahdkim/Tab.git"
+  },
+  "keywords": [
+    "tab"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/noahdkim/Tab/issues"
+  },
+  "homepage": "https://github.com/noahdkim/Tab#readme"
+}
