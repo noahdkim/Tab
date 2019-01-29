@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/noahdkim/Tab/issues"
   },
-  "homepage": "https://github.com/noahdkim/Tab#readme"
+  "homepage": "https://github.com/noahdkim/Tab#readme",
+  "devDependencies": {
+    "electron": "^4.0.2"
+  }
 }
