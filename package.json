@@ -22,7 +22,12 @@
   },
   "homepage": "https://github.com/noahdkim/tab#readme",
   "devDependencies": {
-    "bootstrap": "^4.2.1",
     "electron": "^4.0.3"
+  },
+  "dependencies": {
+    "bootstrap": "^4.2.1",
+    "firebase": "^5.8.1",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.14.7"
   }
 }
