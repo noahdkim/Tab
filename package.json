@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/noahdkim/tab#readme",
   "devDependencies": {
+    "bootstrap": "^4.2.1",
     "electron": "^4.0.3"
   }
 }
