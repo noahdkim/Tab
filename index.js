@@ -1,16 +1,16 @@
 const {app, BrowserWindow} = require('electron')
 
-// Global reference of window object to prevent closing from garbage collection
+/* Global reference of window object to prevent closing from garbage collection */
 let mainWindow
 
 function createWindow () {
-  // Create browser window
+  /* Create browser window */
   mainWindow = new BrowserWindow({width: 800, height: 600})
   mainWindow.loadFile('index.html')
 
-  // Emitted when the window is closed.
+  /* Emitted when the window is closed. */
   mainWindow.on('closed', function () {
-    // Dereference the window object
+    /* Dereference the window object */
     mainWindow = null
   })
 }
