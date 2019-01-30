@@ -6,4 +6,3 @@ dist
 #files
 *.tgz
 *.log
-renderer.js

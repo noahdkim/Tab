@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="static/index.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab" rel="stylesheet">
     <title>Tab</title>
+
+
+
   </head>
   <body>
     <div class="container-fluid height-100">
@@ -17,15 +20,16 @@
         <div class="col-12 col-lg-6 custom-col height-100">
           <h1 class="text-center pt-5 title">Tab</h1>
           <h6 class="text-center subtitle pb-3"> Simple, Powerful, Flexible </h6>
-          <form >
-            <div class="form-group pl-lg-5 pr-lg-5">
-              <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Email address">
+          <form>
+            <div class="form-group pl-lg-5 pr-lg-5 pl-md-3 pr-md-3">
+              <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Email address" required>
             </div>
-            <div class="form-group pl-lg-5 pr-lg-5">
-              <input type="password" class="form-control" id="password" placeholder="Password">
+            <div class="form-group pl-lg-5 pr-lg-5 pl-md-3 pr-md-3">
+              <input type="password" class="form-control" id="password" placeholder="Password" required>
             </div>
             <div style="text-align:center;">
-              <button type="submit" class="btn btn-primary">Sign in</button>
+              <button class="btn btn-primary" id="signInBtn">Sign in</button>
+              <button class="btn btn-secondary" id="signUpBtn">Sign up</button>
             </div>
           </form>
         </div>
@@ -39,6 +43,8 @@
       require('./renderer.js');
     </script>
     <script src="node_modules.js"></script>
+
+
 
   </body>
 </html>
