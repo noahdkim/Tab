@@ -1,36 +1,27 @@
 {
   "name": "tab",
   "version": "1.0.0",
-  "description": "tab",
+  "description": "A to-do list application that organizes tasks by date.",
   "main": "index.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
     "start": "electron .",
+    "debug": "electron --inspect=5858 .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/noahdkim/Tab.git"
+    "url": "git+https://github.com/noahdkim/tab.git"
   },
-  "keywords": [
-    "tab"
-  ],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/noahdkim/Tab/issues"
+    "url": "https://github.com/noahdkim/tab/issues"
   },
-  "homepage": "https://github.com/noahdkim/Tab#readme",
+  "homepage": "https://github.com/noahdkim/tab#readme",
   "devDependencies": {
-    "electron": "^4.0.2"
-  },
-  "dependencies": {
-    "bootstrap": "^4.2.1",
-    "firebase": "^5.8.1",
-    "grpc": "^1.18.0",
-    "jquery": "^3.3.1",
-    "popper.js": "^1.14.7"
+    "electron": "^4.0.3"
   }
 }
