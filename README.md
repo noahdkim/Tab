@@ -24,9 +24,20 @@ Initialize package.json file
 npm init
 ```
 
-Install electron in the app's directory
+Install [Vue CLI 3](https://cli.vuejs.org/#getting-started)
 ```
-npm install --save-dev electron
+sudo npm install -g @vue/cli
+```
+
+Install dependencies
+```
+cd tab/tab-app
+npm install
+```
+
+Run server
+```
+npm run serve
 ```
 
 
