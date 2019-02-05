@@ -2,23 +2,23 @@
   <v-container fluid>
     <v-layout row wrap>
         <!-- Sidebar -->
-        <sidebar></sidebar>
+        <the-sidebar></the-sidebar>
 
         <!-- List -->
-        <list></list>
+        <the-list></the-list>
 
         <!-- Calendar -->
-        <calendar></calendar>
+        <the-calendar></the-calendar>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-    import Sidebar from './Home/Sidebar'
-    import List from './Home/List'
-    import Calendar from './Home/Calendar'
+    import TheSidebar from './Home/TheSidebar'
+    import TheList from './Home/TheList'
+    import TheCalendar from './Home/TheCalendar'
 
 export default {
-     components: { Sidebar, List, Calendar },
+     components: { TheSidebar, TheList, TheCalendar },
 }
 </script>

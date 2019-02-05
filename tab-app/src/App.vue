@@ -66,13 +66,13 @@ export default {
             if (this.isAuthenticated) {
                 return [{
                     title: 'Home',
-                    path: '/home',
+                    path: '/Home',
                     icon: 'home'
                 }]
             } else {
                 return [{
                         title: 'About Us',
-                        path: '/aboutus',
+                        path: '/AboutUs',
                         icon: 'face'
                     }
 

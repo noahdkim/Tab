@@ -8,9 +8,9 @@ Vue.use(Router)
 /* array routing for each component */
 const routerOptions = [
   { path: '/', component: 'Landing' },
-  { path: '/signin', component: 'SignIn' },
-  { path: '/signup', component: 'SignUp' },
-  { path: '/home', component: 'Home', meta: { requiresAuth: true } },
+  { path: '/SignIn', component: 'SignIn' },
+  { path: '/SignUp', component: 'SignUp' },
+  { path: '/Home', component: 'Home', meta: { requiresAuth: true } },
   { path: '*', component: 'NotFound' }
 ]
 
@@ -35,8 +35,12 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   const isAuthenticated = firebase.auth().currentUser
-  if (requiresAuth && !isAuthenticated) {
-    next('/signin')
+  
+  if(!requiresAuth && isAuthenticated)   {
+      next('/Home')
+  }
+  else if (requiresAuth && !isAuthenticated) {
+    next('/SignIn')
   } else {
     next()
   }
