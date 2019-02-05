@@ -1,4 +1,4 @@
-import App from './App'
+import App from './App.vue'
 import axios from 'axios'
 import firebase from 'firebase'
 import router from './router'
@@ -8,6 +8,14 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css' /* Vuetify css */
 import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-loader
 
+//import Ionic from '@ionic/vue';
+
+//Vue.use(Ionic);
+/*
+new Vue({
+    render: h => h(App)
+}).$mount('#app');
+*/
 
 
 
