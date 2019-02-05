@@ -8,3 +8,9 @@
     </v-flex>
 </v-layout>
 </template>
+
+<script>
+export default  {
+    name: 'Sidebar'
+}
+</script>

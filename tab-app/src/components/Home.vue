@@ -19,6 +19,6 @@
     import Calendar from './Home/Calendar'
 
 export default {
-     components: { Sidebar },
+     components: { Sidebar, List, Calendar },
 }
 </script>
