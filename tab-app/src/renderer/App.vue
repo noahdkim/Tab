@@ -71,15 +71,11 @@ export default {
                 }]
             } else {
                 return [{
-                        title: 'Sign Up',
-                        path: '/signup',
+                        title: 'About Us',
+                        path: '/aboutus',
                         icon: 'face'
-                    },
-                    {
-                        title: 'Sign In',
-                        path: '/signin',
-                        icon: 'lock_open'
                     }
+
                 ]
             }
         }
