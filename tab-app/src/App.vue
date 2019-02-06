@@ -1,6 +1,6 @@
 <template>
 <v-app>
-    <v-navigation-drawer v-model="sidebar" app>
+    <v-navigation-drawer v-model="sidebar" class="hidden-sm-and-up" v-if="sidebar" app>
         <v-list>
             <v-list-tile v-for="item in menuItems" :key="item.title" :to="item.path">
                 <v-list-tile-action>
@@ -55,6 +55,18 @@ export default {
             sidebar: false,
         }
     },
+    /* https://github.com/vuejs/vue/issues/1915#issuecomment-159334432 */
+    created() {
+        // alert('ready function');
+        console.log("ready function");
+        window.addEventListener('resize', this.handleResize)
+    },
+    destroyed() {
+        // alert('beforeDestroy function');
+        console.log("beforeDestroy");
+        window.removeEventListener('resize', this.handleResize)
+    },
+
     computed: {
         appTitle() {
             return this.$store.state.appTitle
@@ -83,8 +95,19 @@ export default {
     methods: {
         userSignOut() {
             this.$store.dispatch('userSignOut')
+        },
+        handleResize: function()    {
+            // console.log("document.documentElement.clientWidth = " +document.documentElement.clientWidth);
+            /* Only disappear navigation side bar if window is greater than Extra Small Vue size (600px) */
+            if(document.documentElement.clientWidth >= 600)   {
+                this.sidebar = false;
+                // console.log("this.sidebar = false");
+            }
+            // console.log('handleResize');
         }
     },
 
 }
+
+
 </script>

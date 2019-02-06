@@ -1,5 +1,5 @@
 <template>
-<v-navigation-drawer class="blue" dark permanent v-model="drawer" v-if="show">
+<v-navigation-drawer class="blue" dark permanent v-if="show">
     <v-list>
      <v-list-tile
        v-for="item in items"
