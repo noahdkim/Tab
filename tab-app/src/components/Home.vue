@@ -30,21 +30,14 @@ export default {
      },
      /* https://github.com/vuejs/vue/issues/1915#issuecomment-159334432 */
      created() {
-         // alert('ready function');
-         console.log("ready function");
          window.addEventListener('resize', this.handleResize)
      },
      destroyed() {
-         // alert('beforeDestroy function');
-         console.log("beforeDestroy");
          window.removeEventListener('resize', this.handleResize)
      },
      methods: {
          handleResize: function()    {
-             // console.log("document.documentElement.clientWidth = " +document.documentElement.clientWidth);
-             /* Only disappear navigation side bar if window is greater than Extra Small Vue size (600px) */
              this.show = (document.documentElement.clientWidth >= 935);
-             // console.log('handleResize');
          }
      },
 }

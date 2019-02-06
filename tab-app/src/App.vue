@@ -97,13 +97,9 @@ export default {
             this.$store.dispatch('userSignOut')
         },
         handleResize: function()    {
-            // console.log("document.documentElement.clientWidth = " +document.documentElement.clientWidth);
-            /* Only disappear navigation side bar if window is greater than Extra Small Vue size (600px) */
             if(document.documentElement.clientWidth >= 600)   {
                 this.sidebar = false;
-                // console.log("this.sidebar = false");
             }
-            // console.log('handleResize');
         }
     },
 

@@ -8,6 +8,9 @@
         item-key="name"
         class="elevation-1"
       >
+
+      <!-- hide-actions="true" -->
+      <!-- Template for the table header row -->
         <template slot="headers" slot-scope="props">
           <tr>
             <th>
@@ -30,6 +33,7 @@
             </th>
           </tr>
         </template>
+        <!-- Template for each row item -->
         <template slot="items" slot-scope="props">
           <tr :active="props.selected" @click="props.selected = !props.selected">
             <td>
@@ -43,8 +47,12 @@
             <td class="text-xs-right">{{ props.item.date }}</td>
             <td class="text-xs-right">{{ props.item.priority }}</td>
           </tr>
+
         </template>
-      </v-data-table>
+        <template>
+                      <v-btn color="info" @click="addRow">hello</v-btn>
+        </template>
+    </v-data-table>
 </template>
 
 <script>
@@ -89,7 +97,17 @@ export default {
           this.pagination.sortBy = column
           this.pagination.descending = false
         }
-      }
+      },
+      /* https://codepen.io/Pizzi/pen/GMOQXy */
+      addRow()  {
+          /*  item      Date           Priority  */
+          var newRow = {
+              name: "TEST NAME",
+              date: "TEST DATE",
+              priority: 99
+          };
+          this.entries.push(newRow);
+      },
     }
   }
 </script>
