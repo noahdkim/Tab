@@ -1,16 +1,47 @@
 <template>
-<v-layout column>
-    <v-flex xs12 class="text-xs-center" mt-5>
-      <h1>Home page</h1>
-    </v-flex>
-    <v-flex xs12 class="text-xs-center" mt-3>
-      <p>This is a user's home page</p>
-    </v-flex>
-</v-layout>
+<v-navigation-drawer class="blue" dark permanent v-model="drawer" v-if="show">
+    <v-list>
+     <v-list-tile
+       v-for="item in items"
+       :key="item.title"
+       @click=""
+
+     >
+       <v-list-tile-action>
+         <v-icon>{{ item.icon }}</v-icon>
+       </v-list-tile-action>
+
+       <v-list-tile-content>
+         <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+       </v-list-tile-content>
+     </v-list-tile>
+   </v-list>
+</v-navigation-drawer>
 </template>
 
 <script>
-export default  {
-    name: 'Sidebar'
+export default {
+    data() {
+        return {
+            userEmail: this.$store.state.user.email,
+            items: [{
+                    title: 'List 1',
+                    icon: 'dashboard'
+                },
+                {
+                    title: 'List 2',
+                    icon: 'account_box'
+                },
+                {
+                    title: 'List 3',
+                    icon: 'gavel'
+                }
+            ]
+        }
+    },
+    props:{
+        show: Boolean,
+    },
+    name: 'TheSidebar'
 }
 </script>

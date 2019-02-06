@@ -23,7 +23,7 @@
             </v-toolbar-side-icon>
         </span>
         <v-toolbar-title>
-            <router-link :to="isAuthenticated ? '/home' : '/'" tag="span" style="cursor: pointer">
+            <router-link :to="isAuthenticated ? '/Home' : '/'" tag="span" style="cursor: pointer">
                 {{ appTitle }}
             </router-link>
         </v-toolbar-title>

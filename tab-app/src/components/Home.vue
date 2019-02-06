@@ -2,8 +2,11 @@
   <v-container fluid>
     <v-layout row wrap>
         <!-- Sidebar -->
-        <the-sidebar></the-sidebar>
-
+        <the-sidebar :show=show></the-sidebar>
+        <!-- Expand/Collapse sidebar -->
+        <button v-on:click="show = !show">
+            <v-icon>{{show ? 'keyboard_arrow_left' : 'keyboard_arrow_right'}}</v-icon>
+        </button>
         <!-- List -->
         <the-list></the-list>
 
@@ -20,5 +23,10 @@
 
 export default {
      components: { TheSidebar, TheList, TheCalendar },
+     data () {
+         return{
+             show: true,
+         }
+     }
 }
 </script>
