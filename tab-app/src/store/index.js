@@ -5,6 +5,16 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+firebase.initializeApp({
+    apiKey: "AIzaSyBQMf7_dSLWXAj4LkeCLyomJVrMYsVfVW4",
+    authDomain: "tab-notes-54d8a.firebaseapp.com",
+    databaseURL: "https://tab-notes-54d8a.firebaseio.com",
+    projectId: "tab-notes-54d8a",
+    storageBucket: "tab-notes-54d8a.appspot.com",
+    messagingSenderId: "833049930285"
+})
+
+export const db = firebase.firestore();
 
 /*
     appTitle - title of the app
@@ -39,12 +49,21 @@ export const store = new Vuex.Store({
             commit('setLoading', true)
             firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
                 .then(firebaseUser => {
+                    /* add new user to list collection */
+                    db.collection('lists_meta').doc(firebaseUser.user.uid).set({
+                        "email": firebaseUser.user.email,
+                    })
+                    /* add new user to list_names collection */
+                    db.collection('lists_content').doc(firebaseUser.user.uid).set({
+                        "email": firebaseUser.user.email,
+                    })
+
                     commit('setUser', {
                         email: firebaseUser.user.email
                     })
                     commit('setLoading', false)
                     commit('setError', null)
-                    router.push('/home')
+                    router.push('/Home')
                 })
                 .catch(error => {
                     commit('setError', error.message)
@@ -62,7 +81,7 @@ export const store = new Vuex.Store({
                     })
                     commit('setLoading', false)
                     commit('setError', null)
-                    router.push('/home')
+                    router.push('/Home')
                 })
                 .catch(error => {
                     commit('setError', error.message)
@@ -80,8 +99,15 @@ export const store = new Vuex.Store({
             commit
         }) {
             firebase.auth().signOut()
-            commit('setUser', null)
-            router.push('/')
+            .then(()=>{
+                commit('setUser', null)
+                router.push('/')
+            })
+            .catch(error => {
+                commit('setError', error.message)
+                commit('setLoading', false)
+            })
+
         },
     },
     getters: {

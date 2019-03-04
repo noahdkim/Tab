@@ -76,11 +76,7 @@ export default {
         },
         menuItems() {
             if (this.isAuthenticated) {
-                return [{
-                    title: 'Home',
-                    path: '/Home',
-                    icon: 'home'
-                }]
+                return []
             } else {
                 return [{
                         title: 'About Us',

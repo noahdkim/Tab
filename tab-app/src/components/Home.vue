@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container class="ma-0 pa-0">
     <v-layout row>
         <!-- Sidebar -->
         <the-sidebar :show=show></the-sidebar>

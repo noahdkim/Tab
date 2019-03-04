@@ -1,113 +1,58 @@
 <template>
-    <v-data-table
-        v-model="selected"
-        :headers="headers"
-        :items="entries"
-        :pagination.sync="pagination"
-        select-all
-        item-key="name"
-        class="elevation-1"
-      >
-
-      <!-- hide-actions="true" -->
-      <!-- Template for the table header row -->
-        <template slot="headers" slot-scope="props">
-          <tr>
-            <th>
-              <v-checkbox
-                :input-value="props.all"
-                :indeterminate="props.indeterminate"
-                primary
-                hide-details
-                @click.stop="toggleAll"
-              ></v-checkbox>
-            </th>
-            <th
-              v-for="header in props.headers"
-              :key="header.text"
-              :class="['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']"
-              @click="changeSort(header.value)"
-            >
-              <v-icon small>arrow_upward</v-icon>
-              {{ header.text }}
-            </th>
-          </tr>
-        </template>
-        <!-- Template for each row item -->
-        <template slot="items" slot-scope="props">
-          <tr :active="props.selected" @click="props.selected = !props.selected">
-            <td>
-              <v-checkbox
-                :input-value="props.selected"
-                primary
-                hide-details
-              ></v-checkbox>
-            </td>
-            <td class="text-xs-right">{{ props.item.name }}</td>
-            <td class="text-xs-right">{{ props.item.date }}</td>
-            <td class="text-xs-right">{{ props.item.priority }}</td>
-          </tr>
-
-        </template>
-        <template>
-                      <v-btn color="info" @click="addRow">hello</v-btn>
-        </template>
-    </v-data-table>
+    <v-container>
+        <v-layout row>
+            <v-layout col v-for="header in headers" :key="header.id">
+                <div class="font-weight-bold">{{header.text}}</div>
+            </v-layout>
+        </v-layout>
+        <list-row v-for="item in items"
+                    :key="item.id"
+                    :item="item"
+                    :headers="headers"
+                    :ref="item.id"
+                    @clicked="modifyEditable"
+                    >
+        </list-row>
+    </v-container>
 </template>
 
 <script>
+import ListRow from './List/ListRow'
 export default {
+    components: {ListRow},
     data: () => ({
-      pagination: {
-        sortBy: 'name'
-      },
-      selected: [],
-      headers: [
-        {
-          text: 'Item',
-          align: 'left',
-          value: 'name'
-        },
-        { text: 'Date', value: 'date' },
-        { text: 'Priority', value: 'priority' },
-      ],
-      entries: [
-        {
-          name: 'Homework 1',
-          date: "2/6/19",
-          priority: 5,
-        },
-        {
-          name: 'Homework 2',
-          date: "2/7/19",
-          priority: 6,
-        },
-      ]
+      headers: [{text: "Item", id:1}, {text:"Date", id: 2}, {text: "Priority", id: 3}],
+      /*
+        The actual query for items will return an object instead of a list.
+        Hopefully this doesn't require major changes
+        The ids in the query should be strings so it will work smoothly with the
+        ListRow component
+     */
+      items: [{Item: "task 1", Date: "2/3/19", Priority: "5", id: "3"},
+               {Item: "task 2", Date: "2/3/19", Priority: "5", id: "2"}].map((item) =>{
+                   var newItem = item
+                   newItem['editable'] = false
+                   return newItem
+               }
+               )
     }),
 
     methods: {
-      toggleAll () {
-        if (this.selected.length) this.selected = []
-        else this.selected = this.entries.slice()
-      },
-      changeSort (column) {
-        if (this.pagination.sortBy === column) {
-          this.pagination.descending = !this.pagination.descending
-        } else {
-          this.pagination.sortBy = column
-          this.pagination.descending = false
-        }
-      },
-      /* https://codepen.io/Pizzi/pen/GMOQXy */
-      addRow()  {
-          /*  item      Date           Priority  */
-          var newRow = {
-              name: "TEST NAME",
-              date: "TEST DATE",
-              priority: 99
-          };
-          this.entries.push(newRow);
-      },
+            modifyEditable(value) {
+                /*
+                    this is definitely not the best way to do this but I wanted to make it work for now
+                    It'd be better to keep track of the current editable so we just change that index
+                    instead of iterating over the entire list and setting editable to false
+                */
+                var found = this.items.findIndex(function(item) {
+                    return item.id == value;
+                })
+                this.items.forEach((item => {
+                    item.editable = false;
+                }))
+                this.items[found].editable = true;
+                console.log(this.items[found]);
+            }
     }
   }
 </script>

@@ -35,12 +35,11 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   const isAuthenticated = firebase.auth().currentUser
-  
-  if(!requiresAuth && isAuthenticated)   {
-      next('/Home')
-  }
-  else if (requiresAuth && !isAuthenticated) {
+  console.log(isAuthenticated)
+  if (requiresAuth && !isAuthenticated) {
     next('/SignIn')
+  } else if (!requiresAuth && isAuthenticated){
+        next('/Home')
   } else {
     next()
   }

@@ -57,7 +57,6 @@
 </template>
 
 <script>
-  import SystemInformation from './Landing/SystemInformation'
 
   export default {
     name: 'landing-page',
@@ -116,5 +115,5 @@
 
 <style>
   @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
-  
+
 </style>
