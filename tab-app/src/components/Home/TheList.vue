@@ -36,7 +36,15 @@ export default {
                }
                )
     }),
-
+    computed: {
+        selectedListItems(){
+            console.log("computed");
+            return this.$store.state.selectedListItems;
+        }
+    },
+    mounted() {
+                this.getSelectedListItems();
+    },
     methods: {
             modifyEditable(value) {
                 /*
@@ -52,6 +60,10 @@ export default {
                 }))
                 this.items[found].editable = true;
                 console.log(this.items[found]);
+            },
+            getSelectedListItems() {
+                this.$store.dispatch('getSelectedListItems');
+
             }
     }
   }

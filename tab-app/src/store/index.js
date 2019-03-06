@@ -26,23 +26,38 @@ export const db = firebase.firestore();
 export const store = new Vuex.Store({
     state: {
         appTitle: 'Tab',
-        user: null,
         error: null,
         loading: false,
+        user: null,
+        userLists: [],
+        selectedList: [],
+        selectedListItems: [],
     },
     /* change state values */
     mutations: {
-        setUser(state, payload) {
-            state.user = payload
-        },
         setError(state, payload) {
             state.error = payload
         },
         setLoading(state, payload) {
             state.loading = payload
+        },
+        setUser(state, payload) {
+            console.log(payload);
+            state.user = payload
+        },
+        setSelectedList(state, payload){
+            state.selectedList = payload;
         }
     },
     actions: {
+        autoSignIn({
+            commit
+        }, payload) {
+            commit('setUser', {
+                email: payload.email,
+                uid: payload.uid,
+            })
+        },
         userSignUp({
             commit
         }, payload) {
@@ -57,9 +72,9 @@ export const store = new Vuex.Store({
                     db.collection('lists_content').doc(firebaseUser.user.uid).set({
                         "email": firebaseUser.user.email,
                     })
-
                     commit('setUser', {
-                        email: firebaseUser.user.email
+                        email: firebaseUser.user.email,
+                        uid: firebaseUser.user.uid
                     })
                     commit('setLoading', false)
                     commit('setError', null)
@@ -88,13 +103,6 @@ export const store = new Vuex.Store({
                     commit('setLoading', false)
                 })
         },
-        autoSignIn({
-            commit
-        }, payload) {
-            commit('setUser', {
-                email: payload.email
-            })
-        },
         userSignOut({
             commit
         }) {
@@ -109,10 +117,20 @@ export const store = new Vuex.Store({
             })
 
         },
+        getSelectedListItems({ state, commit }) {
+            console.log(state.user.email);
+            return firebase
+                .database()
+                .ref('lists_meta/' + state.user.uid)
+                .once('value', snapshot => {
+                    commit('setSelectedListItems', snapshot.val());
+                });
+        }
     },
     getters: {
         isAuthenticated(state) {
             return state.user !== null && state.user !== undefined
-        }
+        },
+
     }
 })
