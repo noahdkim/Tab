@@ -62,8 +62,18 @@ export default {
                 console.log(this.items[found]);
             },
             getSelectedListItems() {
-                this.$store.dispatch('getSelectedListItems');
-
+                console.log("BEFORE this.$store.dispatch");
+                this.$store.dispatch('getSelectedListItems').then(
+                    response => {
+                        console.log("DURING dispatch response:");
+                        console.log(response);
+                    },
+                    err =>    {
+                        console.log("DURING dispatch err:")
+                        console.log(err)
+                    }
+                );
+                console.log(" AFTER this.$store.dispatch");
             }
     }
   }

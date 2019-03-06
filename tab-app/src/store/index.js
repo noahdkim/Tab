@@ -118,13 +118,10 @@ export const store = new Vuex.Store({
 
         },
         getSelectedListItems({ state, commit }) {
+            console.log("store/index.js: getSelectedListItems");
             console.log(state.user.email);
-            return firebase
-                .database()
-                .ref('lists_meta/' + state.user.uid)
-                .once('value', snapshot => {
-                    commit('setSelectedListItems', snapshot.val());
-                });
+            return db.collection("lists_meta").doc(state.user.uid);
+            //return db.collection("lists_meta").get();
         }
     },
     getters: {
