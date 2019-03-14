@@ -42,9 +42,6 @@ export default {
             return this.$store.state.selectedListItems;
         }
     },
-    mounted() {
-                this.getSelectedListItems();
-    },
     methods: {
             modifyEditable(value) {
                 /*
@@ -59,21 +56,8 @@ export default {
                     item.editable = false;
                 }))
                 this.items[found].editable = true;
-                console.log(this.items[found]);
             },
             getSelectedListItems() {
-                console.log("BEFORE this.$store.dispatch");
-                this.$store.dispatch('getSelectedListItems').then(
-                    response => {
-                        console.log("DURING dispatch response:");
-                        console.log(response);
-                    },
-                    err =>    {
-                        console.log("DURING dispatch err:")
-                        console.log(err)
-                    }
-                );
-                console.log(" AFTER this.$store.dispatch");
             }
     }
   }

@@ -29,7 +29,7 @@ export const store = new Vuex.Store({
         error: null,
         loading: false,
         user: null,
-        userLists: [],
+        personalLists: [],
         selectedList: [],
         selectedListItems: [],
     },
@@ -42,11 +42,13 @@ export const store = new Vuex.Store({
             state.loading = payload
         },
         setUser(state, payload) {
-            console.log(payload);
             state.user = payload
         },
-        setSelectedList(state, payload){
+        setSelectedList(state, payload) {
             state.selectedList = payload;
+        },
+        setPersonalLists(state, payload) {
+            state.personalLists = payload;
         }
     },
     actions: {
@@ -117,11 +119,34 @@ export const store = new Vuex.Store({
             })
 
         },
-        getSelectedListItems({ state, commit }) {
+        loadPersonalListData({ state, commit }) {
             console.log("store/index.js: getSelectedListItems");
             console.log(state.user.email);
-            return db.collection("lists_meta").doc(state.user.uid);
-            //return db.collection("lists_meta").get();
+            let user_meta = db.collection("lists_meta").doc(state.user.uid);
+            let personal_lists_ref = user_meta.collection("personal_lists");
+            let groups = user_meta.collection("groups")
+            var personalLists = []
+            personal_lists_ref.get().then(function(querySnapshot) {
+                querySnapshot.forEach(function(doc) {
+                    // doc.data() is never undefined for query doc snapshots
+                    personalLists.push(doc.data());
+                });
+                commit('setPersonalLists', personalLists);
+
+            });
+        },
+        loadGroupListData({ state, commit }) {
+            console.log("store/index.js: getSelectedListItems");
+            console.log(state.user.email);
+            let user_meta = db.collection("lists_meta").doc(state.user.uid);
+            let personal_lists_ref = user_meta.collection("personal_lists");
+            let groups = user_meta.collection("groups")
+            personal_lists_ref.get().then(function(querySnapshot) {
+                querySnapshot.forEach(function(doc) {
+                    // doc.data() is never undefined for query doc snapshots
+                    console.log(doc.id, " => ", doc.data());
+                });
+            });
         }
     },
     getters: {
