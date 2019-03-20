@@ -13,6 +13,14 @@
                     @clicked="modifyEditable"
                     >
         </list-row>
+        <list-row v-for="item in selectedListItems"
+                    :key="item.id"
+                    :item="item"
+                    :headers="headers"
+                    :ref="item.id"
+                    @clicked="modifyEditable"
+                    >
+        </list-row>
     </v-container>
 </template>
 
@@ -21,7 +29,7 @@ import ListRow from './List/ListRow'
 export default {
     components: {ListRow},
     data: () => ({
-      headers: [{text: "Item", id:1}, {text:"Date", id: 2}, {text: "Priority", id: 3}],
+      headers: [{text: "item", id:1}, {text:"Date", id: 2}, {text: "Priority", id: 3}],
       /*
         The actual query for items will return an object instead of a list.
         Hopefully this doesn't require major changes
@@ -38,7 +46,6 @@ export default {
     }),
     computed: {
         selectedListItems(){
-            console.log("computed");
             return this.$store.state.selectedListItems;
         }
     },

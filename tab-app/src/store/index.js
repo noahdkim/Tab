@@ -30,7 +30,7 @@ export const store = new Vuex.Store({
         loading: false,
         user: null,
         personalLists: [],
-        selectedList: [],
+        selectedList: {},
         selectedListItems: [],
     },
     /* change state values */
@@ -49,6 +49,9 @@ export const store = new Vuex.Store({
         },
         setPersonalLists(state, payload) {
             state.personalLists = payload;
+        },
+        setSelectedListItems(state, payload) {
+            state.selectedListItems = payload;
         }
     },
     actions: {
@@ -94,7 +97,8 @@ export const store = new Vuex.Store({
             firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
                 .then(firebaseUser => {
                     commit('setUser', {
-                        email: firebaseUser.user.email
+                        email: firebaseUser.user.email,
+                        uid: firebaseUser.user.uid
                     })
                     commit('setLoading', false)
                     commit('setError', null)
@@ -119,20 +123,23 @@ export const store = new Vuex.Store({
             })
 
         },
-        loadPersonalListData({ state, commit }) {
-            console.log("store/index.js: getSelectedListItems");
-            console.log(state.user.email);
+        loadPersonalListData({ state, commit, dispatch }) {
+            console.log(state.user);
             let user_meta = db.collection("lists_meta").doc(state.user.uid);
             let personal_lists_ref = user_meta.collection("personal_lists");
-            let groups = user_meta.collection("groups")
-            var personalLists = []
+            let groups = user_meta.collection("groups");
+            var personalLists = [];
             personal_lists_ref.get().then(function(querySnapshot) {
                 querySnapshot.forEach(function(doc) {
                     // doc.data() is never undefined for query doc snapshots
                     personalLists.push(doc.data());
                 });
+                console.log("load personal list data");
                 commit('setPersonalLists', personalLists);
-
+                console.log(personalLists[0])
+                commit('setSelectedList', personalLists[0]);
+                console.log(state.selectedList)
+                dispatch('loadSelectedListItems');
             });
         },
         loadGroupListData({ state, commit }) {
@@ -147,6 +154,17 @@ export const store = new Vuex.Store({
                     console.log(doc.id, " => ", doc.data());
                 });
             });
+        },
+        loadSelectedListItems({ state, commit }) {
+            console.log(state.selectedList.id);
+            let list_items = db.collection("lists_content").doc(state.selectedList.id).collection('items');
+            var selectedListItems = [];
+            list_items.get().then(function(querySnapshot){
+                querySnapshot.forEach(function(doc){
+                    selectedListItems.push(doc.data());
+                })
+            });
+            commit('setSelectedListItems', selectedListItems);
         }
     },
     getters: {

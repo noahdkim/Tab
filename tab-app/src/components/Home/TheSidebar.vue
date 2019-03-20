@@ -37,17 +37,8 @@ export default {
     },
     methods: {
         loadUserLists() {
-            this.$store.dispatch('loadPersonalListData').then(
-                response => {
-                    console.log("DURING dispatch response:");
-                    console.log(response);
-                    console.log(this.$store.state.personalLists[0]);
-                },
-                err => {
-                    console.log("DURING dispatch err:")
-                    console.log(err)
-                }
-            );
+            console.log("loading user lists....")
+            this.$store.dispatch('loadPersonalListData');
         }
     },
     name: 'TheSidebar'

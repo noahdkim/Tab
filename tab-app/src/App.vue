@@ -57,13 +57,9 @@ export default {
     },
     /* https://github.com/vuejs/vue/issues/1915#issuecomment-159334432 */
     created() {
-        // alert('ready function');
-        console.log("ready function");
         window.addEventListener('resize', this.handleResize)
     },
     destroyed() {
-        // alert('beforeDestroy function');
-        console.log("beforeDestroy");
         window.removeEventListener('resize', this.handleResize)
     },
 
