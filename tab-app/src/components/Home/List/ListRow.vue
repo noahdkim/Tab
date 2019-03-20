@@ -1,7 +1,7 @@
 <template>
     <v-layout row @click="makeEditable" :id="item.id">
         <v-layout col v-for="header in headers" :key="header.id">
-            <v-text-field :value="item[header.text]"
+            <v-text-field :value="item[header]"
                           :readonly="!item.editable"
                           :outline="!item.editable"
                           ref="{{item.id}}-{{header.text}}"

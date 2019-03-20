@@ -32,6 +32,7 @@ export const store = new Vuex.Store({
         personalLists: [],
         selectedList: {},
         selectedListItems: [],
+        selectedListHeaders: [],
     },
     /* change state values */
     mutations: {
@@ -41,18 +42,38 @@ export const store = new Vuex.Store({
         setLoading(state, payload) {
             state.loading = payload
         },
-        setUser(state, payload) {
-            state.user = payload
+        setPersonalLists(state, payload) {
+            state.personalLists = payload;
         },
         setSelectedList(state, payload) {
             state.selectedList = payload;
         },
-        setPersonalLists(state, payload) {
-            state.personalLists = payload;
-        },
         setSelectedListItems(state, payload) {
             state.selectedListItems = payload;
+        },
+        setSelectedListHeaders(state, payload) {
+            state.selectedListHeaders = payload;
+        },
+        setUser(state, payload) {
+            state.user = payload
+        },
+        makeListItemEditable(state, payload) {
+            /*
+                this is definitely not the best way to do this but I wanted to make it work for now
+                It'd be better to keep track of the current editable so we just change that index
+                instead of iterating over the entire list and setting editable to false
+            */
+            var found = state.selectedListItems.findIndex(function(item) {
+                return item.id == payload;
+            });
+            console.log(found);
+            state.selectedListItems.forEach((item => {
+                item.editable = false;
+            }))
+            state.selectedListItems[found].editable = true;
+            console.log(state.selectedListItems);
         }
+
     },
     actions: {
         autoSignIn({
@@ -62,6 +83,79 @@ export const store = new Vuex.Store({
                 email: payload.email,
                 uid: payload.uid,
             })
+        },
+        loadGroupListData({ state, commit }) {
+            let user_meta = db.collection("lists_meta").doc(state.user.uid);
+            let personal_lists_ref = user_meta.collection("personal_lists");
+            let groups = user_meta.collection("groups")
+            personal_lists_ref.get().then(function(querySnapshot) {
+                querySnapshot.forEach(function(doc) {
+                    // doc.data() is never undefined for query doc snapshots
+                    console.log(doc.id, " => ", doc.data());
+                });
+            });
+        },
+        loadPersonalListData({ state, commit, dispatch }) {
+            console.log(state.user);
+            let user_meta = db.collection("lists_meta").doc(state.user.uid);
+            let personal_lists_ref = user_meta.collection("personal_lists");
+            let groups = user_meta.collection("groups");
+            var personalLists = [];
+            personal_lists_ref.get().then(function(querySnapshot) {
+                querySnapshot.forEach(function(doc) {
+                    // doc.data() is never undefined for query doc snapshots
+                    personalLists.push(doc.data());
+                });
+                commit('setPersonalLists', personalLists);
+                commit('setSelectedList', personalLists[0]);
+                dispatch('loadSelectedListHeaders');
+                dispatch('loadSelectedListItems');
+
+            });
+        },
+        loadSelectedListItems({ state, commit }) {
+            console.log(state.selectedList.id);
+            let list_items = db.collection("lists_content").doc(state.selectedList.id).collection('items');
+            var selectedListItems = [];
+            list_items.get().then(querySnapshot => {
+                querySnapshot.forEach(doc => {
+                    let item = doc.data();
+                    item.id = doc.id;
+                    item.editable = false;
+                    selectedListItems.push(item);
+                })
+
+                commit('setSelectedListItems', selectedListItems);
+            });
+        },
+        loadSelectedListHeaders({ state, commit }) {
+            let list_items = db.collection("lists_content").doc(state.selectedList.id);
+            list_items.get().then(docSnapshot => {
+                if (docSnapshot.exists){
+                    commit('setSelectedListHeaders', docSnapshot.data().headers);
+                } else {
+                    console.log('No document found!');
+                }
+            });
+        },
+        userSignIn({
+            commit
+        }, payload) {
+            commit('setLoading', true)
+            firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
+                .then(firebaseUser => {
+                    commit('setUser', {
+                        email: firebaseUser.user.email,
+                        uid: firebaseUser.user.uid
+                    })
+                    commit('setLoading', false)
+                    commit('setError', null)
+                    router.push('/Home')
+                })
+                .catch(error => {
+                    commit('setError', error.message)
+                    commit('setLoading', false)
+                })
         },
         userSignUp({
             commit
@@ -90,25 +184,6 @@ export const store = new Vuex.Store({
                     commit('setLoading', false)
                 })
         },
-        userSignIn({
-            commit
-        }, payload) {
-            commit('setLoading', true)
-            firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
-                .then(firebaseUser => {
-                    commit('setUser', {
-                        email: firebaseUser.user.email,
-                        uid: firebaseUser.user.uid
-                    })
-                    commit('setLoading', false)
-                    commit('setError', null)
-                    router.push('/Home')
-                })
-                .catch(error => {
-                    commit('setError', error.message)
-                    commit('setLoading', false)
-                })
-        },
         userSignOut({
             commit
         }) {
@@ -123,53 +198,17 @@ export const store = new Vuex.Store({
             })
 
         },
-        loadPersonalListData({ state, commit, dispatch }) {
-            console.log(state.user);
-            let user_meta = db.collection("lists_meta").doc(state.user.uid);
-            let personal_lists_ref = user_meta.collection("personal_lists");
-            let groups = user_meta.collection("groups");
-            var personalLists = [];
-            personal_lists_ref.get().then(function(querySnapshot) {
-                querySnapshot.forEach(function(doc) {
-                    // doc.data() is never undefined for query doc snapshots
-                    personalLists.push(doc.data());
-                });
-                console.log("load personal list data");
-                commit('setPersonalLists', personalLists);
-                console.log(personalLists[0])
-                commit('setSelectedList', personalLists[0]);
-                console.log(state.selectedList)
-                dispatch('loadSelectedListItems');
-            });
-        },
-        loadGroupListData({ state, commit }) {
-            console.log("store/index.js: getSelectedListItems");
-            console.log(state.user.email);
-            let user_meta = db.collection("lists_meta").doc(state.user.uid);
-            let personal_lists_ref = user_meta.collection("personal_lists");
-            let groups = user_meta.collection("groups")
-            personal_lists_ref.get().then(function(querySnapshot) {
-                querySnapshot.forEach(function(doc) {
-                    // doc.data() is never undefined for query doc snapshots
-                    console.log(doc.id, " => ", doc.data());
-                });
-            });
-        },
-        loadSelectedListItems({ state, commit }) {
-            console.log(state.selectedList.id);
-            let list_items = db.collection("lists_content").doc(state.selectedList.id).collection('items');
-            var selectedListItems = [];
-            list_items.get().then(function(querySnapshot){
-                querySnapshot.forEach(function(doc){
-                    selectedListItems.push(doc.data());
-                })
-            });
-            commit('setSelectedListItems', selectedListItems);
-        }
     },
     getters: {
         isAuthenticated(state) {
             return state.user !== null && state.user !== undefined
+        },
+        getSelectedListItems(state) {
+            console.log(state.selectedListItems);
+            return state.selectedListItems;
+        },
+        getSelectedListHeaders(state) {
+            return state.selectedListHeaders;
         },
 
     }
