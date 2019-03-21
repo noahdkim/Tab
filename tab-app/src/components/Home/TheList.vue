@@ -10,7 +10,7 @@
                     :item="item"
                     :headers="selectedListHeaders"
                     :ref="item.id"
-                    @clicked="modifyEditable"
+                    @clicked="modifyActive"
                     >
         </list-row>
     </v-container>
@@ -22,7 +22,7 @@ import { mapGetters } from 'vuex'
 export default {
     components: {ListRow},
     data: () => ({
-      headers: [{text: "item", id:1}, {text:"Date", id: 2}, {text: "Priority", id: 3}],
+
     }),
     computed: {
         ...mapGetters({
@@ -31,8 +31,8 @@ export default {
         })
     },
     methods: {
-            modifyEditable(item_id) {
-                this.$store.commit('makeListItemEditable', item_id)
+            modifyActive(prevItemState, new_item_id) {
+                this.$store.dispatch('saveChangedItem', {prevItemState, new_item_id});
             },
 
     }

@@ -25,6 +25,7 @@ export const db = firebase.firestore();
 
 export const store = new Vuex.Store({
     state: {
+        activeItemIndex: 0,
         appTitle: 'Tab',
         error: null,
         loading: false,
@@ -36,6 +37,16 @@ export const store = new Vuex.Store({
     },
     /* change state values */
     mutations: {
+        setActiveItemIndex(state, payload) {
+            console.log("SET ACTIVE ITEM INDEX");
+            state.selectedListItems[state.activeItemIndex].active = false;
+            /* find index of new item and set to active */
+            let foundIndex = state.selectedListItems.findIndex(function(item) {
+                return item.id == payload;
+            });
+            state.activeItemIndex = foundIndex;
+            state.selectedListItems[foundIndex].active = true;
+        },
         setError(state, payload) {
             state.error = payload
         },
@@ -55,24 +66,9 @@ export const store = new Vuex.Store({
             state.selectedListHeaders = payload;
         },
         setUser(state, payload) {
-            state.user = payload
+            state.user = payload;
         },
-        makeListItemEditable(state, payload) {
-            /*
-                this is definitely not the best way to do this but I wanted to make it work for now
-                It'd be better to keep track of the current editable so we just change that index
-                instead of iterating over the entire list and setting editable to false
-            */
-            var found = state.selectedListItems.findIndex(function(item) {
-                return item.id == payload;
-            });
-            console.log(found);
-            state.selectedListItems.forEach((item => {
-                item.editable = false;
-            }))
-            state.selectedListItems[found].editable = true;
-            console.log(state.selectedListItems);
-        }
+
 
     },
     actions: {
@@ -96,7 +92,6 @@ export const store = new Vuex.Store({
             });
         },
         loadPersonalListData({ state, commit, dispatch }) {
-            console.log(state.user);
             let user_meta = db.collection("lists_meta").doc(state.user.uid);
             let personal_lists_ref = user_meta.collection("personal_lists");
             let groups = user_meta.collection("groups");
@@ -114,17 +109,15 @@ export const store = new Vuex.Store({
             });
         },
         loadSelectedListItems({ state, commit }) {
-            console.log(state.selectedList.id);
             let list_items = db.collection("lists_content").doc(state.selectedList.id).collection('items');
             var selectedListItems = [];
             list_items.get().then(querySnapshot => {
                 querySnapshot.forEach(doc => {
                     let item = doc.data();
                     item.id = doc.id;
-                    item.editable = false;
+                    item.active = false;
                     selectedListItems.push(item);
                 })
-
                 commit('setSelectedListItems', selectedListItems);
             });
         },
@@ -137,6 +130,38 @@ export const store = new Vuex.Store({
                     console.log('No document found!');
                 }
             });
+        },
+        saveChangedItem({ state, commit }, params){
+            /* change previously active item to not active */
+            if(state.selectedListItems[state.activeItemIndex]) {
+                let prevActiveID = state.selectedListItems[state.activeItemIndex].id;
+                /* save state of previously active item */
+                let prevItemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(prevActiveID);
+                prevItemDocRef.get().then(thisDoc => {
+                    if (thisDoc.exists) {
+                        let newDocState = state.selectedListItems[state.activeItemIndex];
+                        prevItemDocRef.update(newDocState);
+                        commit('setActiveItemIndex', params.new_item_id);
+
+                    } else {
+                        console.log("doesn't exist");
+                    }
+                })
+            }
+            /* This is necessary because other commit is in an asynch call */
+            else{
+                commit('setActiveItemIndex', params.new_item_id);
+            }
+
+        },
+        updateItemState({ state, commit }, params){
+            let foundIndex = state.selectedListItems.findIndex(function(item) {
+                return item.id === params.itemID;
+            });
+            let newSelectedListItems = state.selectedListItems;
+            newSelectedListItems[foundIndex][params.header] = params.newText;
+            commit('setSelectedListItems', newSelectedListItems);
+            console.log(state.selectedListItems);
         },
         userSignIn({
             commit
@@ -196,15 +221,15 @@ export const store = new Vuex.Store({
                 commit('setError', error.message)
                 commit('setLoading', false)
             })
-
         },
+
+
     },
     getters: {
         isAuthenticated(state) {
             return state.user !== null && state.user !== undefined
         },
         getSelectedListItems(state) {
-            console.log(state.selectedListItems);
             return state.selectedListItems;
         },
         getSelectedListHeaders(state) {
