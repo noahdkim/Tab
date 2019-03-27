@@ -22,7 +22,6 @@ export default {
         return{
             /* this is currently not being used */
             checkbox: true,
-
         }
     },
     methods: {

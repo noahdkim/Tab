@@ -80,6 +80,12 @@ export const store = new Vuex.Store({
                 uid: payload.uid,
             })
         },
+        changeActiveItem({ state, commit }, params){
+            /* change previously active item to not active */
+            if(state.selectedListItems[state.activeItemIndex]) {
+                commit('setActiveItemIndex', params.new_item_id);
+            }
+        },
         loadGroupListData({ state, commit }) {
             let user_meta = db.collection("lists_meta").doc(state.user.uid);
             let personal_lists_ref = user_meta.collection("personal_lists");
@@ -131,29 +137,28 @@ export const store = new Vuex.Store({
                 }
             });
         },
-        saveChangedItem({ state, commit }, params){
-            /* change previously active item to not active */
-            if(state.selectedListItems[state.activeItemIndex]) {
-                let prevActiveID = state.selectedListItems[state.activeItemIndex].id;
-                /* save state of previously active item */
-                let prevItemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(prevActiveID);
-                prevItemDocRef.get().then(thisDoc => {
-                    if (thisDoc.exists) {
-                        let newDocState = state.selectedListItems[state.activeItemIndex];
-                        prevItemDocRef.update(newDocState);
-                        commit('setActiveItemIndex', params.new_item_id);
-
-                    } else {
-                        console.log("doesn't exist");
-                    }
-                })
+        saveList({ state, commit }, params){
+            console.log('SAVING LIST....')
+            console.log(state.selectedList.id)
+            let batch = db.batch();
+            
+            for (var i = 0, n = state.selectedListItems.length; i < n; i++){
+                let item = state.selectedListItems[i]
+                console.log(item.id);
+                console.log(item.item);
+                let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(item.id);
+                batch.update(itemDocRef, item)
+                console.log("end item")
             }
-            /* This is necessary because other commit is in an asynch call */
-            else{
-                commit('setActiveItemIndex', params.new_item_id);
-            }
+            console.log(batch);
+            batch.commit().then().catch(function(error){
+                console.log(error);
+            });
+            console.log(batch);
 
+            console.log("done");
         },
+
         updateItemState({ state, commit }, params){
             let foundIndex = state.selectedListItems.findIndex(function(item) {
                 return item.id === params.itemID;

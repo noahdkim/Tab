@@ -24,6 +24,9 @@ export default {
     data: () => ({
 
     }),
+    created() {
+        window.addEventListener('beforeunload', this.saveList)
+    },
     computed: {
         ...mapGetters({
             selectedListHeaders: 'getSelectedListHeaders',
@@ -32,8 +35,12 @@ export default {
     },
     methods: {
             modifyActive(prevItemState, new_item_id) {
-                this.$store.dispatch('saveChangedItem', {prevItemState, new_item_id});
+                this.$store.commit('setActiveItemIndex', new_item_id);
             },
+            saveList () {
+                /* wait for the promise */
+                this.$store.dispatch('saveList').then()
+            }
 
     }
   }
