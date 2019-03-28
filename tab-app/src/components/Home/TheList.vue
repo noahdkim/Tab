@@ -13,7 +13,9 @@
                     @clicked="modifyActive"
                     >
         </list-row>
+        <v-btn @click.native="saveList">Save</v-btn>
     </v-container>
+
 </template>
 
 <script>
@@ -39,7 +41,9 @@ export default {
             },
             saveList () {
                 /* wait for the promise */
-                this.$store.dispatch('saveList').then()
+                this.$store.dispatch('saveList').then((result) => {
+                    console.log(result)
+                })
             }
 
     }

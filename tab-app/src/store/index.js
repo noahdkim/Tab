@@ -138,25 +138,18 @@ export const store = new Vuex.Store({
             });
         },
         saveList({ state, commit }, params){
-            console.log('SAVING LIST....')
-            console.log(state.selectedList.id)
             let batch = db.batch();
-            
+
             for (var i = 0, n = state.selectedListItems.length; i < n; i++){
                 let item = state.selectedListItems[i]
-                console.log(item.id);
-                console.log(item.item);
                 let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(item.id);
                 batch.update(itemDocRef, item)
-                console.log("end item")
             }
-            console.log(batch);
             batch.commit().then().catch(function(error){
                 console.log(error);
             });
-            console.log(batch);
 
-            console.log("done");
+            return "saved"
         },
 
         updateItemState({ state, commit }, params){
