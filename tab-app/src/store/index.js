@@ -140,20 +140,56 @@ export const store = new Vuex.Store({
         saveList({ state, commit }, params){
             console.log('SAVING LIST....')
             console.log(state.selectedList.id)
-            let batch = db.batch();
+            var batch = db.batch();
+
+            console.log("batch:");
+            console.log(batch);
             
+            console.log("state:");
+            console.log(state);
+            console.log("state.selectedListItems");
+            console.log(state.selectedListItems);
+
             for (var i = 0, n = state.selectedListItems.length; i < n; i++){
-                let item = state.selectedListItems[i]
+                console.log("   LOOP i = " + i);
+                let item = state.selectedListItems[i];
                 console.log(item.id);
                 console.log(item.item);
                 let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(item.id);
-                batch.update(itemDocRef, item)
+
+                console.log("*************itemDocRef.id = " + itemDocRef.id);
+                console.log("*************itemDocRef.path = " + itemDocRef.path);
+
+                console.log("itemDocRef:");
+                console.log(itemDocRef);
+                console.log("item:");
+                console.log(item);
+                console.log("item.item:");
+                console.log(item.item);
+                console.log("BATCH.UPDATE BEFORE");
+
+                batch.update(itemDocRef, {'item': item.item});
+
+                console.log("BATCH.UPDATE AFTER");
                 console.log("end item")
+
+                batch.set(itemDocRef, {'testField': 1000});
+                console.log("batch set");
             }
+
+            let testDocRef = db.collection('lists_content').doc('testDocument');
+
+            /* for lists_content/testDocument */
+            batch.update(testDocRef, {'testStringField': 'testASDF'});
+            batch.set(testDocRef, {'testIntField': 100});
+            testDocRef.delete();
+            /* for lists_content/testDocument */
+
             console.log(batch);
             batch.commit().then().catch(function(error){
                 console.log(error);
             });
+            // batch.commit();
             console.log(batch);
 
             console.log("done");
