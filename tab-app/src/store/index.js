@@ -25,7 +25,7 @@ export const db = firebase.firestore();
 
 export const store = new Vuex.Store({
     state: {
-        activeItemIndex: 0,
+        activeItemID: 0,
         appTitle: 'Tab',
         error: null,
         loading: false,
@@ -37,21 +37,25 @@ export const store = new Vuex.Store({
     },
     /* change state values */
     mutations: {
-        setActiveItemIndex(state, payload) {
-            console.log("SET ACTIVE ITEM INDEX");
-            state.selectedListItems[state.activeItemIndex].active = false;
-            /* find index of new item and set to active */
+        changeActiveState(state, payload) {
+            if (payload.active === true){
+                state.activeItemID = payload.ID;
+            }
             let foundIndex = state.selectedListItems.findIndex(function(item) {
-                return item.id == payload;
+                return item.id === payload.ID;
             });
-            state.activeItemIndex = foundIndex;
-            state.selectedListItems[foundIndex].active = true;
+            if(foundIndex >= 0){
+                state.selectedListItems[foundIndex].active = payload.active;
+            }
+        },
+        setActiveItemID(state, payload){
+            state.activeItemID = payload;
         },
         setError(state, payload) {
-            state.error = payload
+            state.error = payload;
         },
         setLoading(state, payload) {
-            state.loading = payload
+            state.loading = payload;
         },
         setPersonalLists(state, payload) {
             state.personalLists = payload;
@@ -82,9 +86,11 @@ export const store = new Vuex.Store({
         },
         changeActiveItem({ state, commit }, params){
             /* change previously active item to not active */
-            if(state.selectedListItems[state.activeItemIndex]) {
-                commit('setActiveItemIndex', params.new_item_id);
-            }
+            commit('changeActiveState', {active: false, ID: state.activeItemID});
+
+            /* change new item ID to active */
+            commit('changeActiveState', {active: true, ID: params});
+            commit('setActiveItemID', params);
         },
         loadGroupListData({ state, commit }) {
             let user_meta = db.collection("lists_meta").doc(state.user.uid);
@@ -159,7 +165,6 @@ export const store = new Vuex.Store({
             let newSelectedListItems = state.selectedListItems;
             newSelectedListItems[foundIndex][params.header] = params.newText;
             commit('setSelectedListItems', newSelectedListItems);
-            console.log(state.selectedListItems);
         },
         userSignIn({
             commit

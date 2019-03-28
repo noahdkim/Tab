@@ -26,7 +26,6 @@ export default {
     },
     methods: {
         makeActive (event) {
-            console.log(event);
             this.$emit('clicked', event.currentTarget.value,  event.currentTarget.id);
         },
 

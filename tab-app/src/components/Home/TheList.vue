@@ -37,7 +37,7 @@ export default {
     },
     methods: {
             modifyActive(prevItemState, new_item_id) {
-                this.$store.commit('setActiveItemIndex', new_item_id);
+                this.$store.dispatch('changeActiveItem', new_item_id);
             },
             saveList () {
                 /* wait for the promise */
