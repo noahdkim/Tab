@@ -2,10 +2,10 @@
     <v-container class="text-xs-center">
           <v-date-picker
             mode='single'
-            v-model='selectedValue'
+            v-model='date'
             is-inline>
           </v-date-picker>
-          {{selectedValue}}
+          {{date}}
     </v-container>
 </template>
 
@@ -15,6 +15,16 @@ export default  {
         return{
             userEmail:  this.$store.state.user.email,
             selectedValue: new Date(),
+        }
+    },
+    computed:{
+        date: {
+            get() {
+                return this.$store.state.date;
+            },
+            set(newDate) {
+                return this.$store.commit('setDate', newDate);
+            }
         }
     },
     name: 'TheCalendar'

@@ -27,6 +27,7 @@ export const store = new Vuex.Store({
     state: {
         activeItemID: 0,
         appTitle: 'Tab',
+        date: new Date(),
         error: null,
         loading: false,
         user: null,
@@ -34,6 +35,11 @@ export const store = new Vuex.Store({
         selectedList: {},
         selectedListItems: [],
         selectedListHeaders: [],
+    },
+    getters: {
+        date: (state) => {
+            return state.date;
+        }
     },
     /* change state values */
     mutations: {
@@ -50,6 +56,9 @@ export const store = new Vuex.Store({
         },
         setActiveItemID(state, payload){
             state.activeItemID = payload;
+        },
+        setDate(state, payload){
+            state.date = payload;
         },
         setError(state, payload) {
             state.error = payload;
@@ -72,8 +81,6 @@ export const store = new Vuex.Store({
         setUser(state, payload) {
             state.user = payload;
         },
-
-
     },
     actions: {
         autoSignIn({

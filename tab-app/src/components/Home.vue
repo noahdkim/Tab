@@ -36,7 +36,7 @@ export default {
          /* polyfillScript for vCalendar */
         let polyfillScript = document.createElement('script')
         polyfillScript.setAttribute('src', 'https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.prototype.find,Intl')
-        document.head.appendChild(recaptchaScript)
+        document.head.appendChild(polyfillScript)
       },
      /* https://github.com/vuejs/vue/issues/1915#issuecomment-159334432 */
      created() {
