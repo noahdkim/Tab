@@ -9,9 +9,13 @@
                     tag="ul"    
                     class="list-group"
                     handle=".handle"
-                    
+                    :move="checkMove"
+                    @clicked="checkMove"
+                    v-bind="dragOptions"
+                    @start="drag = true"
+                    @end="drag = false"
                     >
-
+            <transition-group type="transition" :name="!drag ? 'flip-list' : null">
                     <!-- temporarily commented out -->
             <list-row v-for="(item, index) in selectedListItems"
                         :key="index"
@@ -36,6 +40,8 @@
 
               <i class="fa fa-times close"></i>
             </li> -->
+
+            </transition-group>
         </draggable>
         <v-btn @click.native="saveList">Save</v-btn>
     </v-container>
@@ -52,6 +58,7 @@ export default {
         ListRow,
     },
     data: () => ({
+        drag: false
 
     }),
     created() {
@@ -61,7 +68,15 @@ export default {
         ...mapGetters({
             selectedListHeaders: 'getSelectedListHeaders',
             selectedListItems: 'getSelectedListItems'
-        })
+        }),
+         dragOptions() {
+          return {
+            animation: 200,
+            group: "description",
+            disabled: false,
+            ghostClass: "ghost"
+          };
+        }
     },
     methods: {
             modifyActive(prevItemState, new_item_id) {
@@ -72,14 +87,27 @@ export default {
                 this.$store.dispatch('saveList').then((result) => {
                     console.log(result)
                 })
+            },
+            checkMove() {
+                console.log("asdf");
             }
 
     }
   };
 </script>
 <style scoped>
+.flip-list-move {
+  transition: transform 0.5s;
+}
+.no-move {
+  transition: transform 0s;
+}
 .button {
   margin-top: 35px;
+}
+.ghost {
+  opacity: 0.25;
+  /*background: #c8ebfb;*/
 }
 .handle {
             padding: 5px;
