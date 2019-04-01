@@ -1,6 +1,9 @@
 <template>
     <v-layout row @click="makeActive" :id="item.id">
         <v-layout col v-for="header in headers" :key="header.id">
+            
+            <span class="fa fa-align-justify handle">&#9776;</span>
+
             <list-cell :header = "header"
                           :item = "item"
                           :id="header.text"
@@ -32,3 +35,39 @@ export default {
     }
   }
 </script>
+
+<style scoped>
+.button {
+  margin-top: 35px;
+}
+.handle {
+            padding: 5px;
+            margin-right: 10px;
+            /*border: solid #000 1px;*/
+            cursor: move;
+            font-size: 200%;
+            margin-bottom: 30px;
+        }
+.close {
+  float: right;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+input {
+  display: inline-block;
+  width: 50%;
+}
+.text {
+  margin: 20px;
+}
+
+.list-group {
+  min-height: 20px;
+}
+.list-group-item {
+  /*cursor: move;*/
+}
+.list-group-item i {
+  /*cursor: pointer;*/
+}
+</style>

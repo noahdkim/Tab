@@ -6,34 +6,36 @@
             </v-layout>
         </v-layout>
         <draggable 
-                    tag="ul"    :list="selectedListItems"
+                    tag="ul"    
                     class="list-group"
-                    handle=".handle">
+                    handle=".handle"
+                    
+                    >
 
                     <!-- temporarily commented out -->
-            <!-- <list-row v-for="(item, index) in selectedListItems"
+            <list-row v-for="(item, index) in selectedListItems"
                         :key="index"
                         :item="item"
                         :headers="selectedListHeaders"
                         :ref="item.id"
                         @clicked="modifyActive"
                         >
-            </list-row> -->
+            </list-row>
 
 <!-- https://github.com/SortableJS/Vue.Draggable/blob/master/example/components/handle.vue#L11 -->
-            <li
+            <!-- <li
               class="list-group-item"
               v-for="(item, index) in selectedListItems"
               :key="index"
             >
-              <i class="fa fa-align-justify handle"></i>
+              <span class="fa fa-align-justify handle">&#9776;</span>
 
               <span class="text">{{ item.id }} </span>
 
               <input type="text" class="form-control" v-model="item.item" />
 
               <i class="fa fa-times close"></i>
-            </li>
+            </li> -->
         </draggable>
         <v-btn @click.native="saveList">Save</v-btn>
     </v-container>
@@ -80,10 +82,11 @@ export default {
   margin-top: 35px;
 }
 .handle {
-  float: left;
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
+            padding: 5px;
+            margin-right: 10px;
+            /*border: solid #000 1px;*/
+            cursor: move;
+        }
 .close {
   float: right;
   padding-top: 8px;
@@ -101,9 +104,9 @@ input {
   min-height: 20px;
 }
 .list-group-item {
-  cursor: move;
+  /*cursor: move;*/
 }
 .list-group-item i {
-  cursor: pointer;
+  /*cursor: pointer;*/
 }
 </style>
