@@ -121,7 +121,11 @@ export const store = new Vuex.Store({
             });
         },
         loadSelectedListItems({ state, commit }) {
-            let list_items = db.collection("lists_content").doc(state.selectedList.id).collection('items');
+            let list_items = db.collection("lists_content")
+                               .doc(state.selectedList.id)
+                               .collection('items')
+                               .orderBy("index");
+
             var selectedListItems = [];
             list_items.get().then(querySnapshot => {
                 querySnapshot.forEach(doc => {
@@ -156,6 +160,18 @@ export const store = new Vuex.Store({
             });
 
             return "saved"
+        },
+
+        saveListOrderToFirestore({ state, commit }, params) {
+            if(state.selectedListItems == null) {
+                return false;
+            }
+
+            for(let i = 0; i < state.selectedListItems.length; i++)   {
+                state.selectedListItems[i].index = i;
+            }
+
+            return "savedListOrder";
         },
 
         updateItemState({ state, commit }, params){

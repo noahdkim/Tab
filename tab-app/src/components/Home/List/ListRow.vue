@@ -2,7 +2,8 @@
     <v-layout row @click="makeActive" :id="item.id">
         <v-layout col v-for="header in headers" :key="header.id">
             
-            <span class="fa fa-align-justify handle">&#9776;</span>
+            <!-- <span class="fa fa-align-justify handle">&#9776;</span> -->
+            <span class="fa fa-align-justify handle">::</span>
 
             <list-cell :header = "header"
                           :item = "item"
@@ -11,6 +12,7 @@
                           single-line>
             </list-cell>
 
+            
         </v-layout>
     </v-layout>
 </template>
