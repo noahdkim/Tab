@@ -1,6 +1,6 @@
 <template>
     <v-text-field @input="updateItemState"
-                          :value="item[header]"
+                          :value="item.values[header.name]"
                           :readonly="!item.active"
                           :outline="!item.active"
                           :id="header.text"

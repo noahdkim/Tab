@@ -27,6 +27,7 @@ export const store = new Vuex.Store({
     state: {
         activeItemID: 0,
         appTitle: 'Tab',
+        date: new Date(),
         error: null,
         loading: false,
         user: null,
@@ -34,6 +35,11 @@ export const store = new Vuex.Store({
         selectedList: {},
         selectedListItems: [],
         selectedListHeaders: [],
+    },
+    getters: {
+        date: (state) => {
+            return state.date;
+        }
     },
     /* change state values */
     mutations: {
@@ -50,6 +56,9 @@ export const store = new Vuex.Store({
         },
         setActiveItemID(state, payload){
             state.activeItemID = payload;
+        },
+        setDate(state, payload){
+            state.date = payload;
         },
         setError(state, payload) {
             state.error = payload;
@@ -72,8 +81,6 @@ export const store = new Vuex.Store({
         setUser(state, payload) {
             state.user = payload;
         },
-
-
     },
     actions: {
         autoSignIn({
@@ -121,27 +128,78 @@ export const store = new Vuex.Store({
             });
         },
         loadSelectedListItems({ state, commit }) {
-            let list_items = db.collection("lists_content").doc(state.selectedList.id).collection('items');
+            let list_items = db.collection("lists_content")
+                               .doc(state.selectedList.id)
+                               .collection("items")
+                               .orderBy("index");
+
             var selectedListItems = [];
             list_items.get().then(querySnapshot => {
+                // selectedListItems = querySnapshot.docs.map(doc => {
+                    
+                // });
                 querySnapshot.forEach(doc => {
+                    //  // Convert Firestore timestamp field to Date class 
+                    // let timestamp = new Date(item.date.seconds * 1000);
+                    // item.date = timestamp;
+
+
+
+                    ///////////////////////////////////
+                    let valuesCollection = db.collection("lists_content")
+                                             .doc(state.selectedList.id)
+                                             .collection("items")
+                                             .doc(doc.id)
+                                             .collection("values");
+
                     let item = doc.data();
-                    item.id = doc.id;
-                    item.active = false;
-                    selectedListItems.push(item);
-                })
-                commit('setSelectedListItems', selectedListItems);
+                    let valuesDocument = {};
+                    valuesCollection.get().then(qS => {
+                        item.values = qS.docs.map(oneDoc => oneDoc.data())[0];
+                        // console.log("valuesDocument: ");
+                        // console.log(valuesDocument);
+
+                        // item.values = valuesDocument;
+
+                        // console.log(item);
+
+                        selectedListItems.push(item);
+                    });
+                });
+                
             });
+
+            console.log(selectedListItems);
+
+            commit('setSelectedListItems', selectedListItems);
         },
         loadSelectedListHeaders({ state, commit }) {
-            let list_items = db.collection("lists_content").doc(state.selectedList.id);
-            list_items.get().then(docSnapshot => {
-                if (docSnapshot.exists){
-                    commit('setSelectedListHeaders', docSnapshot.data().headers);
-                } else {
-                    console.log('No document found!');
-                }
+            let list_items = db.collection("lists_content")
+                               .doc(state.selectedList.id)
+                               .collection("headers")
+                               .orderBy("index");
+
+            let newSelectedListHeaders = [];
+            list_items.get().then(querySnapshot => {
+                querySnapshot.forEach(doc =>    {
+                    let header = doc.data();
+
+                    console.log("header:");
+                    console.log(header);
+
+                    newSelectedListHeaders.push(header);
+                });
+                // if (querySnapshot.exists){
+                //     commit('setSelectedListHeaders', docSnapshot.data().headers);
+                // } else {
+                //     console.log('No document found!');
+                // }
             });
+
+            // console.log("selectedListHeaders:");
+            // console.log(newSelectedListHeaders);
+
+            commit('setSelectedListHeaders', newSelectedListHeaders);
         },
         saveList({ state, commit }, params){
             let batch = db.batch();
@@ -156,6 +214,18 @@ export const store = new Vuex.Store({
             });
 
             return "saved"
+        },
+
+        saveListOrderToFirestore({ state, commit }, params) {
+            if(state.selectedListItems == null) {
+                return false;
+            }
+
+            for(let i = 0; i < state.selectedListItems.length; i++)   {
+                state.selectedListItems[i].index = i;
+            }
+
+            return "savedListOrder";
         },
 
         updateItemState({ state, commit }, params){
