@@ -1,5 +1,5 @@
 <template>
-  <v-container class="ma-0 pa-0">
+  <v-container class="ma-0 pa-0" fluid>
     <v-layout row>
         <!-- Sidebar -->
         <the-sidebar :show=show></the-sidebar>
@@ -8,10 +8,14 @@
             <v-icon>{{show ? 'keyboard_arrow_left' : 'keyboard_arrow_right'}}</v-icon>
         </button>
         <!-- List -->
-        <the-list></the-list>
+        <v-flex xs7>
+            <the-list></the-list>
+        </v-flex>
 
         <!-- Calendar -->
-        <the-calendar></the-calendar>
+        <v-flex xs5>
+            <the-calendar></the-calendar>
+        </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -28,6 +32,12 @@ export default {
              show: true,
          }
      },
+     mounted() {
+         /* polyfillScript for vCalendar */
+        let polyfillScript = document.createElement('script')
+        polyfillScript.setAttribute('src', 'https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.prototype.find,Intl')
+        document.head.appendChild(polyfillScript)
+      },
      /* https://github.com/vuejs/vue/issues/1915#issuecomment-159334432 */
      created() {
          window.addEventListener('resize', this.handleResize)

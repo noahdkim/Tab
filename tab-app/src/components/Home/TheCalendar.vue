@@ -1,19 +1,30 @@
 <template>
-<v-layout column>
-    <v-flex xs12 class="text-xs-center" mt-5>
-      <h1>Home page</h1>
-    </v-flex>
-    <v-flex xs12 class="text-xs-center" mt-3>
-      <p>Welcome, {{userEmail}}</p>
-    </v-flex>
-</v-layout>
+    <v-container class="text-xs-center">
+          <v-date-picker
+            mode='single'
+            v-model='date'
+            is-inline>
+          </v-date-picker>
+          {{date}}
+    </v-container>
 </template>
 
 <script>
 export default  {
     data(){
         return{
-            userEmail:  this.$store.state.user.email
+            userEmail:  this.$store.state.user.email,
+            selectedValue: new Date(),
+        }
+    },
+    computed:{
+        date: {
+            get() {
+                return this.$store.state.date;
+            },
+            set(newDate) {
+                return this.$store.commit('setDate', newDate);
+            }
         }
     },
     name: 'TheCalendar'
