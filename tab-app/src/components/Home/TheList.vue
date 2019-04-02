@@ -6,8 +6,7 @@
             </v-layout>
         </v-layout>
         <div class="list-body">
-            <draggable 
-            tag="ul"    
+            <draggable    
             class="list-group"
             handle=".handle"
             v-bind="dragOptions"
@@ -116,6 +115,10 @@
 <style scoped>
 .flip-list-move {
   transition: transform 0.5s;
+  background-color: #0f0;
+}
+.flip-list  {
+    background-color: #0f0;
 }
 .no-move {
   transition: transform 0s;
@@ -124,7 +127,7 @@
   margin-top: 35px;
 }
 .ghost {
-  opacity: 0.25;
+  opacity: 0.75;
   /*background: #c8ebfb;*/
 }
 .handle {
@@ -149,7 +152,7 @@ input {
 .list-group {
   min-height: 20px;
 
-  background-color: #0f0;
+  background-color: #ccc;
 }
 .list-group-item {
   /*cursor: move;*/
@@ -161,12 +164,17 @@ input {
 
 /*************************************************/
 .list-body  {
-    background-color: #f00;
+    background-color: #ccc;
 }
 
 .draggable-row  {
-    background-color: #05f;
-    padding-top: 10px;
+    background-color: #fafafa;
+    
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-top: 1px;
+    /*margin-right: 30px;*/
 }
 
 hr {

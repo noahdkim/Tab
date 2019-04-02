@@ -50,7 +50,7 @@ methods: {
   /*border: solid #000 1px;*/
   cursor: move;
   font-size: 200%;
-  margin-bottom: 30px;
+  /*margin-bottom: 30px;*/
 }
 .close {
   float: right;
@@ -62,7 +62,7 @@ input {
   width: 50%;
 }
 .text {
-  margin: 20px;
+  /*margin: 20px;*/
 }
 
 .list-group {
