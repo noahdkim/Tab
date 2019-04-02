@@ -6,7 +6,7 @@
             </v-layout>
         </v-layout>
         <div class="list-body">
-            <draggable    
+            <draggable
             class="list-group"
             handle=".handle"
             v-bind="dragOptions"
@@ -16,7 +16,7 @@
             >
                 <transition-group type="transition" :name="!drag ? 'flip-list' : null">
                     <list-row v-for="(item, index) in selectedListItems"
-                    :key="index"
+                    :key="item.id"
                     :item="item"
                     :headers="selectedListHeaders"
                     :ref="item.id"
@@ -169,7 +169,7 @@ input {
 
 .draggable-row  {
     background-color: #fafafa;
-    
+
     padding-top: 15px;
     padding-left: 15px;
     padding-right: 15px;

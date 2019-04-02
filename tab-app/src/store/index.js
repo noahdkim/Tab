@@ -76,6 +76,7 @@ export const store = new Vuex.Store({
             state.selectedListItems = payload;
         },
         setSelectedListHeaders(state, payload) {
+            console.log(payload)
             state.selectedListHeaders = payload;
         },
         setUser(state, payload) {
@@ -136,10 +137,10 @@ export const store = new Vuex.Store({
             var selectedListItems = [];
             list_items.get().then(querySnapshot => {
                 // selectedListItems = querySnapshot.docs.map(doc => {
-                    
+
                 // });
                 querySnapshot.forEach(doc => {
-                    //  // Convert Firestore timestamp field to Date class 
+                    //  // Convert Firestore timestamp field to Date class
                     // let timestamp = new Date(item.date.seconds * 1000);
                     // item.date = timestamp;
 
@@ -166,7 +167,7 @@ export const store = new Vuex.Store({
                         selectedListItems.push(item);
                     });
                 });
-                
+
             });
 
             console.log(selectedListItems);
@@ -197,7 +198,7 @@ export const store = new Vuex.Store({
             });
 
             // console.log("selectedListHeaders:");
-            // console.log(newSelectedListHeaders);
+            console.log(newSelectedListHeaders);
 
             commit('setSelectedListHeaders', newSelectedListHeaders);
         },
