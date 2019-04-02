@@ -15,33 +15,15 @@
             :list="this.selectedListItems"
             >
                 <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-                    <list-row v-for="(item, index) in selectedListItems"
+                    <list-row v-for="item in selectedListItems"
                     :key="item.id"
                     :item="item"
                     :headers="selectedListHeaders"
                     :ref="item.id"
                     @clicked="modifyActive"
-
                     class="draggable-row"
                     >
                     </list-row>
-
-                    <!-- https://github.com/SortableJS/Vue.Draggable/blob/master/example/components/handle.vue#L11 -->
-                        <!-- <li
-                          class="list-group-item"
-                          v-for="(item, index) in selectedListItems"
-                          :key="index"
-                        >
-                        <span>{{ index }}</span>
-                          <span class="fa fa-align-justify handle">&#9776;</span>
-
-                          <span class="text">{{ item.id }} </span>
-
-                          <input type="text" class="form-control" v-model="item.item" />
-
-                          <i class="fa fa-times close"></i>
-                      </li> -->
-
                 </transition-group>
             </draggable>
         </div>

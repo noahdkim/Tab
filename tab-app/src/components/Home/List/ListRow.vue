@@ -4,17 +4,15 @@
     <span class="fa fa-align-justify handle">::</span>
 
     <v-layout col v-for="header in headers" :key="header.id">
-      
-      
-
       <list-cell :header = "header"
-      :item = "item"
+      :cellValue = "item.values[header.name]"
+      :active = "item.active"
       :id="header.text"
       ref="{{item.id}}-{{header.text}}"
       single-line>
   </list-cell>
 
-  
+
 </v-layout>
 </v-layout>
 </template>

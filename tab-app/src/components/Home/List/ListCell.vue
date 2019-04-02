@@ -1,9 +1,9 @@
 <template>
     <v-text-field @input="updateItemState"
-                          :value="item.values[header.name]"
-                          :readonly="!item.active"
-                          :outline="!item.active"
-                          :id="header.text"
+                          :value="cellValue"
+                          :readonly="!active"
+                          :outline="!active"
+                          :id="cellValue"
                           ref="{{item.id}}-{{header.text}}"
                           single-line>
     </v-text-field>
@@ -11,7 +11,7 @@
 
 <script>
 export default {
-    props: ['item', 'header'],
+    props: ['cellValue', 'active'],
 
     data () {
         return{
