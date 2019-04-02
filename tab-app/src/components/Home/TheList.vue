@@ -1,8 +1,8 @@
 <template>
     <v-container>
         <v-layout row class="header-row">
-            <v-layout col v-for="header in selectedListHeaders" :key="header">
-                <div class="font-weight-bold">{{header}}</div>
+            <v-layout col v-for="header in selectedListHeaders" :key="header.name">
+                <div class="font-weight-bold">{{ header.name }}</div>
             </v-layout>
         </v-layout>
         <div class="list-body">

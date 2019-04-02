@@ -62,7 +62,7 @@ input {
   width: 50%;
 }
 .text {
-  /*margin: 20px;*/
+  margin: 20px;
 }
 
 .list-group {
