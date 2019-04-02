@@ -1,41 +1,43 @@
 <template>
-    <v-layout row @click="makeActive" :id="item.id">
-        <v-layout col v-for="header in headers" :key="header.id">
-            
-            <!-- <span class="fa fa-align-justify handle">&#9776;</span> -->
-            <span class="fa fa-align-justify handle">::</span>
+  <v-layout row @click="makeActive" :id="item.id">
+    <!-- <span class="fa fa-align-justify handle">&#9776;</span> -->
+    <span class="fa fa-align-justify handle">::</span>
 
-            <list-cell :header = "header"
-                          :item = "item"
-                          :id="header.text"
-                          ref="{{item.id}}-{{header.text}}"
-                          single-line>
-            </list-cell>
+    <v-layout col v-for="header in headers" :key="header.id">
+      
+      
 
-            
-        </v-layout>
-    </v-layout>
+      <list-cell :header = "header"
+      :item = "item"
+      :id="header.text"
+      ref="{{item.id}}-{{header.text}}"
+      single-line>
+  </list-cell>
+
+  
+</v-layout>
+</v-layout>
 </template>
 
 <script>
-import ListCell from './ListCell'
-export default {
+  import ListCell from './ListCell'
+  export default {
     components: {ListCell},
     props: ['item', 'headers'],
 
     data () {
-        return{
-            /* this is currently not being used */
-            checkbox: true,
-        }
-    },
-    methods: {
-        makeActive (event) {
-            this.$emit('clicked', event.currentTarget.value,  event.currentTarget.id);
-        },
-
+      return{
+        /* this is currently not being used */
+        checkbox: true,
     }
-  }
+},
+methods: {
+  makeActive (event) {
+    this.$emit('clicked', event.currentTarget.value,  event.currentTarget.id);
+},
+
+}
+}
 </script>
 
 <style scoped>
@@ -43,13 +45,13 @@ export default {
   margin-top: 35px;
 }
 .handle {
-            padding: 5px;
-            margin-right: 10px;
-            /*border: solid #000 1px;*/
-            cursor: move;
-            font-size: 200%;
-            margin-bottom: 30px;
-        }
+  padding: 5px;
+  margin-right: 10px;
+  /*border: solid #000 1px;*/
+  cursor: move;
+  font-size: 200%;
+  margin-bottom: 30px;
+}
 .close {
   float: right;
   padding-top: 8px;

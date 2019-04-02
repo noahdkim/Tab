@@ -132,6 +132,11 @@ export const store = new Vuex.Store({
                     let item = doc.data();
                     item.id = doc.id;
                     item.active = false;
+
+                    /* Convert Firestore timestamp field to Date class */
+                    let timestamp = new Date(item.date.seconds * 1000);
+                    item.date = timestamp;
+
                     selectedListItems.push(item);
                 })
                 commit('setSelectedListItems', selectedListItems);

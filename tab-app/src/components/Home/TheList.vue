@@ -1,48 +1,51 @@
 <template>
     <v-container>
-        <v-layout row>
+        <v-layout row class="header-row">
             <v-layout col v-for="header in selectedListHeaders" :key="header">
                 <div class="font-weight-bold">{{header}}</div>
             </v-layout>
         </v-layout>
-        <draggable 
-        tag="ul"    
-        class="list-group"
-        handle=".handle"
-        v-bind="dragOptions"
-        @start="startDrag()"
-        @end="endDrag()"
-        :list="this.selectedListItems"
-        >
-        <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-            <list-row v-for="(item, index) in selectedListItems"
-            :key="index"
-            :item="item"
-            :headers="selectedListHeaders"
-            :ref="item.id"
-            @clicked="modifyActive"
+        <div class="list-body">
+            <draggable 
+            tag="ul"    
+            class="list-group"
+            handle=".handle"
+            v-bind="dragOptions"
+            @start="startDrag()"
+            @end="endDrag()"
+            :list="this.selectedListItems"
             >
-            <!-- <span> {{ index }} </span> -->
-        </list-row>
+                <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+                    <list-row v-for="(item, index) in selectedListItems"
+                    :key="index"
+                    :item="item"
+                    :headers="selectedListHeaders"
+                    :ref="item.id"
+                    @clicked="modifyActive"
 
-        <!-- https://github.com/SortableJS/Vue.Draggable/blob/master/example/components/handle.vue#L11 -->
-            <!-- <li
-              class="list-group-item"
-              v-for="(item, index) in selectedListItems"
-              :key="index"
-            >
-            <span>{{ index }}</span>
-              <span class="fa fa-align-justify handle">&#9776;</span>
+                    class="draggable-row"
+                    >
+                    </list-row>
 
-              <span class="text">{{ item.id }} </span>
+                    <!-- https://github.com/SortableJS/Vue.Draggable/blob/master/example/components/handle.vue#L11 -->
+                        <!-- <li
+                          class="list-group-item"
+                          v-for="(item, index) in selectedListItems"
+                          :key="index"
+                        >
+                        <span>{{ index }}</span>
+                          <span class="fa fa-align-justify handle">&#9776;</span>
 
-              <input type="text" class="form-control" v-model="item.item" />
+                          <span class="text">{{ item.id }} </span>
 
-              <i class="fa fa-times close"></i>
-          </li> -->
+                          <input type="text" class="form-control" v-model="item.item" />
 
-      </transition-group>
-  </draggable>
+                          <i class="fa fa-times close"></i>
+                      </li> -->
+
+                </transition-group>
+            </draggable>
+        </div>
   <v-btn @click.native="saveList">Save</v-btn>
 </v-container>
 
@@ -145,6 +148,8 @@ input {
 
 .list-group {
   min-height: 20px;
+
+  background-color: #0f0;
 }
 .list-group-item {
   /*cursor: move;*/
@@ -152,4 +157,21 @@ input {
 .list-group-item i {
   /*cursor: pointer;*/
 }
+
+
+/*************************************************/
+.list-body  {
+    background-color: #f00;
+}
+
+.draggable-row  {
+    background-color: #05f;
+    padding-top: 10px;
+}
+
+hr {
+    background-color: #000;
+    color: #000;
+}
+
 </style>
