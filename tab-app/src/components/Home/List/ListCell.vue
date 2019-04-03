@@ -1,17 +1,33 @@
 <template>
-    <v-text-field @input="updateItemState"
+    <container>
+    <ListCellText v-if="cellType === 'string'"
+                          @input="updateItemState"
                           :value="cellValue"
                           :readonly="!active"
                           :outline="!active"
                           :id="cellValue"
                           ref="{{item.id}}-{{header.text}}"
                           single-line>
-    </v-text-field>
+    </ListCellText>
+    <ListCellDate v-if="cellType === 'date'"
+                    @input="updateItemState"
+                    :value="cellValue"
+                    :readonly="!active"
+                    :outline="!active"
+                    :id="cellValue"
+                    ref="{{item.id}}-{{header.text}}"
+                    single-line>
+    </ListCellDate>
+</container>
 </template>
 
 <script>
+import ListCellDate from './ListCell/ListCellDate'
+import ListCellText from './ListCell/ListCellText'
+
 export default {
-    props: ['cellValue', 'active'],
+    components: {ListCellDate, ListCellText},
+    props: ['cellValue', 'cellType', 'active'],
 
     data () {
         return{
