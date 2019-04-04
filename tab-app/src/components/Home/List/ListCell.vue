@@ -1,24 +1,18 @@
 <template>
-    <container>
-    <ListCellText v-if="cellType === 'string'"
-                          @input="updateItemState"
-                          :value="cellValue"
-                          :readonly="!active"
-                          :outline="!active"
-                          :id="cellValue"
-                          ref="{{item.id}}-{{header.text}}"
-                          single-line>
-    </ListCellText>
-    <ListCellDate v-if="cellType === 'date'"
-                    @input="updateItemState"
-                    :value="cellValue"
-                    :readonly="!active"
-                    :outline="!active"
-                    :id="cellValue"
-                    ref="{{item.id}}-{{header.text}}"
-                    single-line>
-    </ListCellDate>
-</container>
+    <div>
+        <ListCellText v-if="header.type === 'string'"
+                              :item= "item"
+                              :header= "header"
+                              ref="{{item.id}}-{{header.text}}"
+                              single-line>
+        </ListCellText>
+        <ListCellDate v-if="header.type === 'date'"
+                            :item= "item"
+                            :header= "header"
+                            ref="{{item.id}}-{{header.text}}"
+                            single-line>
+        </ListCellDate>
+    </div>
 </template>
 
 <script>
@@ -27,7 +21,7 @@ import ListCellText from './ListCell/ListCellText'
 
 export default {
     components: {ListCellDate, ListCellText},
-    props: ['cellValue', 'cellType', 'active'],
+    props: ['item', 'header'],
 
     data () {
         return{
@@ -37,12 +31,7 @@ export default {
         }
     },
     methods: {
-        updateItemState (newText){
-            let itemID = this.item.id;
-            let header = this.header
-            this.$store.dispatch('updateItemState', {itemID, header, newText});
 
-        }
     }
   }
 </script>

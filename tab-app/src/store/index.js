@@ -143,29 +143,9 @@ export const store = new Vuex.Store({
                     //  // Convert Firestore timestamp field to Date class
                     // let timestamp = new Date(item.date.seconds * 1000);
                     // item.date = timestamp;
-
-
-
-                    ///////////////////////////////////
-                    let valuesCollection = db.collection("lists_content")
-                                             .doc(state.selectedList.id)
-                                             .collection("items")
-                                             .doc(doc.id)
-                                             .collection("values");
-
                     let item = doc.data();
                     let valuesDocument = {};
-                    valuesCollection.get().then(qS => {
-                        item.values = qS.docs.map(oneDoc => oneDoc.data())[0];
-                        // console.log("valuesDocument: ");
-                        // console.log(valuesDocument);
-
-                        // item.values = valuesDocument;
-
-                        // console.log(item);
-
-                        selectedListItems.push(item);
-                    });
+                    selectedListItems.push(item);
                 });
 
             });
@@ -198,7 +178,6 @@ export const store = new Vuex.Store({
             });
 
             // console.log("selectedListHeaders:");
-            console.log(newSelectedListHeaders);
 
             commit('setSelectedListHeaders', newSelectedListHeaders);
         },
@@ -218,14 +197,15 @@ export const store = new Vuex.Store({
         },
 
         saveListOrderToFirestore({ state, commit }, params) {
-            if(state.selectedListItems == null) {
+            let selectedListItems = state.selectedListItems;
+            if(selectedListItems == null) {
                 return false;
             }
 
             for(let i = 0; i < state.selectedListItems.length; i++)   {
-                state.selectedListItems[i].index = i;
+                selectedListItems[i].index = i;
             }
-
+            commit('setSelectedListItems', selectedListItems);
             return "savedListOrder";
         },
 
@@ -234,7 +214,8 @@ export const store = new Vuex.Store({
                 return item.id === params.itemID;
             });
             let newSelectedListItems = state.selectedListItems;
-            newSelectedListItems[foundIndex][params.header] = params.newText;
+            newSelectedListItems[foundIndex]['values'][params.header] = params.newValue;
+            console.log(newSelectedListItems);
             commit('setSelectedListItems', newSelectedListItems);
         },
         userSignIn({

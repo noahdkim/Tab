@@ -4,8 +4,6 @@ import firebase from 'firebase'
 import 'firebase/firestore'
 import router from './router'
 import {store} from './store'
-import VCalendar from 'v-calendar';
-import 'v-calendar/lib/v-calendar.min.css';
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css' /* Vuetify css */
@@ -19,11 +17,6 @@ Vue.config.productionTip = false
 Vue.use(Vuetify, {
   iconfont: 'md'
 })
-
-Vue.use(VCalendar, {
-  firstDayOfWeek: 2,  // Monday
-     // ...other defaults
-});
 
 /* connect to firebase */
 

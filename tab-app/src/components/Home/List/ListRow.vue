@@ -2,19 +2,15 @@
   <v-layout row @click="makeActive" :id="item.id">
     <!-- <span class="fa fa-align-justify handle">&#9776;</span> -->
     <span class="fa fa-align-justify handle">::</span>
-
     <v-layout col v-for="header in headers" :key="header.id">
-      <list-cell :header = "header"
-      :cellValue = "item.values[header.name]"
-      :cellType = "header.type"
-      :active = "item.active"
-      :id="header.text"
-      ref="{{item.id}}-{{header.text}}"
-      single-line>
-    </list-cell>
+      <list-cell :item = "item"
+                      :header = "header"
+                      ref="{{item.id}}-{{header.text}}"
+                      single-line>
+      </list-cell>
 
 
-</v-layout>
+    </v-layout>
 </v-layout>
 </template>
 
