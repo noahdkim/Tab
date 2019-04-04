@@ -37,7 +37,11 @@ export default {
             let itemID = this.item.id;
             let header = this.header.name;
             this.$store.dispatch('updateItemState', {itemID, header, newValue});
-        }
+        },
+        changeVisibilityDatePicker(visibility)  {
+            this.showDatePicker = visibility;
+        },
+
     }
   }
 </script>
