@@ -1,14 +1,14 @@
 <template>
 <div>
     <v-text-field @input="updateItemState"
-                          :value="item.values[header.name]"
+                          :value="picker2"
                           :readonly="!item.active"
                           :outline="!item.active"
                           :id="header.name"
                           ref="{{item.id}}-{{header.text}}"
                           single-line>
     </v-text-field>
-    <v-date-picker v-model="picker" :landscape="landscape" :reactive="reactive"></v-date-picker>
+    <v-date-picker v-model="picker2" :landscape="landscape" :reactive="reactive"></v-date-picker>
 
 </div>
 </template>
@@ -21,11 +21,16 @@ export default {
         return{
             /* this is currently not being used */
             checkbox: true,
-            picker: new Date().toISOString().substr(0, 10),
             landscape: false,
-            reactive: true
-
+            reactive: true,
+            picker: new Date()
         }
+    },
+    computed: {
+        picker2(){
+            return new Date(this.item.values[this.header.name].seconds * 1000).toISOString().substr(0, 10);
+        }
+
     },
     methods: {
         updateItemState (newValue){

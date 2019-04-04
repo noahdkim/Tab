@@ -24,12 +24,12 @@
       return{
         /* this is currently not being used */
         checkbox: true,
-    }
-},
-methods: {
-  makeActive (event) {
-    this.$emit('clicked', event.currentTarget.value,  event.currentTarget.id);
-},
+      }
+    },
+    methods: {
+      makeActive (event) {
+        this.$emit('clicked', event.currentTarget.value,  event.currentTarget.id);
+    },
 
 }
 }
