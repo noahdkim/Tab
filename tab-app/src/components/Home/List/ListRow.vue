@@ -28,7 +28,12 @@
     },
     methods: {
       makeActive (event) {
-        this.$emit('clicked', event.currentTarget.value,  event.currentTarget.id);
+          // When the row is clicked, dispatch changeActiveItem to the store passing
+          // the current ID.
+          // the changeActiveItem method searches for the ID and modifies the active attribute
+          // to true
+        this.$store.dispatch('changeActiveItem', event.currentTarget.id);
+
     },
 
 }

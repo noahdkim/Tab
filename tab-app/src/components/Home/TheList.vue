@@ -62,9 +62,6 @@
         }
     },
     methods: {
-        modifyActive(prevItemState, new_item_id) {
-            this.$store.dispatch('changeActiveItem', new_item_id);
-        },
         saveList () {
             /* wait for the promise */
             this.$store.dispatch('saveList').then((result) => {
