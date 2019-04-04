@@ -1,14 +1,21 @@
 <template>
 <div>
     <v-text-field @input="updateItemState"
-                          :value="item.values[header.name]"
-                          :readonly="!item.active"
-                          :outline="!item.active"
-                          :id="header.name"
-                          ref="{{item.id}}-{{header.text}}"
-                          single-line>
+                    :value="item.values[header.name]"
+                    :readonly="!item.active"
+                    :outline="!item.active"
+                    :id="header.name"
+                    ref="{{item.id}}-{{header.text}}"
+                    single-line
+                    v-on:click="showDatePicker = !showDatePicker"
+                    >
+                    <!-- @mouseleave="changeVisibilityDatePicker(false)" -->
     </v-text-field>
-    <v-date-picker v-model="picker" :landscape="landscape" :reactive="reactive"></v-date-picker>
+    <v-date-picker v-model="picker" 
+                   :landscape="landscape" 
+                   :reactive="reactive" 
+                   v-show="showDatePicker">
+    </v-date-picker>
 
 </div>
 </template>
@@ -23,8 +30,8 @@ export default {
             checkbox: true,
             picker: new Date().toISOString().substr(0, 10),
             landscape: false,
-            reactive: true
-
+            reactive: true,
+            showDatePicker: false,
         }
     },
     methods: {
@@ -32,7 +39,11 @@ export default {
             let itemID = this.item.id;
             let header = this.header.name;
             this.$store.dispatch('updateItemState', {itemID, header, newValue});
-        }
+        },
+        changeVisibilityDatePicker(visibility)  {
+            this.showDatePicker = visibility;
+        },
+
     }
   }
 </script>
