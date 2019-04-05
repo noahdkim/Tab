@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import firebase from 'firebase'
 export default {
     props: ['item', 'header'],
 
@@ -42,14 +43,16 @@ export default {
     computed: {
         date: {
             get: function() {
-                return new Date(this.item.values[this.header.name].seconds * 1000).toISOString().substr(0, 10);
+                console.log(this.item.values[this.header.name])
+                return new Date(this.item.values[this.header.name].seconds * 1000).toISOString().substring(0,10);
             },
             set: function(newDate) {
                 let header = this.header.name;
-                let itemID = this.item.id;
-                console.log(newDate.getTime());
+                let itemID = this.item.item_meta.id;
+                let newValue = this.parseISOString(newDate);
+                console.log(newValue);
                 // let newValue = newDate.getTime();
-                // this.$store.dispatch('updateItemState', {itemID, header, newValue});
+                this.$store.dispatch('updateItemState', {itemID, header, newValue});
             }
         }
 
@@ -59,6 +62,14 @@ export default {
             let itemID = this.item.id;
             let header = this.header.name;
             this.$store.dispatch('updateItemState', {itemID, header, newValue});
+        },
+        parseISOString(ISOString) {
+          let splitString = ISOString.split(/\D+/);
+          let d = new Date(Date.UTC(splitString[0], --splitString[1], splitString[2]));
+          let firebaseDateSeconds = d.getTime() / 1000;
+          let timestamp = new firebase.firestore.Timestamp(firebaseDateSeconds, 0);
+          console.log(timestamp);
+          return timestamp;
         }
 
     }

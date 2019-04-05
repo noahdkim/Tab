@@ -1,11 +1,11 @@
 <template>
-  <v-layout row @click="makeActive" :id="item.id">
+  <v-layout row @click="makeActive" :id="item.item_meta.id">
     <!-- <span class="fa fa-align-justify handle">&#9776;</span> -->
     <span class="fa fa-align-justify handle">::</span>
     <v-layout col v-for="header in headers" :key="header.id">
       <list-cell :item = "item"
                       :header = "header"
-                      ref="{{item.id}}-{{header.text}}"
+                      ref="{{item.item_meta.id}}-{{header.text}}"
                       single-line>
       </list-cell>
 
@@ -32,6 +32,7 @@
           // the current ID.
           // the changeActiveItem method searches for the ID and modifies the active attribute
           // to true
+          console.log(event.currentTarget.id);
         this.$store.dispatch('changeActiveItem', event.currentTarget.id);
 
     },

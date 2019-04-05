@@ -16,10 +16,10 @@
             >
                 <transition-group type="transition" :name="!drag ? 'flip-list' : null">
                     <list-row v-for="item in selectedListItems"
-                    :key="item.id"
+                    :key="item.item_meta.id"
                     :item="item"
                     :headers="selectedListHeaders"
-                    :ref="item.id"
+                    :ref="item.item_meta.id"
                     class="draggable-row"
                     >
                     </list-row>
