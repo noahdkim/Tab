@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <v-container>
         <ListCellText v-if="header.type === 'string'"
                               :item= "item"
                               :header= "header"
@@ -12,7 +12,7 @@
                             ref="{{item.id}}-{{header.text}}"
                             single-line>
         </ListCellDate>
-    </div>
+    </v-container>
 </template>
 
 <script>

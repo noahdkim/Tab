@@ -1,15 +1,28 @@
 <template>
 <div>
-    <v-text-field @input="updateItemState"
-                          :value="picker2"
-                          :readonly="!item.active"
-                          :outline="!item.active"
-                          :id="header.name"
-                          ref="{{item.id}}-{{header.text}}"
-                          single-line>
-    </v-text-field>
-    <v-date-picker v-model="picker2" :landscape="landscape" :reactive="reactive"></v-date-picker>
-
+    <v-menu
+        ref="menu"
+        v-model="menu"
+        :close-on-content-click="false"
+        :nudge-right="40"
+        :return-value.sync="date"
+        lazy
+        transition="scale-transition"
+        offset-y
+        full-width
+        min-width="290px"
+      >
+          <v-text-field
+            v-model="date"
+            readonly
+            slot="activator"
+          ></v-text-field>
+        <v-date-picker v-model="date" no-title scrollable>
+          <v-spacer></v-spacer>
+          <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
+          <v-btn flat color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+        </v-date-picker>
+      </v-menu>
 </div>
 </template>
 
@@ -23,12 +36,21 @@ export default {
             checkbox: true,
             landscape: false,
             reactive: true,
-            picker: new Date()
+            menu: false,
         }
     },
     computed: {
-        picker2(){
-            return new Date(this.item.values[this.header.name].seconds * 1000).toISOString().substr(0, 10);
+        date: {
+            get: function() {
+                return new Date(this.item.values[this.header.name].seconds * 1000).toISOString().substr(0, 10);
+            },
+            set: function(newDate) {
+                let header = this.header.name;
+                let itemID = this.item.id;
+                console.log(newDate.getTime());
+                // let newValue = newDate.getTime();
+                // this.$store.dispatch('updateItemState', {itemID, header, newValue});
+            }
         }
 
     },
@@ -37,10 +59,7 @@ export default {
             let itemID = this.item.id;
             let header = this.header.name;
             this.$store.dispatch('updateItemState', {itemID, header, newValue});
-        },
-        changeVisibilityDatePicker(visibility)  {
-            this.showDatePicker = visibility;
-        },
+        }
 
     }
   }

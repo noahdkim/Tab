@@ -20,7 +20,6 @@
                     :item="item"
                     :headers="selectedListHeaders"
                     :ref="item.id"
-                    @clicked="modifyActive"
                     class="draggable-row"
                     >
                     </list-row>
