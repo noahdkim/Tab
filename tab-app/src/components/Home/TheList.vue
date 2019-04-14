@@ -6,7 +6,7 @@
             </v-layout>
         </v-layout>
         <div class="list-body">
-            <draggable    
+            <draggable
             class="list-group"
             handle=".handle"
             v-bind="dragOptions"
@@ -15,33 +15,14 @@
             :list="this.selectedListItems"
             >
                 <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-                    <list-row v-for="(item, index) in selectedListItems"
-                    :key="index"
+                    <list-row v-for="item in selectedListItems"
+                    :key="item.item_meta.id"
                     :item="item"
                     :headers="selectedListHeaders"
-                    :ref="item.id"
-                    @clicked="modifyActive"
-
+                    :ref="item.item_meta.id"
                     class="draggable-row"
                     >
                     </list-row>
-
-                    <!-- https://github.com/SortableJS/Vue.Draggable/blob/master/example/components/handle.vue#L11 -->
-                        <!-- <li
-                          class="list-group-item"
-                          v-for="(item, index) in selectedListItems"
-                          :key="index"
-                        >
-                        <span>{{ index }}</span>
-                          <span class="fa fa-align-justify handle">&#9776;</span>
-
-                          <span class="text">{{ item.id }} </span>
-
-                          <input type="text" class="form-control" v-model="item.item" />
-
-                          <i class="fa fa-times close"></i>
-                      </li> -->
-
                 </transition-group>
             </draggable>
         </div>
@@ -80,9 +61,6 @@
         }
     },
     methods: {
-        modifyActive(prevItemState, new_item_id) {
-            this.$store.dispatch('changeActiveItem', new_item_id);
-        },
         saveList () {
             /* wait for the promise */
             this.$store.dispatch('saveList').then((result) => {
@@ -169,7 +147,7 @@ input {
 
 .draggable-row  {
     background-color: #fafafa;
-    
+
     padding-top: 15px;
     padding-left: 15px;
     padding-right: 15px;

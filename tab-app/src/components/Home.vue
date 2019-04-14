@@ -11,7 +11,6 @@
         <v-flex xs7>
             <the-list></the-list>
         </v-flex>
-
         <!-- Calendar -->
         <v-flex xs5>
             <the-calendar></the-calendar>

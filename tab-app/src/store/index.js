@@ -44,14 +44,15 @@ export const store = new Vuex.Store({
     /* change state values */
     mutations: {
         changeActiveState(state, payload) {
+            console.log(payload);
             if (payload.active === true){
                 state.activeItemID = payload.ID;
             }
             let foundIndex = state.selectedListItems.findIndex(function(item) {
-                return item.id === payload.ID;
+                return item.item_meta.id === payload.ID;
             });
             if(foundIndex >= 0){
-                state.selectedListItems[foundIndex].active = payload.active;
+                state.selectedListItems[foundIndex].item_meta.active = payload.active;
             }
         },
         setActiveItemID(state, payload){
@@ -76,6 +77,7 @@ export const store = new Vuex.Store({
             state.selectedListItems = payload;
         },
         setSelectedListHeaders(state, payload) {
+            console.log(payload)
             state.selectedListHeaders = payload;
         },
         setUser(state, payload) {
@@ -111,6 +113,7 @@ export const store = new Vuex.Store({
             });
         },
         loadPersonalListData({ state, commit, dispatch }) {
+            console.log('load personal list data')
             let user_meta = db.collection("lists_meta").doc(state.user.uid);
             let personal_lists_ref = user_meta.collection("personal_lists");
             let groups = user_meta.collection("groups");
@@ -128,45 +131,23 @@ export const store = new Vuex.Store({
             });
         },
         loadSelectedListItems({ state, commit }) {
+            console.log("loading selected items")
             let list_items = db.collection("lists_content")
                                .doc(state.selectedList.id)
                                .collection("items")
-                               .orderBy("index");
+                               .orderBy("item_meta.index");
 
             var selectedListItems = [];
             list_items.get().then(querySnapshot => {
-                // selectedListItems = querySnapshot.docs.map(doc => {
-                    
-                // });
                 querySnapshot.forEach(doc => {
-                    //  // Convert Firestore timestamp field to Date class 
+                    //  // Convert Firestore timestamp field to Date class
                     // let timestamp = new Date(item.date.seconds * 1000);
                     // item.date = timestamp;
-
-
-
-                    ///////////////////////////////////
-                    let valuesCollection = db.collection("lists_content")
-                                             .doc(state.selectedList.id)
-                                             .collection("items")
-                                             .doc(doc.id)
-                                             .collection("values");
-
                     let item = doc.data();
-                    let valuesDocument = {};
-                    valuesCollection.get().then(qS => {
-                        item.values = qS.docs.map(oneDoc => oneDoc.data())[0];
-                        // console.log("valuesDocument: ");
-                        // console.log(valuesDocument);
-
-                        // item.values = valuesDocument;
-
-                        // console.log(item);
-
-                        selectedListItems.push(item);
-                    });
+                    item.item_meta.id = doc.id;
+                    selectedListItems.push(item);
                 });
-                
+
             });
 
             console.log(selectedListItems);
@@ -189,15 +170,8 @@ export const store = new Vuex.Store({
 
                     newSelectedListHeaders.push(header);
                 });
-                // if (querySnapshot.exists){
-                //     commit('setSelectedListHeaders', docSnapshot.data().headers);
-                // } else {
-                //     console.log('No document found!');
-                // }
-            });
 
-            // console.log("selectedListHeaders:");
-            // console.log(newSelectedListHeaders);
+            });
 
             commit('setSelectedListHeaders', newSelectedListHeaders);
         },
@@ -206,7 +180,7 @@ export const store = new Vuex.Store({
 
             for (var i = 0, n = state.selectedListItems.length; i < n; i++){
                 let item = state.selectedListItems[i]
-                let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(item.id);
+                let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(item.item_meta.id);
                 batch.update(itemDocRef, item)
             }
             batch.commit().then().catch(function(error){
@@ -217,23 +191,26 @@ export const store = new Vuex.Store({
         },
 
         saveListOrderToFirestore({ state, commit }, params) {
-            if(state.selectedListItems == null) {
+            let selectedListItems = state.selectedListItems;
+            if(selectedListItems == null) {
                 return false;
             }
 
             for(let i = 0; i < state.selectedListItems.length; i++)   {
-                state.selectedListItems[i].index = i;
+                selectedListItems[i].item_meta.index = i;
             }
-
+            commit('setSelectedListItems', selectedListItems);
             return "savedListOrder";
         },
 
         updateItemState({ state, commit }, params){
+            console.log("UPDATING")
             let foundIndex = state.selectedListItems.findIndex(function(item) {
-                return item.id === params.itemID;
+                return item.item_meta.id === params.itemID;
             });
             let newSelectedListItems = state.selectedListItems;
-            newSelectedListItems[foundIndex][params.header] = params.newText;
+            newSelectedListItems[foundIndex]['values'][params.header] = params.newValue;
+            console.log(newSelectedListItems);
             commit('setSelectedListItems', newSelectedListItems);
         },
         userSignIn({

@@ -1,11 +1,6 @@
 <template>
     <v-container class="text-xs-center">
-          <v-date-picker
-            mode='single'
-            v-model='date'
-            is-inline>
-          </v-date-picker>
-          {{date}}
+        <v-date-picker v-model="picker" :landscape="landscape" :reactive="reactive"></v-date-picker>
     </v-container>
 </template>
 
@@ -15,6 +10,9 @@ export default  {
         return{
             userEmail:  this.$store.state.user.email,
             selectedValue: new Date(),
+            picker: new Date().toISOString().substr(0, 10),
+            landscape: false,
+            reactive: true
         }
     },
     computed:{

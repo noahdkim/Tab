@@ -1,21 +1,16 @@
 <template>
-  <v-layout row @click="makeActive" :id="item.id">
+  <v-layout row @click="makeActive" :id="item.item_meta.id">
     <!-- <span class="fa fa-align-justify handle">&#9776;</span> -->
     <span class="fa fa-align-justify handle">::</span>
-
     <v-layout col v-for="header in headers" :key="header.id">
-      
-      
+      <list-cell :item = "item"
+                      :header = "header"
+                      ref="{{item.item_meta.id}}-{{header.text}}"
+                      single-line>
+      </list-cell>
 
-      <list-cell :header = "header"
-      :item = "item"
-      :id="header.text"
-      ref="{{item.id}}-{{header.text}}"
-      single-line>
-  </list-cell>
 
-  
-</v-layout>
+    </v-layout>
 </v-layout>
 </template>
 
@@ -29,12 +24,18 @@
       return{
         /* this is currently not being used */
         checkbox: true,
-    }
-},
-methods: {
-  makeActive (event) {
-    this.$emit('clicked', event.currentTarget.value,  event.currentTarget.id);
-},
+      }
+    },
+    methods: {
+      makeActive (event) {
+          // When the row is clicked, dispatch changeActiveItem to the store passing
+          // the current ID.
+          // the changeActiveItem method searches for the ID and modifies the active attribute
+          // to true
+          console.log(event.currentTarget.id);
+        this.$store.dispatch('changeActiveItem', event.currentTarget.id);
+
+    },
 
 }
 }

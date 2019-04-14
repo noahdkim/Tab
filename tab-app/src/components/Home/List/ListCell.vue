@@ -1,16 +1,26 @@
 <template>
-    <v-text-field @input="updateItemState"
-                          :value="item.values[header.name]"
-                          :readonly="!item.active"
-                          :outline="!item.active"
-                          :id="header.text"
-                          ref="{{item.id}}-{{header.text}}"
-                          single-line>
-    </v-text-field>
+    <v-container>
+        <ListCellText v-if="header.type === 'string'"
+                              :item= "item"
+                              :header= "header"
+                              ref="{{item.id}}-{{header.text}}"
+                              single-line>
+        </ListCellText>
+        <ListCellDate v-if="header.type === 'date'"
+                            :item= "item"
+                            :header= "header"
+                            ref="{{item.id}}-{{header.text}}"
+                            single-line>
+        </ListCellDate>
+    </v-container>
 </template>
 
 <script>
+import ListCellDate from './ListCell/ListCellDate'
+import ListCellText from './ListCell/ListCellText'
+
 export default {
+    components: {ListCellDate, ListCellText},
     props: ['item', 'header'],
 
     data () {
@@ -21,12 +31,7 @@ export default {
         }
     },
     methods: {
-        updateItemState (newText){
-            let itemID = this.item.id;
-            let header = this.header
-            this.$store.dispatch('updateItemState', {itemID, header, newText});
 
-        }
     }
   }
 </script>
