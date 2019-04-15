@@ -1,5 +1,5 @@
 <template>
-<v-navigation-drawer class="blue" dark permanent v-if="show">
+<v-navigation-drawer class="sidebar" permanent v-if="show">
     <v-list>
      <v-list-tile
        v-for="personalList in personalLists"
@@ -44,3 +44,4 @@ export default {
     name: 'TheSidebar'
 }
 </script>
+<style scoped src="@/assets/styles/main.css"></style>
