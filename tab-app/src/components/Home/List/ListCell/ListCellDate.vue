@@ -16,6 +16,8 @@
             v-model="date"
             readonly
             slot="activator"
+            hide-details
+            class="textfield"
           ></v-text-field>
         <v-date-picker v-model="date" no-title scrollable>
           <v-spacer></v-spacer>
@@ -75,3 +77,15 @@ export default {
     }
   }
 </script>
+<style scoped>
+
+v-text-field    {
+    margin: 0px;
+    padding: 0px;
+}
+.textfield  {
+  /*margin: 0px;*/
+  padding: 0px;
+  margin-right: 20px;
+}
+</style>

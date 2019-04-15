@@ -1,11 +1,14 @@
 <template>
-    <v-text-field @input="updateItemState"
+    <v-text-field class="textfield"
+                          @input="updateItemState"
                           :value="item.values[header.name]"
                           :readonly="!item.item_meta.active"
-                          :outline="!item.item_meta.active"
                           :id="header.name"
                           ref="{{item.id}}-{{header.text}}"
-                          single-line>
+                          single-line
+                          hide-details>
+
+                          <!-- :outline="!item.item_meta.active" -->
     </v-text-field>
 </template>
 
@@ -29,3 +32,16 @@ export default {
     }
   }
 </script>
+
+<style scoped>
+
+v-text-field    {
+    margin: 0px;
+    padding: 0px;
+}
+
+.textfield  {
+  /*margin: 0px;*/
+  padding: 0px;
+}
+</style>

@@ -1,0 +1,21 @@
+/* 
+ * main.css
+ * 
+ * 
+ */
+
+
+.toolbar	{
+	background-color: #197BBD;
+	z-index: 999;
+}
+
+.side-list-cal	{
+	background-color: #ffffff;
+	height: 100%;
+}
+
+.sidebar	{
+	background-color: #fafafa;
+	color: black;
+}
