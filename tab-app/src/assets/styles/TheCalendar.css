@@ -1,0 +1,20 @@
+.date-range-picker .v-date-picker-table__events{
+      z-index: 0;
+      left: -1px;
+      top: -1px;
+      height: 100%;
+      width: 100%;
+  }
+.date-range-picker .date-in-range{
+      height: 45px;
+      width: 45px;
+      color: #ffffff;
+  }
+.date-range-picker .v-btn__content {
+      z-index: 1;
+  }
+
+.v-date-picker-table__events > div {
+     height: 100%;
+     width: 100%;
+ }
