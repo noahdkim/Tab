@@ -77,7 +77,6 @@ export const store = new Vuex.Store({
             state.selectedListItems = payload;
         },
         setSelectedListHeaders(state, payload) {
-            console.log(payload)
             state.selectedListHeaders = payload;
         },
         setUser(state, payload) {
@@ -165,9 +164,6 @@ export const store = new Vuex.Store({
                 querySnapshot.forEach(doc =>    {
                     let header = doc.data();
 
-                    console.log("header:");
-                    console.log(header);
-
                     newSelectedListHeaders.push(header);
                 });
 
@@ -210,7 +206,6 @@ export const store = new Vuex.Store({
             });
             let newSelectedListItems = state.selectedListItems;
             newSelectedListItems[foundIndex]['values'][params.header] = params.newValue;
-            console.log(newSelectedListItems);
             commit('setSelectedListItems', newSelectedListItems);
         },
         userSignIn({

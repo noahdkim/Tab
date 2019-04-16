@@ -4,7 +4,7 @@
                         class="date-range-picker"
                         v-model="picker"
                         :events="arrayEvents"
-                        :event-color="date => functionTest(date)"
+                        :event-color="date => colorFunction(date)"
                         :landscape="landscape"
                         :reactive="reactive"
                         full-width></v-date-picker>
@@ -39,20 +39,24 @@ export default  {
         arrayEvents: {
             get() {
                 this.dateWeights = {};
-                this.totalItems = 0;
+                this.totalWeights = 0;
                 let list_items = this.$store.state.selectedListItems.map((item) =>{
                     let date = item.values.date.toDate().toISOString().substr(0, 10)
-                    this.totalItems += 1;
-                    this.dateWeights[date] = this.dateWeights[date] ? this.dateWeights[date] + 1 : 1;
+                    let priority = item.values.Priority;
+                    priority = priority ? parseInt(item.values.Priority) : 0;
+                    this.totalWeights += priority;
+                    this.dateWeights[date] = this.dateWeights[date] ? this.dateWeights[date] + priority : priority;
                     return date;
                 });
+                
                 return list_items;
             }
         }
     },
     methods: {
-        functionTest(date){
-            let alpha = (this.dateWeights[date] / this.totalItems);
+        colorFunction(date){
+            let alpha = this.dateWeights[date] / this.totalWeights;
+            alpha = alpha > .1 ? alpha : .1;
             return `rgba(244, 67, 54, ${alpha})`;
         }
     },
