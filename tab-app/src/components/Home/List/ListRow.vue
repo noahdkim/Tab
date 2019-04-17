@@ -46,9 +46,8 @@
               // the changeActiveItem method searches for the ID and modifies the active attribute
               // to true
               this.showHandle = false;
-              console.log(event.currentTarget.id);
-            this.$store.dispatch('changeActiveItem', event.currentTarget.id);
-            this.$store.dispatch('saveList');
+              this.$store.dispatch('saveItem', this.$store.state.activeItemID)
+              this.$store.dispatch('changeActiveItem', event.currentTarget.id);
         },
         mouseOver(event)    {
             this.showHandle = true;
