@@ -20,7 +20,7 @@
 
 
   </v-layout>
-  <v-btn flat @click="deleteItem" v-show="showHandle" :id="item.item_meta.id">
+  <v-btn flat @click="deleteItem" v-show="showHandle">
       <v-icon>delete</v-icon>
   </v-btn>
 
