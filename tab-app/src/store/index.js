@@ -23,6 +23,13 @@ export const db = firebase.firestore();
     loading  - flag to indicate if data is being loaded
 */
 
+function findIndexOfItem(state, id) {
+    let foundIndex = state.selectedListItems.findIndex(function(item) {
+        return item.item_meta.id === id;
+    });
+    return foundIndex;
+}
+
 export const store = new Vuex.Store({
     state: {
         activeItemID: 0,
@@ -39,6 +46,9 @@ export const store = new Vuex.Store({
     getters: {
         date: (state) => {
             return state.date;
+        },
+        activeItemID: (state) => {
+            return state.activeItemID
         }
     },
     /* change state values */
@@ -48,9 +58,7 @@ export const store = new Vuex.Store({
             if (payload.active === true){
                 state.activeItemID = payload.ID;
             }
-            let foundIndex = state.selectedListItems.findIndex(function(item) {
-                return item.item_meta.id === payload.ID;
-            });
+            let foundIndex = findIndexOfItem(state, payload.ID)
             if(foundIndex >= 0){
                 state.selectedListItems[foundIndex].item_meta.active = payload.active;
             }
@@ -126,6 +134,7 @@ export const store = new Vuex.Store({
             /* change new item ID to active */
             commit('changeActiveState', {active: true, ID: params});
             commit('setActiveItemID', params);
+            console.log(params);
         },
         loadGroupListData({ state, commit }) {
             let user_meta = db.collection("lists_meta").doc(state.user.uid);
@@ -198,6 +207,21 @@ export const store = new Vuex.Store({
 
             commit('setSelectedListHeaders', newSelectedListHeaders);
         },
+        saveItem({ state, commit }, params){
+            if (params === 0){
+                return;
+            }
+            let itemID = params;
+            console.log(itemID)
+            let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(itemID);
+            let foundIndex = findIndexOfItem(state, itemID);
+            let item = state.selectedListItems[foundIndex];
+            console.log(item);
+            itemDocRef.set(item)
+            .catch(function(error) {
+                console.error("Error writing document: ", error);
+            });
+        },
         saveList({ state, commit }, params){
             let batch = db.batch();
             for (var i = 0, n = state.selectedListItems.length; i < n; i++){
@@ -219,7 +243,6 @@ export const store = new Vuex.Store({
             commit('setSelectedListItems', selectedListItems);
             return "savedListOrder";
         },
-
         updateItemState({ state, commit }, params){
             let foundIndex = state.selectedListItems.findIndex(function(item) {
                 return item.item_meta.id === params.itemID;
