@@ -27,6 +27,8 @@
             </draggable>
         </div>
   <v-btn @click.native="saveList">Save</v-btn>
+  <v-btn @click.native="addNewItem">Add item</v-btn>
+
 </v-container>
 
 </template>
@@ -39,7 +41,7 @@
     import { EventBus } from '../../store/modules/event-bus.js';
 
     require('@/assets/styles/main.css');
-    
+
     export default {
         components: {
             draggable,
@@ -49,7 +51,8 @@
             drag: false
         }),
         created() {
-            window.addEventListener('beforeunload', this.saveList)
+            /* Probably get rid of this. Saving is async */
+            // window.addEventListener('beforeunload', this.saveList, false)
         },
         computed: {
             ...mapGetters({
@@ -66,11 +69,16 @@
         }
     },
     methods: {
-        saveList () {
+        addNewItem () {
             /* wait for the promise */
-            this.$store.dispatch('saveList').then((result) => {
+            this.$store.dispatch('addNewItem').then((result) => {
                 console.log(result);
             });
+
+        },
+        saveList () {
+            /* this is async */
+            this.$store.dispatch('saveList');
         },
         saveListOrderToFirestore()  {
             this.$store.dispatch('saveListOrderToFirestore').then((result) => {
@@ -85,12 +93,12 @@
 
             EventBus.$emit('the-list-drag-event', this.drag);
         },
-        endDrag()   {
+        endDrag() {
             console.log("endDrag()");
             this.drag = false;
             console.log("selectedListItems:");
             console.log(this.selectedListItems);
-
+            // remove this
             this.saveListOrderToFirestore();
             this.saveList();
 
@@ -133,7 +141,7 @@ input {
 
 .list-group {
   min-height: 20px;
-  
+
   /* Color behind the list draggable-rows */
   background-color: rgba(0,0,0,0);
   /*background-color: #cfc;*/

@@ -1,7 +1,7 @@
 <template>
-  <v-layout row 
+  <v-layout row
             :id="item.item_meta.id"
-            @click="makeActive" 
+            @click="makeActive"
             @mouseover="mouseOver()"
             @mouseleave="mouseLeave()"
             >
@@ -48,11 +48,10 @@
               this.showHandle = false;
               console.log(event.currentTarget.id);
             this.$store.dispatch('changeActiveItem', event.currentTarget.id);
-
+            this.$store.dispatch('saveList');
         },
         mouseOver(event)    {
             this.showHandle = true;
-
             var vm = this;
 
             EventBus.$on('the-list-drag-event', drag => {
