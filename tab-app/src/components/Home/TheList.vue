@@ -35,6 +35,11 @@
     import draggable from 'vuedraggable'
     import ListRow from './List/ListRow'
     import { mapGetters } from 'vuex'
+
+    import { EventBus } from '../../store/modules/event-bus.js';
+
+    require('@/assets/styles/main.css');
+    
     export default {
         components: {
             draggable,
@@ -77,6 +82,8 @@
             this.drag = true;
             console.log("selectedListItems:");
             console.log(this.selectedListItems);
+
+            EventBus.$emit('the-list-drag-event', this.drag);
         },
         endDrag()   {
             console.log("endDrag()");
@@ -86,6 +93,8 @@
 
             this.saveListOrderToFirestore();
             this.saveList();
+
+            EventBus.$emit('the-list-drag-event', this.drag);
         },
     }
 };
@@ -108,12 +117,7 @@
   opacity: 0.75;
   /*background: #c8ebfb;*/
 }
-.handle {
-    padding: 5px;
-    margin-right: 10px;
-    /*border: solid #000 1px;*/
-    cursor: move;
-}
+
 .close {
   float: right;
   padding-top: 8px;
@@ -129,8 +133,11 @@ input {
 
 .list-group {
   min-height: 20px;
+  
+  /* Color behind the list draggable-rows */
+  background-color: rgba(0,0,0,0);
+  /*background-color: #cfc;*/
 
-  background-color: #ccc;
 }
 .list-group-item {
   /*cursor: move;*/
@@ -142,17 +149,17 @@ input {
 
 /*************************************************/
 .list-body  {
-    background-color: #ccc;
+    background-color: rgba(0,0,0,0);
+
+    padding-top:    20px;
+    padding-bottom: 20px;
+    padding-right:  20px;
 }
 
 .draggable-row  {
-    background-color: #fafafa;
+    background-color: #ffffff;
 
-    padding-top: 15px;
-    padding-left: 15px;
-    padding-right: 15px;
-    margin-top: 1px;
-    /*margin-right: 30px;*/
+    border-radius: 10px;
 }
 
 hr {

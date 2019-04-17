@@ -17,7 +17,7 @@
         </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar app>
+    <v-toolbar app class="toolbar" color="#197BBD">
         <span class="hidden-sm-and-up">
             <v-toolbar-side-icon @click="sidebar = !sidebar">
             </v-toolbar-side-icon>
@@ -48,6 +48,9 @@
 </template>
 
 <script>
+
+require('@/assets/styles/main.css');
+
 export default {
     data() {
         return {
@@ -99,3 +102,4 @@ export default {
 
 
 </script>
+<style scoped src="@/assets/styles/main.css"></style>

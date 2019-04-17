@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container class="listcell">
         <ListCellText v-if="header.type === 'string'"
                               :item= "item"
                               :header= "header"
@@ -35,3 +35,14 @@ export default {
     }
   }
 </script>
+<style scoped>
+.listcell   {
+    /*background-color: #0ab;*/
+    padding: 0px;
+}
+
+v-text-field    {
+    margin: 0px;
+    padding: 0px;
+}
+</style>

@@ -1,8 +1,10 @@
 <template>
-  <v-container class="ma-0 pa-0" fluid>
-    <v-layout row>
+  <v-container class="ma-0 pa-0 side-list-cal" fluid>
+    <v-layout row style="height: 100%">
         <!-- Sidebar -->
-        <the-sidebar :show=show></the-sidebar>
+        <v-flex grow>
+            <the-sidebar :show=show></the-sidebar>
+        </v-flex>
         <!-- Expand/Collapse sidebar -->
         <button v-on:click="show = !show">
             <v-icon>{{show ? 'keyboard_arrow_left' : 'keyboard_arrow_right'}}</v-icon>
@@ -23,6 +25,8 @@
     import TheSidebar from './Home/TheSidebar'
     import TheList from './Home/TheList'
     import TheCalendar from './Home/TheCalendar'
+
+require("@/assets/styles/main.css");
 
 export default {
      components: { TheSidebar, TheList, TheCalendar },
@@ -51,3 +55,5 @@ export default {
      },
 }
 </script>
+
+<style scoped src="@/assets/styles/main.css"></style>

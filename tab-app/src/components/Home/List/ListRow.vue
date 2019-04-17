@@ -1,7 +1,16 @@
 <template>
-  <v-layout row @click="makeActive" :id="item.item_meta.id">
+  <v-layout row 
+            :id="item.item_meta.id"
+            @click="makeActive" 
+            @mouseover="mouseOver()"
+            @mouseleave="mouseLeave()"
+            >
     <!-- <span class="fa fa-align-justify handle">&#9776;</span> -->
-    <span class="fa fa-align-justify handle">::</span>
+    <span id="handle_id" class="fa fa-align-justify handle"
+            v-show=showHandle>::</span>
+          <!-- v-show=showHandle -->
+    <span class="fa fa-align-justify handle" style="color: rgba(255,255,255,0);"
+            v-show=!showHandle>::</span>
     <v-layout col v-for="header in headers" :key="header.id">
       <list-cell :item = "item"
                       :header = "header"
@@ -16,6 +25,8 @@
 
 <script>
   import ListCell from './ListCell'
+
+  import { EventBus } from '@/store/modules/event-bus.js';
   export default {
     components: {ListCell},
     props: ['item', 'headers'],
@@ -24,50 +35,77 @@
       return{
         /* this is currently not being used */
         checkbox: true,
+
+        showHandle: false,
       }
     },
     methods: {
-      makeActive (event) {
-          // When the row is clicked, dispatch changeActiveItem to the store passing
-          // the current ID.
-          // the changeActiveItem method searches for the ID and modifies the active attribute
-          // to true
-          console.log(event.currentTarget.id);
-        this.$store.dispatch('changeActiveItem', event.currentTarget.id);
+        makeActive (event) {
+              // When the row is clicked, dispatch changeActiveItem to the store passing
+              // the current ID.
+              // the changeActiveItem method searches for the ID and modifies the active attribute
+              // to true
+              this.showHandle = false;
+              console.log(event.currentTarget.id);
+            this.$store.dispatch('changeActiveItem', event.currentTarget.id);
 
-    },
+        },
+        mouseOver(event)    {
+            this.showHandle = true;
+
+            var vm = this;
+
+            EventBus.$on('the-list-drag-event', drag => {
+                console.log("the-list-drag-event: " + drag);
+                if(drag)    {
+                    console.log("this.showHandle = " + this.showHandle);
+                    this.showHandle = false;
+                    console.log("this.showHandle = " + this.showHandle);
+                    console.log("IF DRAG DONE");
+                }
+            });
+        },
+        mouseLeave(event)   {
+            this.showHandle = false;
+        }
 
 }
 }
+
+
+
 </script>
 
 <style scoped>
 .button {
-  margin-top: 35px;
+  /*margin-top: 35px;*/
 }
 .handle {
   padding: 5px;
+  margin-left: 10px;
   margin-right: 10px;
   /*border: solid #000 1px;*/
-  cursor: move;
+  cursor: grab;
   font-size: 200%;
   /*margin-bottom: 30px;*/
+
+  color: rgba(0, 0, 0, 0.3);
 }
 .close {
   float: right;
-  padding-top: 8px;
-  padding-bottom: 8px;
+  /*padding-top: 8px;*/
+  /*padding-bottom: 8px;*/
 }
 input {
   display: inline-block;
-  width: 50%;
+  /*width: 50%;*/
 }
 .text {
-  margin: 20px;
+  margin: 0px;
 }
 
 .list-group {
-  min-height: 20px;
+  /*min-height: 20px;*/
 }
 .list-group-item {
   /*cursor: move;*/
