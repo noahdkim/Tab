@@ -19,7 +19,12 @@
       </list-cell>
 
 
-    </v-layout>
+  </v-layout>
+  <v-btn flat @click="deleteItem" v-show="showHandle" :id="item.item_meta.id">
+      <v-icon>delete</v-icon>
+  </v-btn>
+
+
 </v-layout>
 </template>
 
@@ -40,26 +45,25 @@
       }
     },
     methods: {
+        deleteItem (event) {
+            this.$store.dispatch('deleteItem', this.item);
+        },
         makeActive (event) {
               // When the row is clicked, dispatch changeActiveItem to the store passing
               // the current ID.
               // the changeActiveItem method searches for the ID and modifies the active attribute
               // to true
               this.showHandle = false;
-              this.$store.dispatch('saveItem', this.$store.state.activeItemID)
-              this.$store.dispatch('changeActiveItem', event.currentTarget.id);
+              this.$store.dispatch('changeActiveItem', this.item);
         },
         mouseOver(event)    {
             this.showHandle = true;
             var vm = this;
 
             EventBus.$on('the-list-drag-event', drag => {
-                console.log("the-list-drag-event: " + drag);
+                // is this necessary? it seems to slow down code a good amount
                 if(drag)    {
-                    console.log("this.showHandle = " + this.showHandle);
                     this.showHandle = false;
-                    console.log("this.showHandle = " + this.showHandle);
-                    console.log("IF DRAG DONE");
                 }
             });
         },

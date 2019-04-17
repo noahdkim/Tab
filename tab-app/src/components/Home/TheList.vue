@@ -1,10 +1,6 @@
 <template>
     <v-container>
-        <v-layout row class="header-row">
-            <v-layout col v-for="header in selectedListHeaders" :key="header.name">
-                <div class="font-weight-bold">{{ header.name }}</div>
-            </v-layout>
-        </v-layout>
+        <list-header :headers=selectedListHeaders></list-header>
         <div class="list-body">
             <draggable
             class="list-group"
@@ -35,6 +31,7 @@
 
 <script>
     import draggable from 'vuedraggable'
+    import ListHeader from './List/ListHeader'
     import ListRow from './List/ListRow'
     import { mapGetters } from 'vuex'
 
@@ -45,7 +42,8 @@
     export default {
         components: {
             draggable,
-            ListRow,
+            ListHeader,
+            ListRow
         },
         data: () => ({
             drag: false
@@ -69,14 +67,14 @@
         }
     },
     methods: {
-        addNewItem () {
+        addNewItem() {
             /* wait for the promise */
             this.$store.dispatch('addNewItem').then((result) => {
                 console.log(result);
             });
 
         },
-        saveList () {
+        saveList() {
             /* this is async */
             this.$store.dispatch('saveList');
         },

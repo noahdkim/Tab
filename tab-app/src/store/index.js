@@ -54,7 +54,6 @@ export const store = new Vuex.Store({
     /* change state values */
     mutations: {
         changeActiveState(state, payload) {
-            console.log(payload);
             if (payload.active === true){
                 state.activeItemID = payload.ID;
             }
@@ -127,14 +126,33 @@ export const store = new Vuex.Store({
             state.selectedListItems.push(newItem);
             return "added";
         },
-        changeActiveItem({ state, commit }, params){
+        changeActiveItem({ state, commit, dispatch }, params){
             /* change previously active item to not active */
-            commit('changeActiveState', {active: false, ID: state.activeItemID});
+            let prevActiveItemIndex = findIndexOfItem(state, state.activeItemID);
+            if (prevActiveItemIndex !== -1){
+                dispatch('saveItem', state.selectedListItems[prevActiveItemIndex]);
+                commit('changeActiveState', {active: false, ID: state.activeItemID});
+            }
 
             /* change new item ID to active */
-            commit('changeActiveState', {active: true, ID: params});
-            commit('setActiveItemID', params);
-            console.log(params);
+            commit('changeActiveState', {active: true, ID: params.item_meta.id});
+            commit('setActiveItemID', params.item_meta.id);
+        },
+        deleteItem({ state, commit, dispatch }, params){
+            let item = params;
+            // using found index is better than item.item_meta.index bc it allows us to be ahead of the db
+            // no lag is experienced for the user. Only user item.item_meta.index to load initial order of items
+            let foundIndex = findIndexOfItem(state, item.item_meta.id)
+            state.selectedListItems.splice(foundIndex, 1);
+            let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(item.item_meta.id);
+            itemDocRef.delete()
+                .then(function() {
+                    dispatch('saveListOrderToFirestore');
+                    console.log("Document successfully deleted!");
+                })
+                .catch(function(error) {
+                    console.error("Error writing document: ", error);
+                });
         },
         loadGroupListData({ state, commit }) {
             let user_meta = db.collection("lists_meta").doc(state.user.uid);
@@ -185,8 +203,6 @@ export const store = new Vuex.Store({
 
             });
 
-            console.log(selectedListItems);
-
             commit('setSelectedListItems', selectedListItems);
         },
         loadSelectedListHeaders({ state, commit }) {
@@ -208,15 +224,8 @@ export const store = new Vuex.Store({
             commit('setSelectedListHeaders', newSelectedListHeaders);
         },
         saveItem({ state, commit }, params){
-            if (params === 0){
-                return;
-            }
-            let itemID = params;
-            console.log(itemID)
-            let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(itemID);
-            let foundIndex = findIndexOfItem(state, itemID);
-            let item = state.selectedListItems[foundIndex];
-            console.log(item);
+            let item = params;
+            let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(item.item_meta.id);
             itemDocRef.set(item)
             .catch(function(error) {
                 console.error("Error writing document: ", error);
@@ -244,11 +253,10 @@ export const store = new Vuex.Store({
             return "savedListOrder";
         },
         updateItemState({ state, commit }, params){
-            let foundIndex = state.selectedListItems.findIndex(function(item) {
-                return item.item_meta.id === params.itemID;
-            });
+            let item = params.item;
+            let itemIndex = findIndexOfItem(state, item.item_meta.id)
             let newSelectedListItems = state.selectedListItems;
-            newSelectedListItems[foundIndex]['values'][params.header] = params.newValue;
+            newSelectedListItems[itemIndex]['values'][params.header] = params.newValue;
             commit('setSelectedListItems', newSelectedListItems);
         },
         userSignIn({

@@ -3,18 +3,21 @@
         <ListCellDate v-if="header.type === 'date'"
                             :item= "item"
                             :header= "header"
+                            @update="updateItemState"
                             ref="{{item.id}}-{{header.text}}"
                             single-line>
         </ListCellDate>
         <ListCellInt v-if="header.type === 'int'"
                             :item= "item"
                             :header= "header"
+                            @update="updateItemState"
                             ref="{{item.id}}-{{header.text}}"
                             single-line>
         </ListCellInt>
         <ListCellText v-if="header.type === 'string'"
                               :item= "item"
                               :header= "header"
+                              @update="updateItemState"
                               ref="{{item.id}}-{{header.text}}"
                               single-line>
         </ListCellText>
@@ -34,11 +37,14 @@ export default {
         return{
             /* this is currently not being used */
             checkbox: true,
-
         }
     },
     methods: {
-
+        updateItemState (newValue){
+            let item = this.item;
+            let header = this.header.name;
+            this.$store.dispatch('updateItemState', {item, header, newValue});
+        }
     }
   }
 </script>
