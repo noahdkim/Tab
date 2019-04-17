@@ -92,6 +92,33 @@ export const store = new Vuex.Store({
                 uid: payload.uid,
             })
         },
+        addNewItem({ state, commit }, params){
+            let myRef = firebase.database().ref().push();
+            var key = myRef.key;
+            let today = new Date()
+            let d = new Date(today.getFullYear(),today.getMonth() , today.getDate());
+            let firebaseDateSeconds = d.getTime() / 1000;
+            let todayTimestamp = new firebase.firestore.Timestamp(firebaseDateSeconds, 0)
+            let newItem = {
+                            item_meta:{
+                                id: key,
+                                active: true,
+                                index: state.selectedListItems.length,
+                            },
+                            values: {}
+            }
+            state.selectedListHeaders.forEach((header) =>{
+                if (header.type === "date"){
+                    newItem.values[header.name] = todayTimestamp;
+                } else {
+                    newItem.values[header.name] = "";
+                }
+            }
+
+            )
+            state.selectedListItems.push(newItem);
+            return "added";
+        },
         changeActiveItem({ state, commit }, params){
             /* change previously active item to not active */
             commit('changeActiveState', {active: false, ID: state.activeItemID});
@@ -173,19 +200,13 @@ export const store = new Vuex.Store({
         },
         saveList({ state, commit }, params){
             let batch = db.batch();
-
             for (var i = 0, n = state.selectedListItems.length; i < n; i++){
-                let item = state.selectedListItems[i]
+                let item = state.selectedListItems[i];
                 let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(item.item_meta.id);
-                batch.update(itemDocRef, item)
+                batch.set(itemDocRef, item, {merge: true});
             }
-            batch.commit().then().catch(function(error){
-                console.log(error);
-            });
-
-            return "saved"
+            batch.commit().then().catch(error=>{console.log(error)});
         },
-
         saveListOrderToFirestore({ state, commit }, params) {
             let selectedListItems = state.selectedListItems;
             if(selectedListItems == null) {
@@ -200,7 +221,6 @@ export const store = new Vuex.Store({
         },
 
         updateItemState({ state, commit }, params){
-            console.log("UPDATING")
             let foundIndex = state.selectedListItems.findIndex(function(item) {
                 return item.item_meta.id === params.itemID;
             });
