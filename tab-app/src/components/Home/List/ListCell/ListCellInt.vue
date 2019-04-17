@@ -27,10 +27,7 @@ export default {
     },
     methods: {
         updateItemState (newValue){
-            let itemID = this.item.item_meta.id;
-            let header = this.header.name;
-            console.log(newValue);
-            this.$store.dispatch('updateItemState', {itemID, header, newValue});
+            this.$emit('update', newValue);
         }
     }
   }
