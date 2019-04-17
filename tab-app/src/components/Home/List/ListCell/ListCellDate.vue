@@ -52,13 +52,15 @@ export default {
                 let itemID = this.item.item_meta.id;
                 let newValue = this.parseISOString(newDate);
                 // let newValue = newDate.getTime();
-                this.$store.dispatch('updateItemState', {itemID, header, newValue});
+                this.updateItemState(newValue);
+                //this.$store.dispatch('updateItemState', {itemID, header, newValue});
             }
         }
 
     },
     methods: {
         updateItemState (newValue){
+            console.log(newValue);
             this.$emit('update', newValue);
         },
         parseISOString(ISOString) {

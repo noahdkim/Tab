@@ -103,6 +103,7 @@ export const store = new Vuex.Store({
             let myRef = firebase.database().ref().push();
             var key = myRef.key;
             let today = new Date()
+            // need Date object with no seconds or miliseconds in order to parse into timestamp
             let d = new Date(today.getFullYear(),today.getMonth() , today.getDate());
             let firebaseDateSeconds = d.getTime() / 1000;
             let todayTimestamp = new firebase.firestore.Timestamp(firebaseDateSeconds, 0)
@@ -130,6 +131,7 @@ export const store = new Vuex.Store({
             /* change previously active item to not active */
             let prevActiveItemIndex = findIndexOfItem(state, state.activeItemID);
             if (prevActiveItemIndex !== -1){
+                // save the previously active item and set the state of the item to false
                 dispatch('saveItem', state.selectedListItems[prevActiveItemIndex]);
                 commit('changeActiveState', {active: false, ID: state.activeItemID});
             }
