@@ -37,8 +37,6 @@ export default  {
         },
         arrayEvents: {
             get() {
-                console.log(new Date().toString())
-
                 this.dateWeights = {};
                 this.totalWeights = 0;
                 let list_items = this.$store.state.selectedListItems.map((item) =>{
