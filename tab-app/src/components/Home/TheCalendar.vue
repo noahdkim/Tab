@@ -22,7 +22,6 @@ export default  {
             totalItems: 0,
             landscape: false,
             selectedValue: new Date(),
-            picker: new Date().toISOString().substr(0, 10),
             reactive: true
         }
     },
@@ -38,6 +37,8 @@ export default  {
         },
         arrayEvents: {
             get() {
+                console.log(new Date().toString())
+
                 this.dateWeights = {};
                 this.totalWeights = 0;
                 let list_items = this.$store.state.selectedListItems.map((item) =>{
@@ -48,8 +49,15 @@ export default  {
                     this.dateWeights[date] = this.dateWeights[date] ? this.dateWeights[date] + priority : priority;
                     return date;
                 });
-                
+
                 return list_items;
+            }
+        },
+        picker: {
+            get() {
+                let tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+                var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().substr(0, 10);
+                return localISOTime;
             }
         }
     },
