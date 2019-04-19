@@ -1,37 +1,51 @@
 <template>
     <v-container class="listcell">
-        <ListCellText v-if="header.type === 'string'"
-                              :item= "item"
-                              :header= "header"
-                              ref="{{item.id}}-{{header.text}}"
-                              single-line>
-        </ListCellText>
         <ListCellDate v-if="header.type === 'date'"
                             :item= "item"
                             :header= "header"
+                            @update="updateItemState"
                             ref="{{item.id}}-{{header.text}}"
                             single-line>
         </ListCellDate>
+        <ListCellInt v-if="header.type === 'int'"
+                            :item= "item"
+                            :header= "header"
+                            @update="updateItemState"
+                            ref="{{item.id}}-{{header.text}}"
+                            single-line>
+        </ListCellInt>
+        <ListCellText v-if="header.type === 'string'"
+                              :item= "item"
+                              :header= "header"
+                              @update="updateItemState"
+                              ref="{{item.id}}-{{header.text}}"
+                              single-line>
+        </ListCellText>
     </v-container>
 </template>
 
 <script>
 import ListCellDate from './ListCell/ListCellDate'
+import ListCellInt from './ListCell/ListCellInt'
 import ListCellText from './ListCell/ListCellText'
 
 export default {
-    components: {ListCellDate, ListCellText},
+    components: {ListCellDate, ListCellInt, ListCellText},
     props: ['item', 'header'],
 
     data () {
         return{
             /* this is currently not being used */
             checkbox: true,
-
         }
     },
     methods: {
-
+        updateItemState (newValue){
+            console.log(this.item)
+            let item = this.item;
+            let header = this.header.name;
+            this.$store.dispatch('updateItemState', {item, header, newValue});
+        }
     }
   }
 </script>

@@ -1,5 +1,6 @@
 <template>
     <v-text-field class="textfield"
+                          :mask="mask"
                           @input="updateItemState"
                           :value="item.values[header.name]"
                           :readonly="!item.item_meta.active"
@@ -18,8 +19,9 @@ export default {
 
     data () {
         return{
-            /* this is currently not being used */
             checkbox: true,
+            /* Only three digit number allowed */
+            mask: '###'
 
         }
     },

@@ -23,6 +23,13 @@ export const db = firebase.firestore();
     loading  - flag to indicate if data is being loaded
 */
 
+function findIndexOfItem(state, id) {
+    let foundIndex = state.selectedListItems.findIndex(function(item) {
+        return item.item_meta.id === id;
+    });
+    return foundIndex;
+}
+
 export const store = new Vuex.Store({
     state: {
         activeItemID: 0,
@@ -39,18 +46,18 @@ export const store = new Vuex.Store({
     getters: {
         date: (state) => {
             return state.date;
+        },
+        activeItemID: (state) => {
+            return state.activeItemID
         }
     },
     /* change state values */
     mutations: {
         changeActiveState(state, payload) {
-            console.log(payload);
             if (payload.active === true){
                 state.activeItemID = payload.ID;
             }
-            let foundIndex = state.selectedListItems.findIndex(function(item) {
-                return item.item_meta.id === payload.ID;
-            });
+            let foundIndex = findIndexOfItem(state, payload.ID)
             if(foundIndex >= 0){
                 state.selectedListItems[foundIndex].item_meta.active = payload.active;
             }
@@ -77,7 +84,6 @@ export const store = new Vuex.Store({
             state.selectedListItems = payload;
         },
         setSelectedListHeaders(state, payload) {
-            console.log(payload)
             state.selectedListHeaders = payload;
         },
         setUser(state, payload) {
@@ -93,13 +99,62 @@ export const store = new Vuex.Store({
                 uid: payload.uid,
             })
         },
-        changeActiveItem({ state, commit }, params){
+        addNewItem({ state, commit }, params){
+            let myRef = firebase.database().ref().push();
+            var key = myRef.key;
+            let today = new Date()
+            // need Date object with no seconds or miliseconds in order to parse into timestamp
+            let d = new Date(today.getFullYear(),today.getMonth() , today.getDate());
+            let firebaseDateSeconds = d.getTime() / 1000;
+            let todayTimestamp = new firebase.firestore.Timestamp(firebaseDateSeconds, 0)
+            let newItem = {
+                            item_meta:{
+                                id: key,
+                                active: true,
+                                index: state.selectedListItems.length,
+                            },
+                            values: {}
+            }
+            state.selectedListHeaders.forEach((header) =>{
+                if (header.type === "date"){
+                    newItem.values[header.name] = todayTimestamp;
+                } else {
+                    newItem.values[header.name] = "";
+                }
+            }
+
+            )
+            state.selectedListItems.push(newItem);
+            return "added";
+        },
+        changeActiveItem({ state, commit, dispatch }, params){
             /* change previously active item to not active */
-            commit('changeActiveState', {active: false, ID: state.activeItemID});
+            let prevActiveItemIndex = findIndexOfItem(state, state.activeItemID);
+            if (prevActiveItemIndex !== -1){
+                // save the previously active item and set the state of the item to false
+                dispatch('saveItem', state.selectedListItems[prevActiveItemIndex]);
+                commit('changeActiveState', {active: false, ID: state.activeItemID});
+            }
 
             /* change new item ID to active */
-            commit('changeActiveState', {active: true, ID: params});
-            commit('setActiveItemID', params);
+            commit('changeActiveState', {active: true, ID: params.item_meta.id});
+            commit('setActiveItemID', params.item_meta.id);
+        },
+        deleteItem({ state, commit, dispatch }, params){
+            let item = params;
+            // using found index is better than item.item_meta.index bc it allows us to be ahead of the db
+            // no lag is experienced for the user. Only user item.item_meta.index to load initial order of items
+            let foundIndex = findIndexOfItem(state, item.item_meta.id)
+            state.selectedListItems.splice(foundIndex, 1);
+            let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(item.item_meta.id);
+            itemDocRef.delete()
+                .then(function() {
+                    dispatch('saveListOrderToFirestore');
+                    console.log("Document successfully deleted!");
+                })
+                .catch(function(error) {
+                    console.error("Error writing document: ", error);
+                });
         },
         loadGroupListData({ state, commit }) {
             let user_meta = db.collection("lists_meta").doc(state.user.uid);
@@ -150,8 +205,6 @@ export const store = new Vuex.Store({
 
             });
 
-            console.log(selectedListItems);
-
             commit('setSelectedListItems', selectedListItems);
         },
         loadSelectedListHeaders({ state, commit }) {
@@ -165,9 +218,6 @@ export const store = new Vuex.Store({
                 querySnapshot.forEach(doc =>    {
                     let header = doc.data();
 
-                    console.log("header:");
-                    console.log(header);
-
                     newSelectedListHeaders.push(header);
                 });
 
@@ -175,21 +225,23 @@ export const store = new Vuex.Store({
 
             commit('setSelectedListHeaders', newSelectedListHeaders);
         },
+        saveItem({ state, commit }, params){
+            let item = params;
+            let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(item.item_meta.id);
+            itemDocRef.set(item)
+            .catch(function(error) {
+                console.error("Error writing document: ", error);
+            });
+        },
         saveList({ state, commit }, params){
             let batch = db.batch();
-
             for (var i = 0, n = state.selectedListItems.length; i < n; i++){
-                let item = state.selectedListItems[i]
+                let item = state.selectedListItems[i];
                 let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(item.item_meta.id);
-                batch.update(itemDocRef, item)
+                batch.set(itemDocRef, item, {merge: true});
             }
-            batch.commit().then().catch(function(error){
-                console.log(error);
-            });
-
-            return "saved"
+            batch.commit().then().catch(error=>{console.log(error)});
         },
-
         saveListOrderToFirestore({ state, commit }, params) {
             let selectedListItems = state.selectedListItems;
             if(selectedListItems == null) {
@@ -202,15 +254,11 @@ export const store = new Vuex.Store({
             commit('setSelectedListItems', selectedListItems);
             return "savedListOrder";
         },
-
         updateItemState({ state, commit }, params){
-            console.log("UPDATING")
-            let foundIndex = state.selectedListItems.findIndex(function(item) {
-                return item.item_meta.id === params.itemID;
-            });
+            let item = params.item;
+            let itemIndex = findIndexOfItem(state, item.item_meta.id)
             let newSelectedListItems = state.selectedListItems;
-            newSelectedListItems[foundIndex]['values'][params.header] = params.newValue;
-            console.log(newSelectedListItems);
+            newSelectedListItems[itemIndex]['values'][params.header] = params.newValue;
             commit('setSelectedListItems', newSelectedListItems);
         },
         userSignIn({

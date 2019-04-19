@@ -45,25 +45,23 @@ export default {
     computed: {
         date: {
             get: function() {
-                console.log(this.item.values[this.header.name])
                 return new Date(this.item.values[this.header.name].seconds * 1000).toISOString().substring(0,10);
             },
             set: function(newDate) {
                 let header = this.header.name;
                 let itemID = this.item.item_meta.id;
                 let newValue = this.parseISOString(newDate);
-                console.log(newValue);
                 // let newValue = newDate.getTime();
-                this.$store.dispatch('updateItemState', {itemID, header, newValue});
+                this.updateItemState(newValue);
+                //this.$store.dispatch('updateItemState', {itemID, header, newValue});
             }
         }
 
     },
     methods: {
         updateItemState (newValue){
-            let itemID = this.item.id;
-            let header = this.header.name;
-            this.$store.dispatch('updateItemState', {itemID, header, newValue});
+            console.log(newValue);
+            this.$emit('update', newValue);
         },
         parseISOString(ISOString) {
           let splitString = ISOString.split(/\D+/);
