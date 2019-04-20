@@ -69,7 +69,7 @@
     methods: {
         addNewItem() {
             /* wait for the promise */
-            this.$store.dispatch('addNewItem').then((result) => {
+            this.$store.dispatch('createNewItem').then((result) => {
                 console.log(result);
             });
 

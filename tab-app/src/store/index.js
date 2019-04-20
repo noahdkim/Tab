@@ -23,8 +23,8 @@ export const db = firebase.firestore();
     loading  - flag to indicate if data is being loaded
 */
 
-function findIndexOfItem(state, id) {
-    let foundIndex = state.selectedListItems.findIndex(function(item) {
+function findIndexOfItem(state, list, id) {
+    let foundIndex = list.findIndex(function(item) {
         return item.item_meta.id === id;
     });
     return foundIndex;
@@ -34,7 +34,7 @@ export const store = new Vuex.Store({
     state: {
         activeItemID: 0,
         appTitle: 'Tab',
-        date: new Date(),
+        selectedDate: '',
         error: null,
         loading: false,
         user: null,
@@ -44,8 +44,8 @@ export const store = new Vuex.Store({
         selectedListHeaders: [],
     },
     getters: {
-        date: (state) => {
-            return state.date;
+        selectedDate: (state) => {
+            return state.selectedDate;
         },
         activeItemID: (state) => {
             return state.activeItemID
@@ -57,7 +57,7 @@ export const store = new Vuex.Store({
             if (payload.active === true){
                 state.activeItemID = payload.ID;
             }
-            let foundIndex = findIndexOfItem(state, payload.ID)
+            let foundIndex = findIndexOfItem(state, state.selectedListItems, payload.ID)
             if(foundIndex >= 0){
                 state.selectedListItems[foundIndex].item_meta.active = payload.active;
             }
@@ -65,8 +65,8 @@ export const store = new Vuex.Store({
         setActiveItemID(state, payload){
             state.activeItemID = payload;
         },
-        setDate(state, payload){
-            state.date = payload;
+        setSelectedDate(state, payload){
+            state.selectedDate = payload;
         },
         setError(state, payload) {
             state.error = payload;
@@ -99,7 +99,20 @@ export const store = new Vuex.Store({
                 uid: payload.uid,
             })
         },
-        addNewItem({ state, commit }, params){
+        changeActiveItem({ state, commit, dispatch }, params){
+            /* change previously active item to not active */
+            let prevActiveItemIndex = findIndexOfItem(state, state.selectedListItems, state.activeItemID);
+            if (prevActiveItemIndex !== -1){
+                // save the previously active item and set the state of the item to false
+                dispatch('saveItem', state.selectedListItems[prevActiveItemIndex]);
+                commit('changeActiveState', {active: false, ID: state.activeItemID});
+            }
+
+            /* change new item ID to active */
+            commit('changeActiveState', {active: true, ID: params.item_meta.id});
+            commit('setActiveItemID', params.item_meta.id);
+        },
+        createNewItem({ state, commit }, params){
             let myRef = firebase.database().ref().push();
             var key = myRef.key;
             let today = new Date()
@@ -127,26 +140,33 @@ export const store = new Vuex.Store({
             state.selectedListItems.push(newItem);
             return "added";
         },
-        changeActiveItem({ state, commit, dispatch }, params){
-            /* change previously active item to not active */
-            let prevActiveItemIndex = findIndexOfItem(state, state.activeItemID);
-            if (prevActiveItemIndex !== -1){
-                // save the previously active item and set the state of the item to false
-                dispatch('saveItem', state.selectedListItems[prevActiveItemIndex]);
-                commit('changeActiveState', {active: false, ID: state.activeItemID});
-            }
-
-            /* change new item ID to active */
-            commit('changeActiveState', {active: true, ID: params.item_meta.id});
-            commit('setActiveItemID', params.item_meta.id);
+        createNewList({ state, commit }, params){
+            let myRef = firebase.database().ref().push();
+            var listMetaKey = myRef.key;
+            myRef = firebase.database().ref().push();
+            let listContentKey = myRef.key;
+            console.log(listMetaKey, listContentKey);
+            // create in db first and then switch in UI or the other way?
+            let newListMeta = db.collection("lists_meta")
+                                .doc(state.user.uid)
+                                .collection("personal_lists")
+                                .doc(listMetaKey)
+                                .set({listContentKey: listContentKey,
+                                      name: "test"});
+            let newListContent = db.collection("lists_content")
+                                .doc(listContentKey)
+                                .collection("personal_lists")
+                                .doc(listContentKey)
+                                .set({listContentKey: listContentKey});
+            //itemDocRef.set(item)
         },
         deleteItem({ state, commit, dispatch }, params){
             let item = params;
             // using found index is better than item.item_meta.index bc it allows us to be ahead of the db
             // no lag is experienced for the user. Only user item.item_meta.index to load initial order of items
-            let foundIndex = findIndexOfItem(state, item.item_meta.id)
+            let foundIndex = findIndexOfItem(state, state.selectedListItems, item.item_meta.id)
             state.selectedListItems.splice(foundIndex, 1);
-            let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(item.item_meta.id);
+            let itemDocRef = db.collection('lists_content').doc(state.selectedList.listContentKey).collection('items').doc(item.item_meta.id);
             itemDocRef.delete()
                 .then(function() {
                     dispatch('saveListOrderToFirestore');
@@ -177,6 +197,7 @@ export const store = new Vuex.Store({
                 querySnapshot.forEach(function(doc) {
                     // doc.data() is never undefined for query doc snapshots
                     personalLists.push(doc.data());
+                    console.log(doc.data())
                 });
                 commit('setPersonalLists', personalLists);
                 commit('setSelectedList', personalLists[0]);
@@ -188,7 +209,7 @@ export const store = new Vuex.Store({
         loadSelectedListItems({ state, commit }) {
             console.log("loading selected items")
             let list_items = db.collection("lists_content")
-                               .doc(state.selectedList.id)
+                               .doc(state.selectedList.listContentKey)
                                .collection("items")
                                .orderBy("item_meta.index");
 
@@ -209,7 +230,7 @@ export const store = new Vuex.Store({
         },
         loadSelectedListHeaders({ state, commit }) {
             let list_items = db.collection("lists_content")
-                               .doc(state.selectedList.id)
+                               .doc(state.selectedList.listContentKey)
                                .collection("headers")
                                .orderBy("index");
 
@@ -217,7 +238,6 @@ export const store = new Vuex.Store({
             list_items.get().then(querySnapshot => {
                 querySnapshot.forEach(doc =>    {
                     let header = doc.data();
-
                     newSelectedListHeaders.push(header);
                 });
 
@@ -237,7 +257,7 @@ export const store = new Vuex.Store({
             let batch = db.batch();
             for (var i = 0, n = state.selectedListItems.length; i < n; i++){
                 let item = state.selectedListItems[i];
-                let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(item.item_meta.id);
+                let itemDocRef = db.collection('lists_content').doc(state.selectedList.listContentKey).collection('items').doc(item.item_meta.id);
                 batch.set(itemDocRef, item, {merge: true});
             }
             batch.commit().then().catch(error=>{console.log(error)});
@@ -256,7 +276,7 @@ export const store = new Vuex.Store({
         },
         updateItemState({ state, commit }, params){
             let item = params.item;
-            let itemIndex = findIndexOfItem(state, item.item_meta.id)
+            let itemIndex = findIndexOfItem(state, state.selectedListItems, item.item_meta.id)
             let newSelectedListItems = state.selectedListItems;
             newSelectedListItems[itemIndex]['values'][params.header] = params.newValue;
             commit('setSelectedListItems', newSelectedListItems);

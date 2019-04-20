@@ -25,16 +25,12 @@ export default  {
             reactive: true
         }
     },
-    mounted(){},
+    mounted(){
+        let tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+        var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().substr(0, 10);
+        this.$store.commit('setSelectedDate', localISOTime);
+    },
     computed:{
-        date: {
-            get() {
-                return this.$store.state.date;
-            },
-            set(newDate) {
-                return this.$store.commit('setDate', newDate);
-            }
-        },
         arrayEvents: {
             get() {
                 this.dateWeights = {};
@@ -53,9 +49,10 @@ export default  {
         },
         picker: {
             get() {
-                let tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
-                var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().substr(0, 10);
-                return localISOTime;
+                return this.$store.state.selectedDate;
+            },
+            set(newDate) {
+                this.$store.commit('setSelectedDate', newDate)
             }
         }
     },
