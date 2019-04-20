@@ -1,5 +1,6 @@
 <template>
     <v-container class="text-xs-center">
+        <v-layout>
         <v-date-picker ref="calendarDatePicker"
                         class="date-range-picker"
                         v-model="picker"
@@ -8,6 +9,35 @@
                         :landscape="landscape"
                         :reactive="reactive"
                         full-width></v-date-picker>
+    </v-layout>
+    <v-layout row>
+        <v-flex>
+            Display
+            <v-radio-group v-model="selectedDateField">
+              <v-radio
+                v-for="dateField in dateFields"
+                :key="dateField"
+                :label="dateField"
+                :value="dateField"
+              ></v-radio>
+            </v-radio-group>
+        </v-flex>
+        <v-flex>
+            Weight
+            <v-radio-group v-model="selectedIntegerField">
+              <v-radio
+                v-for="integerField in integerFields"
+                :key="integerField"
+                :label="integerField"
+                :value="integerField"
+              ></v-radio>
+              <v-radio
+                label="None"
+                value="None"
+              ></v-radio>
+            </v-radio-group>
+        </v-flex>
+    </v-layout>
     </v-container>
 </template>
 
@@ -21,6 +51,8 @@ export default  {
             dateWeights: {},
             totalItems: 0,
             landscape: false,
+            selectedDateField: '',
+            selectedIntegerField: '',
             selectedValue: new Date(),
             reactive: true
         }
@@ -36,9 +68,9 @@ export default  {
                 this.dateWeights = {};
                 this.totalWeights = 0;
                 let list_items = this.$store.state.selectedListItems.map((item) =>{
-                    let date = item.values.date.toDate().toISOString().substr(0, 10)
-                    let priority = item.values.Priority;
-                    priority = priority ? parseInt(item.values.Priority) : 0;
+                    let date = item.values[this.selectedDateField].toDate().toISOString().substr(0, 10)
+                    let priority = item.values[this.selectedIntegerField];
+                    priority = priority ? parseInt(item.values[this.selectedIntegerField]) : 0;
                     this.totalWeights += priority;
                     this.dateWeights[date] = this.dateWeights[date] ? this.dateWeights[date] + priority : priority;
                     return date;
@@ -53,6 +85,30 @@ export default  {
             },
             set(newDate) {
                 this.$store.commit('setSelectedDate', newDate)
+            }
+        },
+        dateFields:{
+            get() {
+                let dateFields = [];
+                this.$store.state.selectedListHeaders.forEach(header => {
+                    if (header.type === "date"){
+                        dateFields.push(header.name);
+                    }
+                })
+                this.selectedDateField = dateFields[0];
+                return dateFields;
+            }
+        },
+        integerFields:{
+            get() {
+                let integerFields = [];
+                this.$store.state.selectedListHeaders.forEach(header => {
+                    if (header.type === "integer"){
+                        integerFields.push(header.name);
+                    }
+                })
+                this.selectedIntegerField = integerFields[0];
+                return integerFields;
             }
         }
     },

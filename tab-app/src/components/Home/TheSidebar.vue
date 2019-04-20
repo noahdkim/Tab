@@ -7,7 +7,6 @@
            :key="personalList.id"
          >
         </sidebar-tile>
-
          <v-list-tile
             @click="openCreateListDialog"
          >

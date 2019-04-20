@@ -18,4 +18,5 @@
 .sidebar	{
 	background-color: #fafafa;
 	color: black;
+    z-index:0;
 }

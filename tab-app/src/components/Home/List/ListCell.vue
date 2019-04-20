@@ -7,7 +7,7 @@
                             ref="{{item.id}}-{{header.text}}"
                             single-line>
         </ListCellDate>
-        <ListCellInt v-if="header.type === 'int'"
+        <ListCellInt v-if="header.type === 'integer'"
                             :item= "item"
                             :header= "header"
                             @update="updateItemState"

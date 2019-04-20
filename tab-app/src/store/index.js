@@ -141,8 +141,12 @@ export const store = new Vuex.Store({
             return "added";
         },
         createNewList({ state, commit }, params){
+            let listName = params.listName;
+            let columnOptions = params.columnOptions;
+
             let myRef = firebase.database().ref().push();
             var listMetaKey = myRef.key;
+
             myRef = firebase.database().ref().push();
             let listContentKey = myRef.key;
             console.log(listMetaKey, listContentKey);
@@ -152,13 +156,21 @@ export const store = new Vuex.Store({
                                 .collection("personal_lists")
                                 .doc(listMetaKey)
                                 .set({listContentKey: listContentKey,
-                                      name: "test"});
-            let newListContent = db.collection("lists_content")
-                                .doc(listContentKey)
-                                .collection("personal_lists")
-                                .doc(listContentKey)
-                                .set({listContentKey: listContentKey});
-            //itemDocRef.set(item)
+                                      name: listName});
+            let newListHeadersRef = db.collection("lists_content")
+                                            .doc(listContentKey)
+                                            .collection("headers")
+
+            let batch = db.batch();
+            for(let i=0; i<columnOptions.length; ++i){
+                columnOptions[i].index = i;
+                let headerRef = firebase.database().ref().push();
+                var newHeaderKey = headerRef.key;
+                batch.set(newListHeadersRef.doc(newHeaderKey), (columnOptions[i]));
+            }
+            batch.commit().then(function () {
+                console.log("done!")
+            });
         },
         deleteItem({ state, commit, dispatch }, params){
             let item = params;
@@ -203,7 +215,6 @@ export const store = new Vuex.Store({
                 commit('setSelectedList', personalLists[0]);
                 dispatch('loadSelectedListHeaders');
                 dispatch('loadSelectedListItems');
-
             });
         },
         loadSelectedListItems({ state, commit }) {
