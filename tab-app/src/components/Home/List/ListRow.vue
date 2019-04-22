@@ -6,14 +6,15 @@
   @mouseleave="mouseLeave()"
   >
 
-    <transition name="fade" mode="out-in">
+    <!-- <transition name="fade" mode="out-in">
         <div key="3" v-if="showHandle">
             <span id="handle_id" class="fa fa-align-justify handle">::</span>
         </div>
         <div key="1" v-if="!showHandle">
             <span class="fa fa-align-justify handle" style="color: rgba(255,255,255,0);">::</span>
         </div>
-    </transition>
+    </transition> -->
+    <span class="fa fa-align-justify handle" :style="{ opacity: showHandle ? 0.3 : 0 }">::</span>
     <v-layout col v-for="header in headers" :key="header.id">
       <list-cell :item = "item"
       :header = "header"
@@ -22,14 +23,7 @@
   </list-cell>
 </v-layout>
 <v-btn flat icon @click="deleteItem" >
-    <transition name="fade" mode="out-in">
-        <div key="3" v-if="showHandle">
-            <v-icon style="opacity: 0.3;">delete</v-icon>
-        </div>
-        <div key="1" v-if="!showHandle">
-            <v-icon style="opacity: 0;">delete</v-icon>
-        </div>
-    </transition>
+    <v-icon class="deleteIcon" :style="{ opacity: showHandle ? 0.3 : 0 }">delete</v-icon>
 </v-btn>
 
 </v-layout>
@@ -97,8 +91,12 @@ makeActive (event) {
     font-size: 200%;
     /*margin-bottom: 30px;*/
 
-    color: rgba(0, 0, 0, 0.3);
+    color: rgba(0, 0, 0, 1);
 }
+.deleteIcon {
+    color: rgba(0, 0, 0, 1);
+}
+
 .close {
     float: right;
     /*padding-top: 8px;*/
