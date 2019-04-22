@@ -7,7 +7,8 @@
                           :id="header.name"
                           ref="{{item.id}}-{{header.text}}"
                           single-line
-                          hide-details>
+                          hide-details
+                          solo>
 
                           <!-- :outline="!item.item_meta.active" -->
     </v-text-field>
@@ -40,8 +41,5 @@ v-text-field    {
     padding: 0px;
 }
 
-.textfield  {
-  /*margin: 0px;*/
-  padding: 0px;
-}
 </style>
+<style scoped src="@/assets/styles/listcell.css"></style>

@@ -1,7 +1,7 @@
 <template>
     <v-container>
-        <list-header :headers=selectedListHeaders></list-header>
         <div class="list-body">
+            <list-header :headers=selectedListHeaders></list-header>
             <draggable
             class="list-group"
             handle=".handle"

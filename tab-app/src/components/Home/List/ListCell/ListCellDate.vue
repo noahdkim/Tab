@@ -18,6 +18,7 @@
             slot="activator"
             hide-details
             class="textfield"
+            solo
           ></v-text-field>
         <v-date-picker v-model="date" no-title scrollable>
           <v-spacer></v-spacer>
@@ -81,9 +82,6 @@ v-text-field    {
     margin: 0px;
     padding: 0px;
 }
-.textfield  {
-  /*margin: 0px;*/
-  padding: 0px;
-  margin-right: 0px;
-}
+
 </style>
+<style scoped src="@/assets/styles/listcell.css"></style>

@@ -6,13 +6,16 @@
   @mouseleave="mouseLeave()"
   >
     <span class="fa fa-align-justify handle" :style="{ opacity: showHandle ? 0.3 : 0 }">::</span>
-    <v-layout col v-for="header in headers" :key="header.id">
+    <v-layout col 
+        v-for="header in headers" 
+        :key="header.id"
+        align-start>
       <list-cell
        :item = "item"
       :header = "header"
       ref="{{item.item_meta.id}}-{{header.text}}"
       single-line
-      v-bind:class="{ activeRow: item.item_meta.active }"
+      v-bind:class="{ activeRow: !item.item_meta.active }"
       >
   </list-cell>
 </v-layout>
