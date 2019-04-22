@@ -17,13 +17,10 @@
                       ref="{{item.item_meta.id}}-{{header.text}}"
                       single-line>
       </list-cell>
-
-
   </v-layout>
-  <v-btn flat @click="deleteItem" v-show="showHandle">
-      <v-icon>delete</v-icon>
-  </v-btn>
-
+  <v-btn flat icon @click="deleteItem" :style="{opacity: showHandle ? 100 : 0 }">
+              <v-icon>delete</v-icon>
+    </v-btn>
 
 </v-layout>
 </template>
@@ -40,7 +37,6 @@
       return{
         /* this is currently not being used */
         checkbox: true,
-
         showHandle: false,
       }
     },

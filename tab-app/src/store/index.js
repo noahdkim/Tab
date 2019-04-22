@@ -23,7 +23,7 @@ export const db = firebase.firestore();
     loading  - flag to indicate if data is being loaded
 */
 
-function findIndexOfItem(state, list, id) {
+function findIndexOfItem(list, id) {
     let foundIndex = list.findIndex(function(item) {
         return item.item_meta.id === id;
     });
@@ -57,7 +57,7 @@ export const store = new Vuex.Store({
             if (payload.active === true){
                 state.activeItemID = payload.ID;
             }
-            let foundIndex = findIndexOfItem(state, state.selectedListItems, payload.ID)
+            let foundIndex = findIndexOfItem(state.selectedListItems, payload.ID)
             if(foundIndex >= 0){
                 state.selectedListItems[foundIndex].item_meta.active = payload.active;
             }
@@ -101,7 +101,7 @@ export const store = new Vuex.Store({
         },
         changeActiveItem({ state, commit, dispatch }, params){
             /* change previously active item to not active */
-            let prevActiveItemIndex = findIndexOfItem(state, state.selectedListItems, state.activeItemID);
+            let prevActiveItemIndex = findIndexOfItem(state.selectedListItems, state.activeItemID);
             if (prevActiveItemIndex !== -1){
                 // save the previously active item and set the state of the item to false
                 dispatch('saveItem', state.selectedListItems[prevActiveItemIndex]);
@@ -111,6 +111,12 @@ export const store = new Vuex.Store({
             /* change new item ID to active */
             commit('changeActiveState', {active: true, ID: params.item_meta.id});
             commit('setActiveItemID', params.item_meta.id);
+        },
+        changeSelectedList({ state, commit, dispatch }, selectedList){
+            let indexOfList = this.state.personalLists.findIndex((list)=>{return list === selectedList})
+            commit('setSelectedList', this.state.personalLists[indexOfList]);
+            dispatch('loadSelectedListHeaders');
+            dispatch('loadSelectedListItems');
         },
         createNewItem({ state, commit }, params){
             let myRef = firebase.database().ref().push();
@@ -176,7 +182,7 @@ export const store = new Vuex.Store({
             let item = params;
             // using found index is better than item.item_meta.index bc it allows us to be ahead of the db
             // no lag is experienced for the user. Only user item.item_meta.index to load initial order of items
-            let foundIndex = findIndexOfItem(state, state.selectedListItems, item.item_meta.id)
+            let foundIndex = findIndexOfItem(state.selectedListItems, item.item_meta.id)
             state.selectedListItems.splice(foundIndex, 1);
             let itemDocRef = db.collection('lists_content').doc(state.selectedList.listContentKey).collection('items').doc(item.item_meta.id);
             itemDocRef.delete()
@@ -287,7 +293,7 @@ export const store = new Vuex.Store({
         },
         updateItemState({ state, commit }, params){
             let item = params.item;
-            let itemIndex = findIndexOfItem(state, state.selectedListItems, item.item_meta.id)
+            let itemIndex = findIndexOfItem(state.selectedListItems, item.item_meta.id)
             let newSelectedListItems = state.selectedListItems;
             newSelectedListItems[itemIndex]['values'][params.header] = params.newValue;
             commit('setSelectedListItems', newSelectedListItems);

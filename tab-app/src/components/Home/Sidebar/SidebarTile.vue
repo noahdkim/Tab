@@ -20,7 +20,7 @@
         },
         methods: {
             changeSelectedList(event) {
-                this.$store.dispatch('changeSelectedList', listSelector)
+                this.$store.dispatch('changeSelectedList', this.listSelector)
             }
         }
     }
