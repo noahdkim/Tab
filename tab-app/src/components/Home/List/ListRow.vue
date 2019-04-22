@@ -18,7 +18,7 @@
                       single-line>
       </list-cell>
   </v-layout>
-  <v-btn flat icon @click="deleteItem" :style="{opacity: showHandle ? 100 : 0 }">
+  <v-btn flat icon @click="deleteItem" :style="{opacity: showHandle ? 0.3 : 0 }">
               <v-icon>delete</v-icon>
     </v-btn>
 

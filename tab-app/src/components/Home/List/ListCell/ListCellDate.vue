@@ -84,6 +84,6 @@ v-text-field    {
 .textfield  {
   /*margin: 0px;*/
   padding: 0px;
-  margin-right: 20px;
+  margin-right: 0px;
 }
 </style>
