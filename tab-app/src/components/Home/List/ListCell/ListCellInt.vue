@@ -8,7 +8,8 @@
                           ref="{{item.id}}-{{header.text}}"
                           single-line
                           hide-details
-                          solo>
+                          solo
+                          flat>
 
                           <!-- :outline="!item.item_meta.active" -->
     </v-text-field>

@@ -19,6 +19,7 @@
             hide-details
             class="textfield"
             solo
+            flat
           ></v-text-field>
         <v-date-picker v-model="date" no-title scrollable>
           <v-spacer></v-spacer>
