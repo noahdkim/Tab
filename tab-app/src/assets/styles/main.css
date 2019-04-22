@@ -24,7 +24,7 @@
 .fade-enter-active,
 .fade-leave-active
 {
-  transition: all 0.3s;
+  transition: all 0.2s;
   /*transition: opacity .3s ease-in-out;*//*
   -moz-transition: all .3s ease-in-out;
   -webkit-transition: all .3s ease-in-out;*/
@@ -33,5 +33,5 @@
 .fade-enter,
 .fade-leave-to
 {
-  opacity: 0
+  opacity: 0;
 }

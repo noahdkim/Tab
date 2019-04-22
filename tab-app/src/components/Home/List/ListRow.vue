@@ -1,26 +1,36 @@
 <template>
   <v-layout row
-            :id="item.item_meta.id"
-            @click="makeActive"
-            @mouseover="mouseOver()"
-            @mouseleave="mouseLeave()"
-            >
-    <!-- <span class="fa fa-align-justify handle">&#9776;</span> -->
-    <span id="handle_id" class="fa fa-align-justify handle"
-            v-show=showHandle>::</span>
-          <!-- v-show=showHandle -->
-    <span class="fa fa-align-justify handle" style="color: rgba(255,255,255,0);"
-            v-show=!showHandle>::</span>
+  :id="item.item_meta.id"
+  @click="makeActive"
+  @mouseover="mouseOver()"
+  @mouseleave="mouseLeave()"
+  >
+
+    <transition name="fade" mode="out-in">
+        <div key="3" v-if="showHandle">
+            <span id="handle_id" class="fa fa-align-justify handle">::</span>
+        </div>
+        <div key="1" v-if="!showHandle">
+            <span class="fa fa-align-justify handle" style="color: rgba(255,255,255,0);">::</span>
+        </div>
+    </transition>
     <v-layout col v-for="header in headers" :key="header.id">
       <list-cell :item = "item"
-                      :header = "header"
-                      ref="{{item.item_meta.id}}-{{header.text}}"
-                      single-line>
-      </list-cell>
-  </v-layout>
-  <v-btn flat icon @click="deleteItem" :style="{opacity: showHandle ? 0.3 : 0 }">
-              <v-icon>delete</v-icon>
-    </v-btn>
+      :header = "header"
+      ref="{{item.item_meta.id}}-{{header.text}}"
+      single-line>
+  </list-cell>
+</v-layout>
+<v-btn flat icon @click="deleteItem" >
+    <transition name="fade" mode="out-in">
+        <div key="3" v-if="showHandle">
+            <v-icon style="opacity: 0.3;">delete</v-icon>
+        </div>
+        <div key="1" v-if="!showHandle">
+            <v-icon style="opacity: 0;">delete</v-icon>
+        </div>
+    </transition>
+</v-btn>
 
 </v-layout>
 </template>
@@ -102,27 +112,8 @@ input {
     margin: 0px;
 }
 
-.list-group {
-    /*min-height: 20px;*/
-}
-.list-group-item {
-    /*cursor: move;*/
-}
-.list-group-item i {
-    /*cursor: pointer;*/
-}
 
-.fade-enter,.fade-leave-to {
-    visibility: hidden;
-    height: 0;
-    margin: 0;
-    padding: 0;
-    opacity: 0;
-}
 
-.fade-enter-active,.fade-leave-active {
-    transition: all 0.3s;
-}
 
 
 </style>
