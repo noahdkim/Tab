@@ -122,6 +122,8 @@ export const store = new Vuex.Store({
             let myRef = firebase.database().ref().push();
             var key = myRef.key;
             let today = new Date()
+            console.log(today);
+            console.log(this.state.selectedDate)
             // need Date object with no seconds or miliseconds in order to parse into timestamp
             let d = new Date(today.getFullYear(),today.getMonth() , today.getDate());
             let firebaseDateSeconds = d.getTime() / 1000;

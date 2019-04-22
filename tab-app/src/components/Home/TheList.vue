@@ -70,9 +70,8 @@
         addNewItem() {
             /* wait for the promise */
             this.$store.dispatch('createNewItem').then((result) => {
-                console.log(result);
+                this.saveList();
             });
-
         },
         saveList() {
             /* this is async */

@@ -11,7 +11,7 @@
                         full-width></v-date-picker>
     </v-layout>
     <v-layout row>
-        <v-flex>
+        <v-flex v-if="dateFields.length > 1">
             Display
             <v-radio-group v-model="selectedDateField">
               <v-radio
@@ -22,7 +22,7 @@
               ></v-radio>
             </v-radio-group>
         </v-flex>
-        <v-flex>
+        <v-flex v-if="integerFields.length > 0">
             Weight
             <v-radio-group v-model="selectedIntegerField">
               <v-radio
@@ -114,8 +114,12 @@ export default  {
     },
     methods: {
         colorFunction(date){
+            if (this.$store.state.selectedListItems.length > 0 && this.totalWeights === 0){
+                return `rgba(244, 67, 54, .8)`;
+            }
             let alpha = this.dateWeights[date] / this.totalWeights;
-            alpha = alpha > .1 ? alpha : .1;
+            alpha = alpha < .1 ? .1 : alpha;
+            alpha = alpha > .8 ? .8 : alpha;
             return `rgba(244, 67, 54, ${alpha})`;
         }
     },
