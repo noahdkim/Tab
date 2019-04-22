@@ -26,7 +26,8 @@
                           single-line
                           hide-details
                           readonly
-                          disabled
+                          solo
+                          flat
                           >
 
                           <!-- :outline="!item.item_meta.active" -->

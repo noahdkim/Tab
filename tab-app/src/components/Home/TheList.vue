@@ -2,6 +2,7 @@
     <v-container>
         <div class="list-body">
             <list-header :headers=selectedListHeaders></list-header>
+            <hr>
             <draggable
             class="list-group"
             handle=".handle"
