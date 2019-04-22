@@ -1,12 +1,14 @@
 <template>
 <v-navigation-drawer class="sidebar" permanent v-if="show">
     <v-list>
-         <sidebar-tile
-           v-for="personalList in personalLists"
-           :listSelector="personalList"
-           :key="personalList.id"
-         >
-        </sidebar-tile>
+        <draggable>
+            <sidebar-tile
+               v-for="personalList in personalLists"
+               :listSelector="personalList"
+               :key="personalList.id"
+             >
+            </sidebar-tile>
+        </draggable>
          <v-list-tile
             @click="openCreateListDialog"
          >
@@ -30,11 +32,14 @@ import SidebarForm from './Sidebar/SidebarForm'
 import SidebarTile from './Sidebar/SidebarTile'
 import router from '@/router'
 
+import draggable from 'vuedraggable'
+
 
 export default {
     components: {
         SidebarForm,
-        SidebarTile
+        SidebarTile,
+        draggable
     },
     data() {
             return {
