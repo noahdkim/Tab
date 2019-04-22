@@ -9,7 +9,8 @@
     <v-layout col 
         v-for="header in headers" 
         :key="header.id"
-        align-start>
+        align-start
+        class="listcells">
       <list-cell
        :item = "item"
       :header = "header"
@@ -98,6 +99,10 @@ makeActive (event) {
 input {
     display: inline-block;
     /*width: 50%;*/
+}
+.listcells  {
+    border-top:     1px solid rgba(0,0,0,.06);
+    border-bottom:  1px solid rgba(0,0,0,.06);
 }
 .text {
     margin: 0px;
