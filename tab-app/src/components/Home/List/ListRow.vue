@@ -52,16 +52,7 @@ makeActive (event) {
           },
           mouseOver(event)    {
               this.showHandle = true;
-              var vm = this;
-
               console.log("this.item_meta.active: " + this.item.item_meta.active);
-
-              EventBus.$on('the-list-drag-event', drag => {
-                // is this necessary? it seems to slow down code a good amount
-                if(drag)    {
-                  this.showHandle = false;
-              }
-          });
           },
           mouseLeave(event)   {
               this.showHandle = false;
