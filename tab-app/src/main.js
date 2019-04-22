@@ -19,7 +19,7 @@ Vue.use(Vuetify, {
 })
 
 /* connect to firebase */
-
+require("firebase/functions");
 
 
 /* eslint-disable no-new */

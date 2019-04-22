@@ -6,7 +6,7 @@
           <v-list-tile-title>{{ listSelector.name }}</v-list-tile-title>
        </v-list-tile-content>
        <v-menu @click.native.stop>
-               <v-btn icon slot="activator" 
+               <v-btn icon slot="activator"
                >
                    <v-icon>more_horiz</v-icon>
                </v-btn>
@@ -16,7 +16,7 @@
               :key="index"
               @click=""
             >
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+              <v-list-tile-title @click.stop="deleteList">{{ item.title }}</v-list-tile-title>
             </v-list-tile>
           </v-list>
        </v-menu>
@@ -35,6 +35,10 @@
         methods: {
             changeSelectedList(event) {
                 this.$store.dispatch('changeSelectedList', this.listSelector)
+            },
+            deleteList(event){
+                console.log("deleting list.....")
+                this.$store.dispatch('deleteList', this.listSelector);
             },
             showDropdown() {
                 console.log("show dropdown")

@@ -15,6 +15,9 @@ firebase.initializeApp({
 })
 
 export const db = firebase.firestore();
+var functions = firebase.functions();
+
+
 
 /*
     appTitle - title of the app
@@ -157,14 +160,15 @@ export const store = new Vuex.Store({
 
             myRef = firebase.database().ref().push();
             let listContentKey = myRef.key;
-            console.log(listMetaKey, listContentKey);
+            let newListData = {listContentKey: listContentKey,
+                                  name: listName,
+                                  id: listMetaKey}
             // create in db first and then switch in UI or the other way?
             let newListMeta = db.collection("lists_meta")
                                 .doc(state.user.uid)
                                 .collection("personal_lists")
                                 .doc(listMetaKey)
-                                .set({listContentKey: listContentKey,
-                                      name: listName});
+                                .set(newListData);
             let newListHeadersRef = db.collection("lists_content")
                                             .doc(listContentKey)
                                             .collection("headers")
@@ -177,11 +181,12 @@ export const store = new Vuex.Store({
                 batch.set(newListHeadersRef.doc(newHeaderKey), (columnOptions[i]));
             }
             batch.commit().then(function () {
-                console.log("done!")
+                let personalLists = state.personalLists
+                personalLists.push(newListData)
+                commit('setPersonalLists', personalLists)
             });
         },
-        deleteItem({ state, commit, dispatch }, params){
-            let item = params;
+        deleteItem({ state, commit, dispatch }, item){
             // using found index is better than item.item_meta.index bc it allows us to be ahead of the db
             // no lag is experienced for the user. Only user item.item_meta.index to load initial order of items
             let foundIndex = findIndexOfItem(state.selectedListItems, item.item_meta.id)
@@ -195,6 +200,33 @@ export const store = new Vuex.Store({
                 .catch(function(error) {
                     console.error("Error writing document: ", error);
                 });
+        },
+        deleteList({ state, commit, dispatch }, list){
+            let listMetaRef = db.collection('lists_meta')
+                                .doc(state.user.uid)
+                                .collection('personal_lists')
+                                .doc(list.id)
+            let listContentRef = db.collection('lists_content')
+                                    .doc(list.listContentKey)
+            // let recursiveDelete = firebase.functions().httpsCallable('recursiveDelete');
+            // let data = {path:'/lists_content/'+list.listContentKey}
+            // recursiveDelete(data).then((result) => console.log(result))
+            listMetaRef.delete().then((result)=>{
+                                        console.log(result)
+                                        console.log("done")
+                                        console.log(list.id)
+                                        let personalLists = state.personalLists
+                                        let listIndex = personalLists
+                                                            .findIndex((personalList)=>{return personalList===list})
+                                        personalLists.splice(listIndex, 1);
+                                        commit('setPersonalLists', personalLists);
+                                        if (state.selectedList === list){
+                                            dispatch('changeSelectedList', state.personalLists[0]);
+
+                                        }
+                                    }).catch(function(error) {
+                                console.error("Error removing document: ", error);
+                            });
         },
         loadGroupListData({ state, commit }) {
             let user_meta = db.collection("lists_meta").doc(state.user.uid);
