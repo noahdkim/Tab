@@ -6,6 +6,8 @@
   @mouseleave="mouseLeave()"
   >
     <span class="fa fa-align-justify handle" :style="{ opacity: showHandle ? 0.3 : 0 }">::</span>
+    <v-checkbox></v-checkbox>
+
     <v-layout col 
         v-for="header in headers" 
         :key="header.id"
