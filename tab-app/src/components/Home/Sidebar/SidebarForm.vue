@@ -61,7 +61,7 @@ export default {
             if (this.$refs.form.validate()) {
                 let columnOptions = this.columnOptions
                 let listName = this.listName
-                this.$store.dispatch('createNewList', {listName, columnOptions})
+                this.$store.dispatch('createNewList', {listName, columnOptions}).then(this.$emit('close-dialog'))
             }
         },
         updateColumnOptionName(event){

@@ -14,14 +14,14 @@
         </v-flex>
 
         <v-flex xs4 sm4 d-flex>
-            <v-select
+            <v-overflow-btn editable
             required
               :items="types"
               label="Type"
               :rules="[v => !!v || 'Item is required']"
               :value="columnOption.type"
               @change="updateColumnOptionType"
-            ></v-select>
+            ></v-overflow-btn>
         </v-flex>
     </v-layout>
 
