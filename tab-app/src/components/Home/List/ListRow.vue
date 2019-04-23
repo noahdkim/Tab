@@ -5,21 +5,19 @@
   @mouseover="mouseOver()"
   @mouseleave="mouseLeave()"
   >
-
-    <!-- <transition name="fade" mode="out-in">
-        <div key="3" v-if="showHandle">
-            <span id="handle_id" class="fa fa-align-justify handle">::</span>
-        </div>
-        <div key="1" v-if="!showHandle">
-            <span class="fa fa-align-justify handle" style="color: rgba(255,255,255,0);">::</span>
-        </div>
-    </transition> -->
     <span class="fa fa-align-justify handle" :style="{ opacity: showHandle ? 0.3 : 0 }">::</span>
-    <v-layout col v-for="header in headers" :key="header.id">
-      <list-cell :item = "item"
+    <v-layout col 
+        v-for="header in headers" 
+        :key="header.id"
+        align-start
+        class="listcells">
+      <list-cell
+       :item = "item"
       :header = "header"
       ref="{{item.item_meta.id}}-{{header.text}}"
-      single-line>
+      single-line
+      v-bind:class="{ activeRow: !item.item_meta.active }"
+      >
   </list-cell>
 </v-layout>
 <v-btn flat icon @click="deleteItem" >
@@ -58,14 +56,7 @@ makeActive (event) {
           },
           mouseOver(event)    {
               this.showHandle = true;
-              var vm = this;
-
-              EventBus.$on('the-list-drag-event', drag => {
-                // is this necessary? it seems to slow down code a good amount
-                if(drag)    {
-                  this.showHandle = false;
-              }
-          });
+              console.log("this.item_meta.active: " + this.item.item_meta.active);
           },
           mouseLeave(event)   {
               this.showHandle = false;
@@ -79,6 +70,9 @@ makeActive (event) {
 </script>
 
 <style scoped>
+.activeRow  {
+    background-color: #f0f;
+}
 .button {
     /*margin-top: 35px;*/
 }
@@ -105,6 +99,10 @@ makeActive (event) {
 input {
     display: inline-block;
     /*width: 50%;*/
+}
+.listcells  {
+    border-top:     1px solid rgba(0,0,0,.06);
+    border-bottom:  1px solid rgba(0,0,0,.06);
 }
 .text {
     margin: 0px;

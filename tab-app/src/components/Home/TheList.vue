@@ -1,7 +1,9 @@
 <template>
     <v-container>
-        <list-header :headers=selectedListHeaders></list-header>
-        <div class="list-body">
+        <div class="list-all">
+            <list-header :headers=selectedListHeaders></list-header>
+            <hr>
+            <div class="list-body">
             <draggable
             class="list-group"
             handle=".handle"
@@ -21,6 +23,7 @@
                     </list-row>
                 </transition-group>
             </draggable>
+        </div>
         </div>
   <v-btn @click.native="saveList">Save</v-btn>
   <v-btn @click.native="addNewItem">Add item</v-btn>
@@ -119,7 +122,10 @@
   margin-top: 35px;
 }
 .ghost {
-  opacity: 0.75;
+  opacity: 0.2;
+
+  border-radius: 10px;
+
   /*background: #c8ebfb;*/
 }
 
@@ -143,28 +149,25 @@ input {
   background-color: rgba(0,0,0,0);
   /*background-color: #cfc;*/
 
-}
-.list-group-item {
-  /*cursor: move;*/
-}
-.list-group-item i {
-  /*cursor: pointer;*/
+
 }
 
 
 /*************************************************/
-.list-body  {
-    background-color: rgba(0,0,0,0);
-
+.list-all   {
     padding-top:    20px;
     padding-bottom: 20px;
     padding-right:  20px;
+}
+.list-body {
+    background-color: rgba(0,0,0,0);
 }
 
 .draggable-row  {
     background-color: #ffffff;
 
-    border-radius: 10px;
+    /*border-radius: 1px;*/
+    /*border-bottom:  1px solid rgba(0,0,0,.125);*/
 }
 
 hr {
