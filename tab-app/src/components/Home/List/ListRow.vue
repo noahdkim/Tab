@@ -6,8 +6,10 @@
   @mouseleave="mouseLeave()"
   >
     <span class="fa fa-align-justify handle" :style="{ opacity: showHandle ? 0.3 : 0 }">::</span>
-    <v-checkbox></v-checkbox>
-
+    <!-- <v-checkbox></v-checkbox> -->
+<p-check class="p-icon p-curve">
+        <i class="icon mdi mdi-close" slot="extra"></i>
+    </p-check>
     <v-layout col 
         v-for="header in headers" 
         :key="header.id"
@@ -33,8 +35,13 @@
   import ListCell from './ListCell'
 
   import { EventBus } from '@/store/modules/event-bus.js';
+
+  import PrettyInput from 'pretty-checkbox-vue/input';
+  import PrettyCheck from 'pretty-checkbox-vue/check';
+  import PrettyRadio from 'pretty-checkbox-vue/radio';
+
   export default {
-    components: {ListCell},
+    components: {ListCell, PrettyInput, PrettyCheck, PrettyRadio},
     props: ['item', 'headers'],
 
     data () {
