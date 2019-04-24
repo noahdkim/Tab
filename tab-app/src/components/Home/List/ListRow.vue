@@ -10,8 +10,8 @@
 <p-check class="p-icon p-curve">
         <i class="icon mdi mdi-close" slot="extra"></i>
     </p-check>
-    <v-layout col 
-        v-for="header in headers" 
+    <v-layout col
+        v-for="header in headers"
         :key="header.id"
         align-start
         class="listcells">
@@ -20,12 +20,13 @@
       :header = "header"
       ref="{{item.item_meta.id}}-{{header.text}}"
       single-line
-      v-bind:class="{ activeRow: !item.item_meta.active }"
+      :class="{ 'activeRow': item.item_meta.active }"
       >
   </list-cell>
 </v-layout>
 <v-btn flat icon @click="deleteItem" >
-    <v-icon class="deleteIcon" :style="{ opacity: showHandle ? 0.3 : 0 }">delete</v-icon>
+    <!-- <v-icon class="deleteIcon" :style="{ opacity: showHandle ? 0.3 : 0 }">delete</v-icon> -->
+    <v-icon class="deleteIcon" :style="{ opacity: item.item_meta.active ? 0.3 : 0 }">delete</v-icon>
 </v-btn>
 
 </v-layout>
@@ -80,7 +81,8 @@ makeActive (event) {
 
 <style scoped>
 .activeRow  {
-    background-color: #f0f;
+    background-color: #ff00ff;
+    color:red
 }
 .button {
     /*margin-top: 35px;*/

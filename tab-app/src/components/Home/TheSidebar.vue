@@ -1,5 +1,6 @@
 <template>
 <v-navigation-drawer class="sidebar" permanent v-if="show">
+    
     <v-list>
         <draggable>
             <sidebar-tile
@@ -16,7 +17,7 @@
                 <v-icon>add</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-                <v-list-tile-title >Add List</v-list-tile-title>
+                <v-list-tile-title >Create New List</v-list-tile-title>
             </v-list-tile-content>
          </v-list-tile>
          <v-dialog v-model="dialog"  max-width="600px">
@@ -49,6 +50,8 @@ export default {
     },
     computed: {
         personalLists () {
+            console.log(this.$store.state.selectedList)
+
             return this.$store.state.personalLists
         }
     },

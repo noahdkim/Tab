@@ -1,6 +1,8 @@
 <template>
     <v-list-tile
         @click="changeSelectedList"
+        active-class='tile'
+        :class="{'active-class' : isActive}"
     >
        <v-list-tile-content >
           <v-list-tile-title>{{ listSelector.name }}</v-list-tile-title>
@@ -31,9 +33,16 @@
                 { title: 'Delete List' },
             ],
           }),
+          computed: {
+              isActive () {
+                  console.log(this.listSelector===this.$store.state.selectedList)
+                  return this.listSelector===this.$store.state.selectedList
+              }
+          },
 
         methods: {
             changeSelectedList(event) {
+                //console.log(this.listSelector===this.$store.state.selectedList)
                 this.$store.dispatch('changeSelectedList', this.listSelector)
             },
             deleteList(event){
@@ -46,3 +55,9 @@
         }
     }
 </script>
+
+<style scoped>
+  .active-class {
+      background: #d7d7d7;
+  }
+</style>
