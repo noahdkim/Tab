@@ -6,7 +6,7 @@
   @mouseleave="mouseLeave()"
   >
     <span class="fa fa-align-justify handle" :style="{ opacity: showHandle ? 0.3 : 0 }">::</span>
-    <v-checkbox default v-model="checkbox"></v-checkbox>
+    <v-checkbox class="checkbox" default v-model="checkbox"></v-checkbox>
 <!-- <p-check class="p-icon p-curve">
         <i class="icon mdi mdi-close" slot="extra"></i>
     </p-check> -->  
@@ -85,6 +85,14 @@ makeActive (event) {
 .button {
     /*margin-top: 35px;*/
 }
+
+.checkbox {
+    max-width:  47px;
+    min-width:  47px;
+    max-height: 52px;
+    min-height: 52px;
+}
+
 .handle {
     padding: 5px;
     margin-left: 10px;
