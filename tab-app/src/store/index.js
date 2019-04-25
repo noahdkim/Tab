@@ -37,6 +37,7 @@ export const store = new Vuex.Store({
     state: {
         activeItemID: 0,
         appTitle: 'Tab',
+        dateFilterHeader: {},
         selectedDate: '',
         error: null,
         loading: false,
@@ -47,12 +48,11 @@ export const store = new Vuex.Store({
         selectedListHeaders: [],
     },
     getters: {
-        selectedDate: (state) => {
-            return state.selectedDate;
-        },
         activeItemID: (state) => {
-            return state.activeItemID
-        }
+            return state.activeItemID;
+        },
+
+
     },
     /* change state values */
     mutations: {
@@ -131,8 +131,9 @@ export const store = new Vuex.Store({
             let today = new Date()
             console.log(today);
             console.log(this.state.selectedDate)
+            console.log(new Date(this.state.selectedDate))
             // need Date object with no seconds or miliseconds in order to parse into timestamp
-            let d = new Date(today.getFullYear(),today.getMonth() , today.getDate());
+            let d = new Date(this.state.selectedDate)
             let firebaseDateSeconds = d.getTime() / 1000;
             let todayTimestamp = new firebase.firestore.Timestamp(firebaseDateSeconds, 0)
             let newItem = {
@@ -180,9 +181,10 @@ export const store = new Vuex.Store({
 
             let batch = db.batch();
             for(let i=0; i<columnOptions.length; ++i){
-                columnOptions[i].index = i;
                 let headerRef = firebase.database().ref().push();
                 var newHeaderKey = headerRef.key;
+                columnOptions[i].index = i;
+                columnOptions[i].id = newHeaderKey;
                 batch.set(newListHeadersRef.doc(newHeaderKey), (columnOptions[i]));
             }
             batch.commit().then(function () {
@@ -411,6 +413,12 @@ export const store = new Vuex.Store({
         },
         getSelectedListHeaders(state) {
             return state.selectedListHeaders;
+        },
+        getDateFilterHeader: (state) => {
+            return state.dateFilterHeader;
+        },
+        getSelectedDate: (state) => {
+            return state.selectedDate;
         },
 
     }

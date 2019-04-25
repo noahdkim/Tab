@@ -14,7 +14,7 @@
             :list="this.selectedListItems"
             >
                 <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-                    <list-row v-for="item in selectedListItems"
+                    <list-row v-for="item in filteredListItems"
                     :key="item.item_meta.id"
                     :item="item"
                     :headers="selectedListHeaders"
@@ -60,16 +60,33 @@
         computed: {
             ...mapGetters({
                 selectedListHeaders: 'getSelectedListHeaders',
-                selectedListItems: 'getSelectedListItems'
+                selectedListItems: 'getSelectedListItems',
+                dateFilterHeader: 'getDateFilterHeader',
+                selectedDate: 'getSelectedDate',
             }),
             dragOptions() {
-              return {
-                animation: 200,
-                group: "description",
-                disabled: false,
-                ghostClass: "ghost"
-            };
-        }
+                return {
+                    animation: 200,
+                    group: "description",
+                    disabled: false,
+                    ghostClass: "ghost"
+                };
+            },
+            filteredListItems: {
+                get(){
+                    let selectedDate = new Date(this.selectedDate)
+                    let filteredListItems = [];
+                    this.selectedListItems.forEach((item)=>{
+                        console.log(item.values[this.dateFilterHeader.name].toDate())
+                        console.log(selectedDate)
+                        if (item.values[this.dateFilterHeader.name].toDate().getTime() === selectedDate.getTime() ||
+                                item.item_meta.active === true){
+                            filteredListItems.push(item);
+                        }
+                    })
+                    return filteredListItems;
+                }
+            }
     },
     methods: {
         addNewItem() {
