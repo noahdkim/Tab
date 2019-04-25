@@ -67,7 +67,7 @@ export default  {
                 this.dateWeights = {};
                 this.totalWeights = 0;
                 let listDates = this.$store.state.selectedListItems.map((item) =>{
-                    let date = item.values[this.dateFilterHeader.name].toDate().toISOString().substr(0, 10)
+                    let date = item.values[this.dateFilterHeader.id].toDate().toISOString().substr(0, 10)
                     let priority = item.values[this.selectedIntegerField];
                     priority = priority ? parseInt(item.values[this.selectedIntegerField]) : 0;
                     this.totalWeights += priority;

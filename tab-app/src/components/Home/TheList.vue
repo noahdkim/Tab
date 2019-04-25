@@ -72,18 +72,14 @@
             },
             filteredListItems: {
                 get(){
-                    if(this.$store.state.showAll){
-                        return this.selectedListItems;
+                    let filteredListItems = this.selectedListItems;
+                    if (!this.$store.state.showAll){
+                        filteredListItems = filteredListItems.filter((item)=>{
+                            return item.values[this.dateFilterHeader.name].toDate().getTime() === selectedDate.getTime() ||
+                                        item.item_meta.active
+                        })
                     }
-                    let selectedDate = new Date(this.selectedDate)
-                    let filteredListItems = [];
-                    console.log(this.dateFilterHeader.name);
-                    this.selectedListItems.forEach((item)=>{
-                        if (item.values[this.dateFilterHeader.name].toDate().getTime() === selectedDate.getTime() ||
-                                item.item_meta.active === true){
-                            filteredListItems.push(item);
-                        }
-                    })
+
                     return filteredListItems;
                 }
             }
