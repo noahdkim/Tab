@@ -1,8 +1,9 @@
 <template>
     <v-container>
         <div class="list-all">
-            <list-header :headers=selectedListHeaders></list-header>
-            <hr>
+            <div class="list-head">
+                <list-header :headers=selectedListHeaders></list-header>
+            </div>
             <div class="list-body">
             <draggable
             class="list-group"
@@ -23,6 +24,7 @@
                     </list-row>
                 </transition-group>
             </draggable>
+            <span class="mdi mdi-plus-circle"></span>
         </div>
         </div>
   <v-btn @click.native="saveList">Save</v-btn>
@@ -107,72 +109,5 @@
     }
 };
 </script>
-<style scoped>
-.flip-list-move {
-  transition: transform 0.5s;
-  background-color: #0f0;
-}
-.flip-list  {
-    background-color: #0f0;
-}
-.no-move {
-  transition: transform 0s;
-}
-.button {
-  margin-top: 35px;
-}
-.ghost {
-  opacity: 0.2;
 
-  border-radius: 10px;
-
-  /*background: #c8ebfb;*/
-}
-
-.close {
-  float: right;
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-input {
-  display: inline-block;
-  width: 50%;
-}
-.text {
-  margin: 20px;
-}
-
-.list-group {
-  min-height: 20px;
-
-  /* Color behind the list draggable-rows */
-  background-color: rgba(0,0,0,0);
-  /*background-color: #cfc;*/
-
-
-}
-
-
-/*************************************************/
-.list-all   {
-    padding-top:    20px;
-    padding-bottom: 20px;
-    padding-right:  20px;
-}
-.list-body {
-    background-color: rgba(0,0,0,0);
-}
-
-.draggable-row  {
-    background-color: #ffffff;
-
-    /*border-radius: 1px;*/
-    /*border-bottom:  1px solid rgba(0,0,0,.125);*/
-}
-
-hr {
-    background-color: #000;
-    color: #000;
-}
-
-</style>
+<style scoped src="@/assets/styles/thelist.css"></style>

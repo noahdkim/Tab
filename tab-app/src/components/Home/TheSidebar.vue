@@ -2,7 +2,11 @@
 <v-navigation-drawer class="sidebar" permanent v-if="show">
     
     <v-list>
-        <draggable>
+        <draggable
+            handle=".handle"
+            v-bind="dragOptions"
+            :list="this.personalLists"
+            >
             <sidebar-tile
                v-for="personalList in personalLists"
                :listSelector="personalList"
@@ -45,7 +49,9 @@ export default {
     data() {
             return {
                 userEmail: this.$store.state.user.email,
-                dialog: false
+                dialog: false,
+                showHandle: false,
+
             }
     },
     computed: {
@@ -53,7 +59,15 @@ export default {
             console.log(this.$store.state.selectedList)
 
             return this.$store.state.personalLists
-        }
+        },
+         dragOptions() {
+              return {
+                animation: 200,
+                group: "description",
+                disabled: false,
+                ghostClass: "ghost"
+            };
+        },
     },
     props:{
         show: Boolean,
@@ -67,10 +81,10 @@ export default {
             this.$store.dispatch('loadPersonalListData');
         },
         openCreateListDialog() {
-            this.dialog=true
+            this.dialog = true
         },
     },
     name: 'TheSidebar'
 }
 </script>
-<style scoped src="@/assets/styles/main.css"></style>
+<style scoped src="@/assets/styles/thesidebar.css"></style>

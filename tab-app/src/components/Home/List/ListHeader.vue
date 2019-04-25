@@ -1,6 +1,7 @@
 <template>
 	<v-layout row class="header-row">
 		<span class="spacer-handle"></span>
+    <span class="spacer-checkbox"></span>
 		<v-layout col 
 		v-for="header in headers" 
 		:key="header.name"
@@ -50,6 +51,19 @@
           </script>
 
           <style scoped>
+          .spacer-checkbox  {
+            max-width:    47px;
+            min-width:    47px;
+            max-height:   52px;
+            min-height:   52px;
+
+            opacity:      0;
+            color: rgba(0, 0, 0, 0);
+            background-color: rgba(0, 0, 0, 0);
+
+            border: 1px solid #000;
+          }
+
           .spacer-handle	{
           	max-width:		26px;
           	min-width:		26px;
@@ -57,7 +71,7 @@
           	min-height: 	26px;
 
           	margin-left: 	10px;
-          	margin-right: 	10px;
+          	margin-right: 10px;
 
           	opacity: 0;
           	color: rgba(0, 0, 0, 0);
@@ -87,5 +101,7 @@
           .textfield  {
           	/*margin: 0px;*/
           	padding: 0px;
+
+          	border-bottom: 1px solid rgba(0,0,0,0.125);
           }
       </style>
