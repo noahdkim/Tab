@@ -47,10 +47,10 @@ export default {
     computed: {
         date: {
             get: function() {
-                return new Date(this.item.values[this.header.name].seconds * 1000).toISOString().substring(0,10);
+                return new Date(this.item.values[this.header.id].seconds * 1000).toISOString().substring(0,10);
             },
             set: function(newDate) {
-                let header = this.header.name;
+                let header = this.header.id;
                 let itemID = this.item.item_meta.id;
                 let newValue = this.parseISOString(newDate);
                 // let newValue = newDate.getTime();

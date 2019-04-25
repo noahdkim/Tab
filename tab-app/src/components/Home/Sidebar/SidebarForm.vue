@@ -45,7 +45,7 @@ export default {
         SidebarFormRow
     },
     data: () => ({
-        columnOptions: [{}, {}, {}],
+        columnOptions: [{}],
         valid: true,
         listName: '',
         listNameRules: [
@@ -61,7 +61,11 @@ export default {
             if (this.$refs.form.validate()) {
                 let columnOptions = this.columnOptions
                 let listName = this.listName
-                this.$store.dispatch('createNewList', {listName, columnOptions}).then(this.$emit('close-dialog'))
+                this.$store.dispatch('createNewList', {listName, columnOptions}).then(() => {
+                    this.$emit('close-dialog')
+                    this.$refs.form.reset()
+                })
+
             }
         },
         updateColumnOptionName(event){

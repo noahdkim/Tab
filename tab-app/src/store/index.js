@@ -37,6 +37,8 @@ export const store = new Vuex.Store({
     state: {
         activeItemID: 0,
         appTitle: 'Tab',
+        dateFilterHeader: {},
+        showAll: true,
         selectedDate: '',
         error: null,
         loading: false,
@@ -46,24 +48,18 @@ export const store = new Vuex.Store({
         selectedListItems: [],
         selectedListHeaders: [],
     },
-    getters: {
-        selectedDate: (state) => {
-            return state.selectedDate;
-        },
-        activeItemID: (state) => {
-            return state.activeItemID
-        }
-    },
     /* change state values */
     mutations: {
         changeActiveState(state, payload) {
+            let foundIndex = findIndexOfItem(state.selectedListItems, payload.id)
+            if (foundIndex < 0){
+                return;
+            }
             if (payload.active === true){
-                state.activeItemID = payload.ID;
+                state.activeItemID = payload.id;
             }
-            let foundIndex = findIndexOfItem(state.selectedListItems, payload.ID)
-            if(foundIndex >= 0){
-                state.selectedListItems[foundIndex].item_meta.active = payload.active;
-            }
+            state.selectedListItems[foundIndex].item_meta.active = payload.active;
+
         },
         setActiveItemID(state, payload){
             state.activeItemID = payload;
@@ -102,18 +98,20 @@ export const store = new Vuex.Store({
                 uid: payload.uid,
             })
         },
-        changeActiveItem({ state, commit, dispatch }, params){
+        changeActiveItem({ state, commit, dispatch }, item){
             /* change previously active item to not active */
-            let prevActiveItemIndex = findIndexOfItem(state.selectedListItems, state.activeItemID);
-            if (prevActiveItemIndex !== -1){
-                // save the previously active item and set the state of the item to false
+            console.log(state.activeItemID)
+            // save the previously active item and set the state of the item to false
+            let prevActiveItemIndex = findIndexOfItem(state.selectedListItems, state.activeItemID)
+            if(prevActiveItemIndex >= 0){
+                console.log(state.selectedListItems[prevActiveItemIndex])
                 dispatch('saveItem', state.selectedListItems[prevActiveItemIndex]);
-                commit('changeActiveState', {active: false, ID: state.activeItemID});
+                commit('changeActiveState', {active: false, id: state.activeItemID});
             }
 
             /* change new item ID to active */
-            commit('changeActiveState', {active: true, ID: params.item_meta.id});
-            commit('setActiveItemID', params.item_meta.id);
+            commit('changeActiveState', {active: true, id: item.item_meta.id});
+            commit('setActiveItemID', item.item_meta.id);
         },
         changeSelectedList({ state, commit, dispatch }, selectedList){
             let indexOfList = this.state.personalLists.findIndex((list)=>{return list === selectedList})
@@ -121,34 +119,36 @@ export const store = new Vuex.Store({
             dispatch('loadSelectedListHeaders');
             dispatch('loadSelectedListItems');
         },
-        createNewItem({ state, commit }, params){
+        createNewItem({ state, commit, dispatch }, params){
             let myRef = firebase.database().ref().push();
             var key = myRef.key;
             let today = new Date()
             console.log(today);
             console.log(this.state.selectedDate)
+            console.log(new Date(this.state.selectedDate))
             // need Date object with no seconds or miliseconds in order to parse into timestamp
-            let d = new Date(today.getFullYear(),today.getMonth() , today.getDate());
+            let d = new Date(this.state.selectedDate)
             let firebaseDateSeconds = d.getTime() / 1000;
             let todayTimestamp = new firebase.firestore.Timestamp(firebaseDateSeconds, 0)
             let newItem = {
                             item_meta:{
                                 id: key,
-                                active: true,
+                                active: false,
                                 index: state.selectedListItems.length,
                             },
                             values: {}
             }
             state.selectedListHeaders.forEach((header) =>{
                 if (header.type === "date"){
-                    newItem.values[header.name] = todayTimestamp;
+                    newItem.values[header.id] = todayTimestamp;
                 } else {
-                    newItem.values[header.name] = "";
+                    newItem.values[header.id] = "";
                 }
             }
 
             )
             state.selectedListItems.push(newItem);
+            dispatch('changeActiveItem', newItem);
             return "added";
         },
         createNewList({ state, commit }, params){
@@ -175,9 +175,10 @@ export const store = new Vuex.Store({
 
             let batch = db.batch();
             for(let i=0; i<columnOptions.length; ++i){
-                columnOptions[i].index = i;
                 let headerRef = firebase.database().ref().push();
                 var newHeaderKey = headerRef.key;
+                columnOptions[i].index = i;
+                columnOptions[i].id = newHeaderKey;
                 batch.set(newListHeadersRef.doc(newHeaderKey), (columnOptions[i]));
             }
             batch.commit().then(function () {
@@ -271,7 +272,8 @@ export const store = new Vuex.Store({
                     // let timestamp = new Date(item.date.seconds * 1000);
                     // item.date = timestamp;
                     let item = doc.data();
-                    item.item_meta.id = doc.id;
+                    // item.item_meta.id = doc.id;
+                    item.item_meta.active = false;
                     selectedListItems.push(item);
                 });
 
@@ -296,9 +298,11 @@ export const store = new Vuex.Store({
 
             commit('setSelectedListHeaders', newSelectedListHeaders);
         },
-        saveItem({ state, commit }, params){
-            let item = params;
-            let itemDocRef = db.collection('lists_content').doc(state.selectedList.id).collection('items').doc(item.item_meta.id);
+        saveItem({ state, commit }, item){
+            if(item == null){
+                return;
+            }
+            let itemDocRef = db.collection('lists_content').doc(state.selectedList.listContentKey).collection('items').doc(item.item_meta.id);
             itemDocRef.set(item)
             .catch(function(error) {
                 console.error("Error writing document: ", error);
@@ -329,7 +333,7 @@ export const store = new Vuex.Store({
             let item = params.item;
             let itemIndex = findIndexOfItem(state.selectedListItems, item.item_meta.id)
             let newSelectedListItems = state.selectedListItems;
-            newSelectedListItems[itemIndex]['values'][params.header] = params.newValue;
+            newSelectedListItems[itemIndex]['values'][params.headerId] = params.newValue;
             commit('setSelectedListItems', newSelectedListItems);
         },
         userSignIn({
@@ -403,6 +407,12 @@ export const store = new Vuex.Store({
         },
         getSelectedListHeaders(state) {
             return state.selectedListHeaders;
+        },
+        getDateFilterHeader: (state) => {
+            return state.dateFilterHeader;
+        },
+        getSelectedDate: (state) => {
+            return state.selectedDate;
         },
 
     }

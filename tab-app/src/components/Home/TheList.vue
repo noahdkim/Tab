@@ -14,7 +14,7 @@
             :list="this.selectedListItems"
             >
                 <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-                    <list-row v-for="item in selectedListItems"
+                    <list-row v-for="item in filteredListItems"
                     :key="item.item_meta.id"
                     :item="item"
                     :headers="selectedListHeaders"
@@ -54,22 +54,35 @@
             drag: false
         }),
         created() {
-            /* Probably get rid of this. Saving is async */
-            // window.addEventListener('beforeunload', this.saveList, false)
         },
         computed: {
             ...mapGetters({
                 selectedListHeaders: 'getSelectedListHeaders',
-                selectedListItems: 'getSelectedListItems'
+                selectedListItems: 'getSelectedListItems',
+                dateFilterHeader: 'getDateFilterHeader',
+                selectedDate: 'getSelectedDate',
             }),
             dragOptions() {
-              return {
-                animation: 200,
-                group: "description",
-                disabled: false,
-                ghostClass: "ghost"
-            };
-        }
+                return {
+                    animation: 200,
+                    group: "description",
+                    disabled: false,
+                    ghostClass: "ghost"
+                };
+            },
+            filteredListItems: {
+                get(){
+                    let filteredListItems = this.selectedListItems;
+                    if (!this.$store.state.showAll){
+                        filteredListItems = filteredListItems.filter((item)=>{
+                            return item.values[this.dateFilterHeader.name].toDate().getTime() === selectedDate.getTime() ||
+                                        item.item_meta.active
+                        })
+                    }
+
+                    return filteredListItems;
+                }
+            }
     },
     methods: {
         addNewItem() {
@@ -96,11 +109,7 @@
             EventBus.$emit('the-list-drag-event', this.drag);
         },
         endDrag() {
-            console.log("endDrag()");
             this.drag = false;
-            console.log("selectedListItems:");
-            console.log(this.selectedListItems);
-            // remove this
             this.saveListOrderToFirestore();
             this.saveList();
 

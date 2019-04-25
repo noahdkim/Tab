@@ -1,6 +1,8 @@
 <template>
     <v-list-tile
         @click="changeSelectedList"
+        active-class='tile'
+        :class="{'active-class' : isActive}"
         @mouseover="mouseOver()"
         @mouseleave="mouseLeave()"
     >
@@ -36,9 +38,16 @@
             showHandle: false,
 
           }),
+          computed: {
+              isActive () {
+                  console.log(this.listSelector===this.$store.state.selectedList)
+                  return this.listSelector===this.$store.state.selectedList
+              }
+          },
 
         methods: {
             changeSelectedList(event) {
+                //console.log(this.listSelector===this.$store.state.selectedList)
                 this.$store.dispatch('changeSelectedList', this.listSelector)
             },
             deleteList(event){

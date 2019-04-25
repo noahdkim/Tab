@@ -14,7 +14,7 @@
             <the-list></the-list>
         </v-flex>
         <!-- Calendar -->
-        <v-flex xs5>
+        <v-flex v-if="showCalendar" xs5>
             <the-calendar></the-calendar>
         </v-flex>
     </v-layout>
@@ -33,6 +33,17 @@ export default {
      data () {
          return{
              show: true,
+         }
+     },
+     computed: {
+         showCalendar () {
+             let listHeaders = this.$store.state.selectedListHeaders
+             for(var i = 0; i < listHeaders.length; ++i){
+                 if (listHeaders[i].type === "date"){
+                     return true
+                 }
+             }
+             return false
          }
      },
      mounted() {

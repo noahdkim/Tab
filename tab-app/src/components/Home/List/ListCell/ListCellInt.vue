@@ -2,7 +2,7 @@
     <v-text-field class="textfield"
                           :mask="mask"
                           @input="updateItemState"
-                          :value="item.values[header.name]"
+                          :value="item.values[header.id]"
                           :readonly="!item.item_meta.active"
                           :id="header.name"
                           ref="{{item.id}}-{{header.text}}"

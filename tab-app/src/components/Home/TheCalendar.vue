@@ -4,7 +4,7 @@
         <v-date-picker ref="calendarDatePicker"
                         class="date-range-picker"
                         v-model="picker"
-                        :events="arrayEvents"
+                        :events="listDates"
                         :event-color="date => colorFunction(date)"
                         :landscape="landscape"
                         :reactive="reactive"
@@ -13,7 +13,7 @@
     <v-layout row>
         <v-flex v-if="dateFields.length > 1">
             Display
-            <v-radio-group v-model="selectedDateField">
+            <v-radio-group v-model="dateFilterHeader">
               <v-radio
                 v-for="dateField in dateFields"
                 :key="dateField"
@@ -51,7 +51,6 @@ export default  {
             dateWeights: {},
             totalItems: 0,
             landscape: false,
-            selectedDateField: '',
             selectedIntegerField: '',
             selectedValue: new Date(),
             reactive: true
@@ -63,20 +62,27 @@ export default  {
         this.$store.commit('setSelectedDate', localISOTime);
     },
     computed:{
-        arrayEvents: {
+        listDates: {
             get() {
                 this.dateWeights = {};
                 this.totalWeights = 0;
-                let list_items = this.$store.state.selectedListItems.map((item) =>{
-                    let date = item.values[this.selectedDateField].toDate().toISOString().substr(0, 10)
+                let listDates = this.$store.state.selectedListItems.map((item) =>{
+                    let date = item.values[this.dateFilterHeader.id].toDate().toISOString().substr(0, 10)
                     let priority = item.values[this.selectedIntegerField];
                     priority = priority ? parseInt(item.values[this.selectedIntegerField]) : 0;
                     this.totalWeights += priority;
                     this.dateWeights[date] = this.dateWeights[date] ? this.dateWeights[date] + priority : priority;
                     return date;
                 });
-
-                return list_items;
+                return listDates;
+            }
+        },
+        dateFilterHeader: {
+            get() {
+                return this.$store.state.dateFilterHeader;
+            },
+            set(newDateHeader) {
+                this.$store.state.dateFilterHeader = newDateHeader
             }
         },
         picker: {
@@ -89,14 +95,14 @@ export default  {
         },
         dateFields:{
             get() {
-                let dateFields = [];
+                let dateFieldsArr = [];
                 this.$store.state.selectedListHeaders.forEach(header => {
                     if (header.type === "date"){
-                        dateFields.push(header.name);
+                        dateFieldsArr.push(header);
                     }
                 })
-                this.selectedDateField = dateFields[0];
-                return dateFields;
+                this.dateFilterHeader = dateFieldsArr[0];
+                return dateFieldsArr
             }
         },
         integerFields:{
