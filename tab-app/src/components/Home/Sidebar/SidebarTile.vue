@@ -1,7 +1,10 @@
 <template>
     <v-list-tile
         @click="changeSelectedList"
+        @mouseover="mouseOver()"
+        @mouseleave="mouseLeave()"
     >
+       <span class="fa fa-align-justify handle" :style="{ opacity: showHandle ? 0.3 : 0 }">::</span>
        <v-list-tile-content >
           <v-list-tile-title>{{ listSelector.name }}</v-list-tile-title>
        </v-list-tile-content>
@@ -30,6 +33,8 @@
               items: [
                 { title: 'Delete List' },
             ],
+            showHandle: false,
+
           }),
 
         methods: {
@@ -42,7 +47,15 @@
             },
             showDropdown() {
                 console.log("show dropdown")
+            },
+            mouseOver(event)    {
+                this.showHandle = true;
+            },
+            mouseLeave(event)   {
+                this.showHandle = false;
             }
         }
     }
 </script>
+
+<style scoped src="@/assets/styles/thesidebar.css"></style>

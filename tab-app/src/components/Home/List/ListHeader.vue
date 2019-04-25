@@ -101,5 +101,7 @@
           .textfield  {
           	/*margin: 0px;*/
           	padding: 0px;
+
+          	border-bottom: 1px solid rgba(0,0,0,0.125);
           }
       </style>
