@@ -1,34 +1,42 @@
 <template>
-  <v-layout row
-  :id="item.item_meta.id"
-  @click="makeActive"
-  @mouseover="mouseOver()"
-  @mouseleave="mouseLeave()"
-  >
+  <v-layout column align-start>
+    <v-layout row
+    :id="item.item_meta.id"
+    @click="makeActive"
+    @mouseover="mouseOver()"
+    @mouseleave="mouseLeave()"
+    >
     <span class="fa fa-align-justify handle" :style="{ opacity: showHandle ? 0.3 : 0 }">::</span>
     <v-checkbox class="checkbox" default v-model="checkbox"></v-checkbox>
 <!-- <p-check class="p-icon p-curve">
         <i class="icon mdi mdi-close" slot="extra"></i>
-    </p-check> -->
-    <v-layout col
-        v-for="header in headers"
-        :key="header.id"
-        align-start
-        class="listcells">
+      </p-check> -->
+      <v-layout col
+      v-for="header in headers"
+      :key="header.id"
+      align-start
+      class="listcells">
       <list-cell
-       :item = "item"
+      :item = "item"
       :header = "header"
       ref="{{item.item_meta.id}}-{{header.text}}"
       single-line
       :class="{ 'activeRow': item.item_meta.active }"
       >
-  </list-cell>
-</v-layout>
-<v-btn flat icon @click="deleteItem" >
+    </list-cell>
+  </v-layout>
+  <v-btn flat icon @click="deleteItem" >
     <!-- <v-icon class="deleteIcon" :style="{ opacity: showHandle ? 0.3 : 0 }">delete</v-icon> -->
     <v-icon class="deleteIcon" :style="{ opacity: item.item_meta.active ? 0.3 : 0 }">delete</v-icon>
-</v-btn>
+  </v-btn>  
 
+
+
+</v-layout>
+    <v-layout row class="hiddenOptionsRow" v-show="item.item_meta.active">
+        <v-btn class="saveRowBtn" @click.native="saveList">Save</v-btn>
+        asdf
+    </v-layout>
 </v-layout>
 </template>
 
@@ -50,88 +58,95 @@
         /* this is currently not being used */
         checkbox: false,
         showHandle: false,
-    }
-},
-methods: {
-  deleteItem (event) {
-    this.$store.dispatch('deleteItem', this.item);
-},
-makeActive (event) {
+      }
+    },
+    methods: {
+      deleteItem (event) {
+        this.$store.dispatch('deleteItem', this.item);
+      },
+      makeActive (event) {
               // When the row is clicked, dispatch changeActiveItem to the store passing
               // the current ID.
               // the changeActiveItem method searches for the ID and modifies the active attribute
               // to true
               this.showHandle = false;
               this.$store.dispatch('changeActiveItem', this.item);
-          },
-          mouseOver(event)    {
+            },
+            mouseOver(event)    {
               this.showHandle = true;
               console.log("this.item_meta.active: " + this.item.item_meta.active);
-          },
-          mouseLeave(event)   {
+            },
+            mouseLeave(event)   {
               this.showHandle = false;
+            }
+
           }
+        }
 
+
+
+      </script>
+
+      <style scoped>
+      .activeRow  {
+        background-color: #ff00ff;
+        color:red
       }
-  }
+      .button {
+        /*margin-top: 35px;*/
+      }
 
+      .checkbox {
+        max-width:  47px;
+        min-width:  47px;
+        max-height: 52px;
+        min-height: 52px;
+      }
 
+      .handle {
+        padding: 5px;
+        margin-left: 10px;
+        margin-right: 10px;
+        /*border: solid #000 1px;*/
+        cursor: grab;
+        font-size: 200%;
+        /*margin-bottom: 30px;*/
 
-</script>
+        color: rgba(0, 0, 0, 1);
+      }
+      .deleteIcon {
+        color: rgba(0, 0, 0, 1);
+      }
 
-<style scoped>
-.activeRow  {
-    background-color: #ff00ff;
-    color:red
-}
-.button {
-    /*margin-top: 35px;*/
-}
+      .close {
+        float: right;
+        /*padding-top: 8px;*/
+        /*padding-bottom: 8px;*/
+      }
+      input {
+        display: inline-block;
+        /*width: 50%;*/
+      }
+      .listcells  {
+        border-top:     1px solid rgba(0,0,0,.06);
+        border-bottom:  1px solid rgba(0,0,0,.06);
+      }
+      .text {
+        margin: 0px;
+      }
 
-.checkbox {
-    max-width:  47px;
-    min-width:  47px;
-    max-height: 52px;
-    min-height: 52px;
-}
+      .saveRowBtn   {
+        margin-left: 150px;
+      }
 
-.handle {
-    padding: 5px;
-    margin-left: 10px;
-    margin-right: 10px;
-    /*border: solid #000 1px;*/
-    cursor: grab;
-    font-size: 200%;
-    /*margin-bottom: 30px;*/
-
-    color: rgba(0, 0, 0, 1);
-}
-.deleteIcon {
-    color: rgba(0, 0, 0, 1);
-}
-
-.close {
-    float: right;
-    /*padding-top: 8px;*/
-    /*padding-bottom: 8px;*/
-}
-input {
-    display: inline-block;
-    /*width: 50%;*/
-}
-.listcells  {
-    border-top:     1px solid rgba(0,0,0,.06);
-    border-bottom:  1px solid rgba(0,0,0,.06);
-}
-.text {
-    margin: 0px;
-}
-
+      .hiddenOptionsRow {
+        padding-bottom: 10px;
+      }
 
 
 
 
-</style>
+    </style>
 
 
-<style scoped src="@/assets/styles/main.css"></style>
+    <style scoped src="@/assets/styles/main.css"></style>
