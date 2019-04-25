@@ -40,6 +40,7 @@ export const store = new Vuex.Store({
         dateFilterHeader: {},
         showAll: true,
         selectedDate: '',
+        selectedIntegerField: '',
         error: null,
         loading: false,
         user: null,
@@ -85,6 +86,9 @@ export const store = new Vuex.Store({
         setSelectedListHeaders(state, payload) {
             state.selectedListHeaders = payload;
         },
+        setSelectedIntegerField(state, payload) {
+            state.selectedIntegerField = payload;
+        },
         setUser(state, payload) {
             state.user = payload;
         },
@@ -100,11 +104,9 @@ export const store = new Vuex.Store({
         },
         changeActiveItem({ state, commit, dispatch }, item){
             /* change previously active item to not active */
-            console.log(state.activeItemID)
             // save the previously active item and set the state of the item to false
             let prevActiveItemIndex = findIndexOfItem(state.selectedListItems, state.activeItemID)
             if(prevActiveItemIndex >= 0){
-                console.log(state.selectedListItems[prevActiveItemIndex])
                 dispatch('saveItem', state.selectedListItems[prevActiveItemIndex]);
                 commit('changeActiveState', {active: false, id: state.activeItemID});
             }
@@ -123,9 +125,6 @@ export const store = new Vuex.Store({
             let myRef = firebase.database().ref().push();
             var key = myRef.key;
             let today = new Date()
-            console.log(today);
-            console.log(this.state.selectedDate)
-            console.log(new Date(this.state.selectedDate))
             // need Date object with no seconds or miliseconds in order to parse into timestamp
             let d = new Date(this.state.selectedDate)
             let firebaseDateSeconds = d.getTime() / 1000;
@@ -213,9 +212,6 @@ export const store = new Vuex.Store({
             // let data = {path:'/lists_content/'+list.listContentKey}
             // recursiveDelete(data).then((result) => console.log(result))
             listMetaRef.delete().then((result)=>{
-                                        console.log(result)
-                                        console.log("done")
-                                        console.log(list.id)
                                         let personalLists = state.personalLists
                                         let listIndex = personalLists
                                                             .findIndex((personalList)=>{return personalList===list})
@@ -236,7 +232,6 @@ export const store = new Vuex.Store({
             personal_lists_ref.get().then(function(querySnapshot) {
                 querySnapshot.forEach(function(doc) {
                     // doc.data() is never undefined for query doc snapshots
-                    console.log(doc.id, " => ", doc.data());
                 });
             });
         },
@@ -250,7 +245,6 @@ export const store = new Vuex.Store({
                 querySnapshot.forEach(function(doc) {
                     // doc.data() is never undefined for query doc snapshots
                     personalLists.push(doc.data());
-                    console.log(doc.data())
                 });
                 commit('setPersonalLists', personalLists);
                 commit('setSelectedList', personalLists[0]);

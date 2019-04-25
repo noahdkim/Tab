@@ -56,7 +56,6 @@ export default  {
                     let date = item.values[this.dateFilterHeader.id].toDate().toISOString().substr(0, 10)
                     let priority = item.values[this.selectedIntegerField.id];
                     priority = priority ? parseInt(item.values[this.selectedIntegerField.id]) : 0;
-                    console.log(priority)
                     this.totalWeights += priority;
                     this.dateWeights[date] = this.dateWeights[date] ? this.dateWeights[date] + priority : priority;
                     return date;
@@ -77,7 +76,7 @@ export default  {
                 return this.$store.state.selectedIntegerField;
             },
             set(newIntegerField) {
-                this.$store.state.selectedIntegerField = newIntegerField
+                this.$store.commit('setSelectedIntegerField', newIntegerField);
             }
         },
         picker: {
@@ -115,8 +114,6 @@ export default  {
     },
     methods: {
         colorFunction(date){
-            console.log(this.$store.state.selectedListItems.length)
-            console.log(this.totalWeights)
             if (this.$store.state.selectedListItems.length > 0 && this.totalWeights === 0){
                 return `rgba(244, 67, 54, .8)`;
             }

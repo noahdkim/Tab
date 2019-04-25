@@ -30,7 +30,7 @@ export default  {
                 return this.$store.state.selectedIntegerField;
             },
             set(newIntegerField) {
-                this.$store.state.selectedIntegerField = newIntegerField
+                this.$store.commit('setSelectedIntegerField', newIntegerField);
             }
         },
     }
