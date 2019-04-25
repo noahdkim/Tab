@@ -67,9 +67,4 @@
     }
 </script>
 
-<style scoped>
-  .active-class {
-      background: #d7d7d7;
-  }
-</style>
 <style scoped src="@/assets/styles/thesidebar.css"></style>

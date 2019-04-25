@@ -1,9 +1,7 @@
-
-.sidebar	{
-	background-color: #fafafa;
-	color: black;
-    z-index:0;
+.active-class {
+    background: #d7d7d7;
 }
+
 .handle {
     padding: 5px;
     margin-left: 10px;
@@ -14,4 +12,10 @@
     /*margin-bottom: 30px;*/
 
     color: rgba(0, 0, 0, 1);
+}
+
+.sidebar	{
+	background-color: #fafafa;
+	color: black;
+    z-index:0;
 }
