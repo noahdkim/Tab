@@ -54,8 +54,6 @@
             drag: false
         }),
         created() {
-            /* Probably get rid of this. Saving is async */
-            // window.addEventListener('beforeunload', this.saveList, false)
         },
         computed: {
             ...mapGetters({
@@ -74,11 +72,13 @@
             },
             filteredListItems: {
                 get(){
+                    if(this.$store.state.showAll){
+                        return this.selectedListItems;
+                    }
                     let selectedDate = new Date(this.selectedDate)
                     let filteredListItems = [];
+                    console.log(this.dateFilterHeader.name);
                     this.selectedListItems.forEach((item)=>{
-                        console.log(item.values[this.dateFilterHeader.name].toDate())
-                        console.log(selectedDate)
                         if (item.values[this.dateFilterHeader.name].toDate().getTime() === selectedDate.getTime() ||
                                 item.item_meta.active === true){
                             filteredListItems.push(item);
@@ -113,11 +113,7 @@
             EventBus.$emit('the-list-drag-event', this.drag);
         },
         endDrag() {
-            console.log("endDrag()");
             this.drag = false;
-            console.log("selectedListItems:");
-            console.log(this.selectedListItems);
-            // remove this
             this.saveListOrderToFirestore();
             this.saveList();
 

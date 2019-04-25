@@ -43,8 +43,8 @@ export default {
         updateItemState (newValue){
             console.log(this.item)
             let item = this.item;
-            let header = this.header.name;
-            this.$store.dispatch('updateItemState', {item, header, newValue});
+            let headerId = this.header.id;
+            this.$store.dispatch('updateItemState', {item, headerId, newValue});
         }
     }
   }

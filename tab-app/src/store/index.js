@@ -38,6 +38,7 @@ export const store = new Vuex.Store({
         activeItemID: 0,
         appTitle: 'Tab',
         dateFilterHeader: {},
+        showAll: true,
         selectedDate: '',
         error: null,
         loading: false,
@@ -46,13 +47,6 @@ export const store = new Vuex.Store({
         selectedList: {},
         selectedListItems: [],
         selectedListHeaders: [],
-    },
-    getters: {
-        activeItemID: (state) => {
-            return state.activeItemID;
-        },
-
-
     },
     /* change state values */
     mutations: {
@@ -146,9 +140,9 @@ export const store = new Vuex.Store({
             }
             state.selectedListHeaders.forEach((header) =>{
                 if (header.type === "date"){
-                    newItem.values[header.name] = todayTimestamp;
+                    newItem.values[header.id] = todayTimestamp;
                 } else {
-                    newItem.values[header.name] = "";
+                    newItem.values[header.id] = "";
                 }
             }
 
@@ -339,7 +333,7 @@ export const store = new Vuex.Store({
             let item = params.item;
             let itemIndex = findIndexOfItem(state.selectedListItems, item.item_meta.id)
             let newSelectedListItems = state.selectedListItems;
-            newSelectedListItems[itemIndex]['values'][params.header] = params.newValue;
+            newSelectedListItems[itemIndex]['values'][params.headerId] = params.newValue;
             commit('setSelectedListItems', newSelectedListItems);
         },
         userSignIn({
