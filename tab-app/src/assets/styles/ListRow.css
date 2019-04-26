@@ -1,0 +1,77 @@
+
+.activeRow  {
+	/*background-color: #ff00ff;*/
+	color:red
+}
+.button {
+	/*margin-top: 35px;*/
+}
+
+.checkbox {
+	max-width:  47px;
+	min-width:  47px;
+	max-height: 52px;
+	min-height: 52px;
+}
+
+.handle {
+	padding: 5px;
+	margin-left: 10px;
+	margin-right: 10px;
+	/*border: solid #000 1px;*/
+	cursor: grab;
+	font-size: 200%;
+	/*margin-bottom: 30px;*/
+
+	color: rgba(0, 0, 0, 1);
+}
+.deleteIcon {
+	color: rgba(0, 0, 0, 1);
+}
+
+.close {
+	float: right;
+	/*padding-top: 8px;*/
+	/*padding-bottom: 8px;*/
+}
+input {
+	display: inline-block;
+	/*width: 50%;*/
+}
+.listcells  {
+	border-top:     1px solid rgba(0,0,0,.06);
+	/*border-bottom:  1px solid rgba(0,0,0,.06);*/
+}
+.text {
+	margin: 0px;
+}
+
+.saveRowBtn   {
+	color:	#ffffff;
+	width: 10px;
+	border-radius: 3px;
+	margin-right: 0px;
+}
+.cancelRowBtn	{
+	text-decoration: none;
+	color: #555;
+	padding-top: 10px;
+	padding-bottom: 0;
+	margin-left: 0px;
+}
+
+.cancelRowBtn:hover	{
+	text-decoration: underline;
+}
+
+.hiddenOptionsRow {
+	/*padding-top:	4px;*/
+	padding-bottom: 10px;
+	/*background-color: #111;*/
+}
+
+#saveCancelContainer	{
+	margin-left:	90px;
+	background-color: rgba(0, 0, 0, 0.02);
+	border-radius: 8px;
+}
