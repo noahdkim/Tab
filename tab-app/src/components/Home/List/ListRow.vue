@@ -26,7 +26,6 @@
     </list-cell>
   </v-layout>
   <v-btn flat icon @click="deleteItem" >
-    <!-- <v-icon class="deleteIcon" :style="{ opacity: showHandle ? 0.3 : 0 }">delete</v-icon> -->
     <v-icon class="deleteIcon" :style="{ opacity: item.item_meta.active ? 0.3 : 0 }">delete</v-icon>
   </v-btn>  
 
@@ -35,7 +34,7 @@
 </v-layout>
     <v-layout row class="hiddenOptionsRow" v-show="item.item_meta.active">
         <v-btn class="saveRowBtn" @click.native="saveList">Save</v-btn>
-        asdf
+        <a href="#">Cancel</a>
     </v-layout>
 </v-layout>
 </template>
@@ -78,6 +77,15 @@
             },
             mouseLeave(event)   {
               this.showHandle = false;
+            },
+            saveList() {
+                /* this is async */
+                this.item.item_meta.active = false;
+                this.$store.dispatch('saveList');
+            },
+            cancel()    {
+                this.item.item_meta.active = false;
+                /* More cancel actions needed here TODO */
             }
 
           }
@@ -136,7 +144,7 @@
       }
 
       .saveRowBtn   {
-        margin-left: 150px;
+        margin-left: 100px;
       }
 
       .hiddenOptionsRow {
