@@ -20,7 +20,7 @@
                           ref="{{item.id}}-{{header.text}}"
                           single-line
                           hide-details> -->
-                          <v-text-field class="textfield"
+                          <v-text-field class="header-field"
                           :value="header.name"
                           :id="header.name"
                           ref="{{item.id}}-{{header.text}}"
@@ -97,11 +97,6 @@
 
          	border: solid #000 1px;
           }
-
-          .textfield  {
-          	/*margin: 0px;*/
-          	padding: 0px;
-
-          	border-bottom: 1px solid rgba(0,0,0,0.125);
-          }
       </style>
+
+<style scoped src="@/assets/styles/listcell.css"></style>

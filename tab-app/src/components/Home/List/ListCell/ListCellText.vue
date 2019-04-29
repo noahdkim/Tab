@@ -1,17 +1,19 @@
 <template>
-    <v-text-field class="textfield"
-                          @input="updateItemState"
-                          :value="item.values[header.id]"
-                          :readonly="!item.item_meta.active"
-                          :id="header.name"
-                          ref="{{item.id}}-{{header.text}}"
-                          single-line
-                          hide-details
-                          solo
-                          flat>
-
-                          <!-- :outline="!item.item_meta.active" -->
-    </v-text-field>
+    <v-textarea class="text-field"
+                @input="updateItemState"
+                :value="item.values[header.id]"
+                :readonly="!item.item_meta.active"
+                :id="header.name"
+                ref="{{item.id}}-{{header.text}}"
+                hide-details
+                solo
+                flat
+                no-resize
+                rows="1"
+                row-height=46
+                auto-grow
+                >
+    </v-textarea>
 </template>
 
 <script>

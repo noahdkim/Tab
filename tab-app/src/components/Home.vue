@@ -2,7 +2,7 @@
   <v-container class="ma-0 pa-0 side-list-cal" fluid>
     <v-layout row style="height: 100%">
         <!-- Sidebar -->
-        <v-flex grow>
+        <v-flex style="max-width: 300px">
             <the-sidebar :show=show></the-sidebar>
         </v-flex>
         <!-- Expand/Collapse sidebar -->
@@ -10,12 +10,12 @@
             <v-icon>{{show ? 'keyboard_arrow_left' : 'keyboard_arrow_right'}}</v-icon>
         </button>
         <!-- List -->
-        <v-flex xs7>
+        <v-flex grow xs5>
             <the-list></the-list>
         </v-flex>
         <!-- Calendar -->
-        <v-flex v-if="showCalendar" xs5>
-            <the-calendar></the-calendar>
+        <v-flex v-if="showCalendar" xs7 style="min-width: 300px">
+            <the-calendar ></the-calendar>
         </v-flex>
     </v-layout>
   </v-container>
