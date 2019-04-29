@@ -10,7 +10,7 @@
             <v-icon>{{show ? 'keyboard_arrow_left' : 'keyboard_arrow_right'}}</v-icon>
         </button>
         <!-- List -->
-        <v-flex grow xs5>
+        <v-flex grow xs5 style="min-width: 500px">
             <the-list></the-list>
         </v-flex>
         <!-- Calendar -->
