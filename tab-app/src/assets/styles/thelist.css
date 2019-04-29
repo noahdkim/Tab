@@ -72,6 +72,37 @@ input {
     /*padding: 20px;*/
 }
 
+.list-footer	{
+	padding-left: 50px;
+	padding-right: 52px;
+}
+
+/**************** add-item ****************/
+.add-item-container	{
+	/*border-top: 1px solid rgba(0,0,0,.06);*/
+	padding-top: 20px;
+	padding-bottom: 30px;
+}
+
+.add-item-anchor	{
+	text-decoration: none;
+}
+.add-item-icon	{
+	margin-right: 10px;
+	color: #aaa;
+}
+.add-item-text	{
+	color: #aaa;
+	font-weight: bold;
+}
+
+.add-item-anchor:hover .add-item-icon	{
+	color: #197bbd;
+}
+.add-item-anchor:hover .add-item-text	{
+	color: #197bbd;
+}
+
 .draggable-row  {
     background-color: #ffffff;
 

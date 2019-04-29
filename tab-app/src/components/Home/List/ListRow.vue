@@ -22,8 +22,8 @@
 					>
 				</list-cell>
 			</v-layout>
-			<v-btn flat icon @click="deleteItem" >
-				<v-icon class="deleteIcon" :style="{ opacity: item.item_meta.active ? 0.3 : 0 }">delete</v-icon>
+			<v-btn flat icon @click="deleteItem" :style="{ opacity: showHandle ? 0.3 : 0 }">
+				<v-icon class="deleteIcon" >delete</v-icon>
 			</v-btn>
 		</v-layout>
 		<!-- Hidden Options Row is shown when row is active -->

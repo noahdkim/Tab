@@ -5,30 +5,37 @@
                 <list-header :headers=selectedListHeaders></list-header>
             </div>
             <div class="list-body">
-            <draggable
-            class="list-group"
-            handle=".handle"
-            v-bind="dragOptions"
-            @start="startDrag()"
-            @end="endDrag()"
-            :list="this.selectedListItems"
-            >
-                <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-                    <list-row v-for="item in filteredListItems"
-                    :key="item.item_meta.id"
-                    :item="item"
-                    :headers="selectedListHeaders"
-                    :ref="item.item_meta.id"
-                    class="draggable-row"
-                    >
-                    </list-row>
-                </transition-group>
-            </draggable>
-            <span class="mdi mdi-plus-circle"></span>
+                <draggable
+                class="list-group"
+                handle=".handle"
+                v-bind="dragOptions"
+                @start="startDrag()"
+                @end="endDrag()"
+                :list="this.selectedListItems"
+                >
+                    <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+                        <list-row v-for="item in filteredListItems"
+                        :key="item.item_meta.id"
+                        :item="item"
+                        :headers="selectedListHeaders"
+                        :ref="item.item_meta.id"
+                        class="draggable-row"
+                        >
+                        </list-row>
+                    </transition-group>
+                </draggable>
+            </div>
+            <div class="list-footer">
+                <div class="add-item-container">
+                    <a v-on:click="addNewItem" class="add-item-anchor">
+                        <span class="mdi mdi-plus-circle add-item-icon"></span>
+                        <span class="add-item-text">Add Item</span>
+                    </a>
+                </div>
+            </div>
         </div>
-        </div>
-  <v-btn @click.native="saveList">Save</v-btn>
-  <v-btn @click.native="addNewItem">Add item</v-btn>
+  <!-- <v-btn @click.native="saveList">Save</v-btn> -->
+  <!-- <v-btn @click.native="addNewItem">Add item</v-btn> -->
 
 </v-container>
 
