@@ -14,14 +14,15 @@
                 :list="this.selectedListItems"
                 >
                     <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-                        <list-row v-for="item in filteredListItems"
-                        :key="item.item_meta.id"
-                        :item="item"
-                        :headers="selectedListHeaders"
-                        :ref="item.item_meta.id"
-                        class="draggable-row"
-                        >
-                        </list-row>
+                        <div class="listRows" v-for="item in filteredListItems" :key="item.item_meta.id">
+                            <list-row
+                            :item="item"
+                            :headers="selectedListHeaders"
+                            :ref="item.item_meta.id"
+                            class="draggable-row"
+                            >
+                            </list-row>
+                        </div>
                     </transition-group>
                 </draggable>
             </div>
@@ -94,8 +95,15 @@
     methods: {
         addNewItem() {
             /* wait for the promise */
-            this.$store.dispatch('createNewItem').then((result) => {
-                this.saveList();
+            this.$store.dispatch('createNewItem').then((newItemID) => {
+                // wait for the new Item to be rendered and then make it active
+                Vue.nextTick(() => {
+                    console.log(Object.keys(this.$refs))
+                    console.log(newItemID)
+                    console.log(this.$refs[newItemID])                                      // changed here
+                    this.$refs[newItemID][0].makeActive()
+                });
+
             });
         },
         saveListToFirestore() {

@@ -10,8 +10,8 @@ import 'vuetify/dist/vuetify.min.css' /* Vuetify css */
 import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-loader
 import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loader
 
-/* 
- * Use pretty-checkbox-vue from 
+/*
+ * Use pretty-checkbox-vue from
  * https://hamed-ehtesham.github.io/pretty-checkbox-vue/
  */
 import PrettyInput from 'pretty-checkbox-vue/input';
@@ -24,7 +24,7 @@ Vue.component('p-radio', PrettyRadio);
 
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
-
+window.Vue = Vue;
 
 Vue.use(Vuetify, {
   iconfont: 'mdi'

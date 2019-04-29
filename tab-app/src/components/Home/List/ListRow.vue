@@ -7,7 +7,7 @@
 			@mouseleave="mouseLeave()"
 			>
 			<span class="fa fa-align-justify handle" :style="{ opacity: showHandle ? 0.3 : 0 }">::</span>
-			<v-checkbox class="checkbox" default v-model="checkbox"></v-checkbox>
+			<v-checkbox @click.stop="checkbox=!checkbox" class="checkbox" default v-model="checkbox"></v-checkbox>
 			<v-layout col
 				v-for="header in headers"
 				:key="header.id"
@@ -22,7 +22,7 @@
 					>
 				</list-cell>
 			</v-layout>
-			<v-btn flat icon @click="deleteItem" :style="{ opacity: showHandle ? 0.3 : 0 }">
+			<v-btn flat icon @click.stop="deleteItem" :style="{ opacity: showHandle ? 0.3 : 0 }">
 				<v-icon class="deleteIcon" >delete</v-icon>
 			</v-btn>
 		</v-layout>
@@ -77,6 +77,7 @@
               this.showHandle = false;
               this.item.item_meta.active = true;
               this.$root.$emit('changeActive', this.item.item_meta.id);
+              return "made Active"
           },
           mouseOver(event)    {
           	this.showHandle = true;

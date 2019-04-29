@@ -131,8 +131,9 @@ export const store = new Vuex.Store({
             let todayTimestamp = new firebase.firestore.Timestamp(firebaseDateSeconds, 0)
             let newItem = {
                             item_meta:{
-                                id: key,
                                 active: false,
+                                checked: false,
+                                id: key,
                                 index: state.selectedListItems.length,
                             },
                             values: {}
@@ -147,8 +148,8 @@ export const store = new Vuex.Store({
 
             )
             state.selectedListItems.push(newItem);
-            dispatch('changeActiveItem', newItem);
-            return "added";
+            //dispatch('changeActiveItem', newItem);
+            return key;
         },
         createNewList({ state, commit }, params){
             let listName = params.listName;
