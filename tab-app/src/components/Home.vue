@@ -14,7 +14,12 @@
             <the-list></the-list>
         </v-flex>
         <!-- Calendar -->
-        <v-flex v-if="showCalendar" xs7 style="min-width: 300px">
+        <v-flex v-if="showCalendar" xs7 
+            style="
+                min-width: 300px; 
+                background-color: #fafafa;
+                border-left: 1px solid #dbdbdb;
+            ">
             <the-calendar ></the-calendar>
         </v-flex>
     </v-layout>

@@ -15,12 +15,6 @@
 	height: 100%;
 }
 
-.sidebar	{
-	background-color: #fafafa;
-	color: black;
-    z-index:0;
-}
-
 .fade-enter-active,
 .fade-leave-active
 {
