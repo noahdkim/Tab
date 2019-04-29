@@ -15,10 +15,11 @@
             </sidebar-tile>
         </draggable>
          <v-list-tile
+            class="create-new-list-tile"
             @click="openCreateListDialog"
          >
             <v-list-tile-action>
-                <v-icon>add</v-icon>
+                <v-icon class="create-new-list-icon">add</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
                 <v-list-tile-title >Create New List</v-list-tile-title>
