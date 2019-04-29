@@ -39,6 +39,12 @@ export default {
     methods: {
         updateCellValue (newValue){
             this.$emit('update', newValue);
+        },
+        setValue(newValue){
+            this.textValue = newValue
+        },
+        getValue(){
+            return this.textValue
         }
     }
   }

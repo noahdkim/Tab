@@ -79,6 +79,7 @@
               // the changeActiveItem method searches for the ID and modifies the active attribute
               // to true
               this.showHandle = false;
+              //this.$store.dispatch('savePreviousItem')
               this.$store.dispatch('changeActiveItem', this.item);
           },
           mouseOver(event)    {
@@ -101,14 +102,18 @@
               }
               this.$store.dispatch('saveItem', this.item)
           },
-          cancel()    {
-          	this.item.item_meta.active = false;
-
-
+          cancel(){
+              this.item.item_meta.active = false;
+              let item = this.item
+              for (var i=0; i<this.headers.length; i++) {
+                  let originalValue = this.item.values[this.headers[i].id]
+                  this.$refs[this.item.item_meta.id+'-'+this.headers[i].id][0].setValue(originalValue)
+              }
+              this.$store.dispatch('saveItem', this.item)
           	/* More cancel actions needed here TODO */
           }
 
-      }
+      },
   }
 
 

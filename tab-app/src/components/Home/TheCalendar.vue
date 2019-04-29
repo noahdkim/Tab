@@ -73,7 +73,7 @@ export default  {
         },
         selectedIntegerField: {
             get() {
-                return this.$store.state.selectedIntegerField;
+                return this.$store.state.selectedIntegerField ? this.$store.state.selectedIntegerField : '';
             },
             set(newIntegerField) {
                 this.$store.commit('setSelectedIntegerField', newIntegerField);

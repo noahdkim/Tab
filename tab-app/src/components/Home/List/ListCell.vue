@@ -4,21 +4,21 @@
                             :item= "item"
                             :header= "header"
                             @update="updateCellValue"
-                            ref="{{item.id}}-{{header.text}}"
+                            :ref="item.item_meta.id + '-' + header.id"
                             single-line>
         </ListCellDate>
         <ListCellInt v-if="header.type === 'integer'"
                             :item= "item"
                             :header= "header"
                             @update="updateCellValue"
-                            ref="{{item.id}}-{{header.text}}"
+                            :ref="item.item_meta.id + '-' + header.id"
                             single-line>
         </ListCellInt>
         <ListCellText v-if="header.type === 'string'"
                               :item= "item"
                               :header= "header"
                               @update="updateCellValue"
-                              ref="{{item.id}}-{{header.text}}"
+                              :ref="item.item_meta.id + '-' + header.id"
                               single-line>
         </ListCellText>
     </v-container>
@@ -46,6 +46,7 @@ export default {
                 return this.value;
             },
             set: function(newValue){
+                this.$refs[this.item.item_meta.id+'-'+this.header.id].setValue(newValue)
                 this.value = newValue
             }
         }
@@ -55,7 +56,10 @@ export default {
             this.cellValue = newValue
         },
         getValue(){
-            return this.cellValue
+            return this.$refs[this.item.item_meta.id+'-'+this.header.id].getValue()
+        },
+        setValue(newValue){
+            this.$refs[this.item.item_meta.id+'-'+this.header.id].setValue(newValue)
         }
     }
   }
