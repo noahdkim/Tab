@@ -74,13 +74,9 @@
 				this.$store.dispatch('deleteItem', this.item);
 			},
 			makeActive (event) {
-              // When the row is clicked, dispatch changeActiveItem to the store passing
-              // the current ID.
-              // the changeActiveItem method searches for the ID and modifies the active attribute
-              // to true
               this.showHandle = false;
-              //this.$store.dispatch('savePreviousItem')
-              this.$store.dispatch('changeActiveItem', this.item);
+              this.item.item_meta.active = true;
+              this.$root.$emit('changeActive', this.item.item_meta.id);
           },
           mouseOver(event)    {
           	this.showHandle = true;
@@ -114,6 +110,14 @@
           }
 
       },
+      mounted() {
+            this.$root.$on('changeActive', data => {
+                if (this.item.item_meta.id !== data && this.item.item_meta.active){
+                    this.saveItem();
+                    this.item.item_meta.active = false;
+                }
+            });
+        }
   }
 
 
