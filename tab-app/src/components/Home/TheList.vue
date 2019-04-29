@@ -91,12 +91,12 @@
                 this.saveList();
             });
         },
-        saveList() {
+        saveListToFirestore() {
             /* this is async */
-            this.$store.dispatch('saveList');
+            this.$store.dispatch('saveListToFirestore');
         },
-        saveListOrderToFirestore()  {
-            this.$store.dispatch('saveListOrderToFirestore').then((result) => {
+        saveListOrder()  {
+            this.$store.dispatch('saveListOrder').then((result) => {
                 console.log(result);
             });
         },
@@ -110,8 +110,8 @@
         },
         endDrag() {
             this.drag = false;
-            this.saveListOrderToFirestore();
-            this.saveList();
+            this.saveListOrder();
+            this.saveListToFirestore();
 
             EventBus.$emit('the-list-drag-event', this.drag);
         },

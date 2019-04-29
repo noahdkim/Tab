@@ -1,7 +1,7 @@
 <template>
     <v-text-field class="textfield"
-                          @input="updateItemState"
-                          :value="item.values[header.id]"
+                          @input="updateCellValue"
+                          v-model="textValue"
                           :readonly="!item.item_meta.active"
                           :id="header.name"
                           ref="{{item.id}}-{{header.text}}"
@@ -22,11 +22,22 @@ export default {
         return{
             /* this is currently not being used */
             checkbox: true,
+            listCellTextValue: this.item.values[this.header.id]
 
         }
     },
+    computed: {
+        textValue:{
+            get: function(){
+                return this.listCellTextValue
+            },
+            set: function(newValue){
+                this.listCellTextValue = newValue
+            }
+        }
+    },
     methods: {
-        updateItemState (newValue){
+        updateCellValue (newValue){
             this.$emit('update', newValue);
         }
     }

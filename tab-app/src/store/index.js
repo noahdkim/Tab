@@ -194,7 +194,7 @@ export const store = new Vuex.Store({
             let itemDocRef = db.collection('lists_content').doc(state.selectedList.listContentKey).collection('items').doc(item.item_meta.id);
             itemDocRef.delete()
                 .then(function() {
-                    dispatch('saveListOrderToFirestore');
+                    dispatch('saveListOrder');
                     console.log("Document successfully deleted!");
                 })
                 .catch(function(error) {
@@ -302,7 +302,7 @@ export const store = new Vuex.Store({
                 console.error("Error writing document: ", error);
             });
         },
-        saveList({ state, commit }, params){
+        saveListToFirestore({ state, commit }, params){
             let batch = db.batch();
             for (var i = 0, n = state.selectedListItems.length; i < n; i++){
                 let item = state.selectedListItems[i];
@@ -311,7 +311,7 @@ export const store = new Vuex.Store({
             }
             batch.commit().then().catch(error=>{console.log(error)});
         },
-        saveListOrderToFirestore({ state, commit }, params) {
+        saveListOrder({ state, commit }, params) {
             let selectedListItems = state.selectedListItems;
             if(selectedListItems == null) {
                 return false;
@@ -328,6 +328,7 @@ export const store = new Vuex.Store({
             let itemIndex = findIndexOfItem(state.selectedListItems, item.item_meta.id)
             let newSelectedListItems = state.selectedListItems;
             newSelectedListItems[itemIndex]['values'][params.headerId] = params.newValue;
+            console.log(params)
             commit('setSelectedListItems', newSelectedListItems);
         },
         userSignIn({

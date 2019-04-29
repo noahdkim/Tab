@@ -16,7 +16,7 @@
 				<list-cell
 					:item = "item"
 					:header = "header"
-					ref="{{item.item_meta.id}}-{{header.text}}"
+					:ref="item.item_meta.id + '-' + header.id"
 					single-line
 					:class="{ 'activeRow': item.item_meta.active }"
 					>
@@ -29,15 +29,15 @@
 		<!-- Hidden Options Row is shown when row is active -->
 		<v-layout row class="hiddenOptionsRow" v-show="item.item_meta.active">
 			<div id="saveCancelContainer">
-				<v-btn 	class="saveRowBtn" 
-						@click.native="saveList"
+				<v-btn 	class="saveRowBtn"
+						@click.native="saveItem"
 						small
 						flat
 						color="#197bbd">
 						<strong>Save</strong>
 				</v-btn>
-				<v-btn 	class="cancelRowBtn2" 
-						@click.native="saveList"
+				<v-btn 	class="cancelRowBtn2"
+						@click.native="cancel"
 						small
 						flat
 						color="#555">
@@ -83,18 +83,28 @@
           },
           mouseOver(event)    {
           	this.showHandle = true;
-          	console.log("this.item_meta.active: " + this.item.item_meta.active);
           },
           mouseLeave(event)   {
           	this.showHandle = false;
           },
           saveList() {
           	/* this is async */
-          	this.item.item_meta.active = false;
-          	this.$store.dispatch('saveList');
+          	this.$store.dispatch('saveListToFirestore');
+          },
+          saveItem(){
+              this.item.item_meta.active = false;
+              let item = this.item
+              for (var i=0; i<this.headers.length; i++) {
+                      let newValue = this.$refs[this.item.item_meta.id+'-'+this.headers[i].id][0].getValue()
+                      let headerId = this.headers[i].id
+                      this.$store.dispatch('updateItemState', {item, headerId, newValue});
+              }
+              this.$store.dispatch('saveItem', this.item)
           },
           cancel()    {
           	this.item.item_meta.active = false;
+
+
           	/* More cancel actions needed here TODO */
           }
 
