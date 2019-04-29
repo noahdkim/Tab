@@ -1,13 +1,13 @@
-/* 
+/*
  * main.css
- * 
- * 
+ *
+ *
  */
 
 
 .toolbar	{
 	background-color: #197BBD;
-	z-index: 999;
+	z-index: 1;
 }
 
 .side-list-cal	{
@@ -18,4 +18,20 @@
 .sidebar	{
 	background-color: #fafafa;
 	color: black;
+    z-index:0;
+}
+
+.fade-enter-active,
+.fade-leave-active
+{
+
+  /*transition: opacity .3s ease-in-out;*//*
+  -moz-transition: all .3s ease-in-out;
+  -webkit-transition: all .3s ease-in-out;*/
+}
+
+.fade-enter,
+.fade-leave-to
+{
+  opacity: 0;
 }

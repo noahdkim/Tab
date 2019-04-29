@@ -8,18 +8,30 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css' /* Vuetify css */
 import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-loader
+import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loader
 
+/* 
+ * Use pretty-checkbox-vue from 
+ * https://hamed-ehtesham.github.io/pretty-checkbox-vue/
+ */
+import PrettyInput from 'pretty-checkbox-vue/input';
+import PrettyCheck from 'pretty-checkbox-vue/check';
+import PrettyRadio from 'pretty-checkbox-vue/radio';
+
+Vue.component('p-input', PrettyInput);
+Vue.component('p-check', PrettyCheck);
+Vue.component('p-radio', PrettyRadio);
 
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
 
 Vue.use(Vuetify, {
-  iconfont: 'md'
+  iconfont: 'mdi'
 })
 
 /* connect to firebase */
-
+require("firebase/functions");
 
 
 /* eslint-disable no-new */
