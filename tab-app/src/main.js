@@ -9,6 +9,7 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css' /* Vuetify css */
 import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-loader
 import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loader
+import './stylus/main.styl'
 
 /* 
  * Use pretty-checkbox-vue from 

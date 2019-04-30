@@ -70,6 +70,19 @@ input {
 	margin: 0px;
 	/*border-bottom: 1px solid rgba(0,0,0,0.125);*/
 }
+
+.list-title {
+  font-family: 'Nunito', sans-serif;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-left: 50px;
+  margin-bottom: 20px;
+}
+
+.list-title-text  {
+  font-size: 1.5em;
+}
+
 .list-body {
     /*background-color: #0f0;*/
     /*padding: 20px;*/
@@ -118,12 +131,3 @@ hr {
     color: #000;
 }
 
-.list-title {
-	margin-top:	15px;
-	margin-left: 50px;
-	margin-bottom: 20px;
-}
-
-.list-title-text  {
-	font-size: 1.5em;
-}
