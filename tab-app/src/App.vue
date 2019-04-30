@@ -17,7 +17,7 @@
         </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar app class="toolbar" color="#197BBD">
+    <v-toolbar app class="toolbar" color="#197BBD" style="color: #fff">
         <span class="hidden-sm-and-up">
             <v-toolbar-side-icon @click="sidebar = !sidebar">
             </v-toolbar-side-icon>
@@ -33,7 +33,7 @@
                 <v-icon left dark>{{ item.icon }}</v-icon>
                 {{ item.title }}
             </v-btn>
-            <v-btn flat v-if="isAuthenticated" @click="userSignOut">
+            <v-btn dark flat v-if="isAuthenticated" @click="userSignOut">
                 <v-icon left>exit_to_app</v-icon>
                 Sign Out
             </v-btn>
