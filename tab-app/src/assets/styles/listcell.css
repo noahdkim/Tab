@@ -2,6 +2,16 @@
  * listcell.css
  */
 
-.textfield	{
+.text-field	{
 	padding: 0px;
+	min-width: 130px;
+	font-size: 1.1em;
+}
+.header-field  {
+	/*margin: 0px;*/
+	padding: 0px;
+	min-width: 130px;
+	border-bottom: 1px solid rgba(0,0,0,0.125);
+
+	font-size: 1.1em;
 }

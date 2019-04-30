@@ -8,7 +8,11 @@
                           single-line
                           hide-details
                           solo
-                          flat>
+                          flat
+                          no-resize
+                          rows="1"
+                          row-height=46
+                          auto-grow>
 
                           <!-- :outline="!item.item_meta.active" -->
     </v-text-field>

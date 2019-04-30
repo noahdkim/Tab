@@ -17,7 +17,7 @@
             readonly
             slot="activator"
             hide-details
-            class="textfield"
+            class="text-field"
             solo
             flat
           ></v-text-field>

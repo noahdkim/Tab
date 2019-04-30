@@ -1,6 +1,9 @@
 <template>
     <v-container>
         <div class="list-all">
+            <div class="list-title">
+                <span class="list-title-text">{{ this.$store.state.selectedList.name }}</span>
+            </div>
             <div class="list-head">
                 <list-header :headers=selectedListHeaders></list-header>
             </div>
@@ -62,6 +65,8 @@
             drag: false
         }),
         created() {
+            console.log("thelist created");
+            console.log(this);
         },
         computed: {
             ...mapGetters({
