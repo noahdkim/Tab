@@ -132,7 +132,7 @@ export const store = new Vuex.Store({
             let newItem = {
                             item_meta:{
                                 active: false,
-                                checked: false,
+                                checkbox: false,
                                 id: key,
                                 index: state.selectedListItems.length,
                             },
@@ -329,7 +329,6 @@ export const store = new Vuex.Store({
             let itemIndex = findIndexOfItem(state.selectedListItems, item.item_meta.id)
             let newSelectedListItems = state.selectedListItems;
             newSelectedListItems[itemIndex]['values'][params.headerId] = params.newValue;
-            console.log(params)
             commit('setSelectedListItems', newSelectedListItems);
         },
         userSignIn({

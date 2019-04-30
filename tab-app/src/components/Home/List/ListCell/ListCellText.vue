@@ -9,7 +9,6 @@
                           hide-details
                           solo
                           flat
-                          no-resize
                           rows="1"
                           row-height=46
                           auto-grow>

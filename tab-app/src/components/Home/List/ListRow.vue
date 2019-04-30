@@ -65,10 +65,21 @@
 		data () {
 			return{
 				/* this is currently not being used */
-				checkbox: false,
+				checkbox2: false,
 				showHandle: false,
 			}
 		},
+        computed: {
+            checkbox: {
+                get: function() {
+                    return this.item.item_meta.checkbox
+                },
+                set: function(newCheckboxValue) {
+                    this.item.item_meta.checkbox = newCheckboxValue
+                    this.$store.dispatch('saveItem', this.item)
+                }
+            }
+        },
 		methods: {
 			deleteItem (event) {
 				this.$store.dispatch('deleteItem', this.item);
