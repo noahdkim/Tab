@@ -1,5 +1,5 @@
 <template>
-    <v-text-field class="textfield"
+    <v-text-field class="text-field"
                           :mask="mask"
                           @input="updateItemState"
                           :value="item.values[header.id]"

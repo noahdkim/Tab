@@ -1,45 +1,48 @@
 <template>
-	<v-layout row class="header-row">
-		<span class="spacer-handle"></span>
-    <span class="spacer-checkbox"></span>
-		<v-layout col 
-		v-for="header in headers" 
-		:key="header.name"
-		justify-start>
-		<!-- <div class="font-weight-bold" style="text-align: left">{{ header.name }}</div> -->
-                <!-- <list-cell
-                	:key="header.id"
-                	:item="header"
-                	single-line>
-                </list-cell> -->
-                <!-- <v-text-field class="textfield"
-                          @input="updateItemState"
-                          :value="item.values[header.name]"
-                          :readonly="!item.item_meta.active"
-                          :id="header.name"
-                          ref="{{item.id}}-{{header.text}}"
-                          single-line
-                          hide-details> -->
-                          <v-text-field class="header-field"
-                          :value="header.name"
-                          :id="header.name"
-                          ref="{{item.id}}-{{header.text}}"
-                          single-line
-                          hide-details
-                          readonly
-                          solo
-                          flat
-                          >
+	<v-layout column align-start>
+		<v-layout row class="header-row">
+			<span class="spacer-handle"></span>
+			<span class="spacer-checkbox"></span>
+			<v-layout col 
+			v-for="header in headers" 
+			:key="header.name"
+			justify-start
+			>
+	<!-- <div class="font-weight-bold" style="text-align: left">{{ header.name }}</div> -->
+          <!-- <list-cell
+          	:key="header.id"
+          	:item="header"
+          	single-line>
+          </list-cell> -->
+          <!-- <v-text-field class="textfield"
+                    @input="updateItemState"
+                    :value="item.values[header.name]"
+                    :readonly="!item.item_meta.active"
+                    :id="header.name"
+                    ref="{{item.id}}-{{header.text}}"
+                    single-line
+                    hide-details> -->
+                    <v-textarea class="header-field"
+                    :value="header.name"
+                    :id="header.name"
+                    ref="{{item.id}}-{{header.text}}"
+                    single-line
+                    hide-details
+                    readonly
+                    solo
+                    flat
+                    rows="1"
+                    no-resize
+                    >
 
-                          <!-- :outline="!item.item_meta.active" -->
-                      </v-text-field>
+                    <!-- :outline="!item.item_meta.active" -->
+                </v-textarea>
 
-                  </v-layout>
-                  <div class="spacer-delete"></div>
-              </v-layout>
-
-
-          </template>
+            </v-layout>
+            <div class="spacer-delete"></div>
+    	</v-layout>
+    </v-layout>
+</template>
 
           <script>
           	import ListCell from './ListCell'
