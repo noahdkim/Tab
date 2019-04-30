@@ -1,5 +1,5 @@
 <template>
-    <v-text-field class="textfield"
+    <v-textarea class="text-field"
                           @input="updateCellValue"
                           v-model="textValue"
                           :readonly="!item.item_meta.active"
@@ -13,9 +13,7 @@
                           rows="1"
                           row-height=46
                           auto-grow>
-
-                          <!-- :outline="!item.item_meta.active" -->
-    </v-text-field>
+    </v-textarea>
 </template>
 
 <script>
