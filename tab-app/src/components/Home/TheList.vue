@@ -1,13 +1,13 @@
 <template>
     <v-container>
-        <div class="list-all">
-            <div class="list-title">
+        <v-container class="ma-0 pa-0 list-all">
+            <v-container class="pa-0 list-title">
                 <span class="list-title-text">{{ this.$store.state.selectedList.name }}</span>
-            </div>
-            <div class="list-head">
+            </v-container>
+            <v-container class="ma-0 pa-0 list-head">
                 <list-header :headers=selectedListHeaders></list-header>
-            </div>
-            <div class="list-body">
+            </v-container>
+            <v-container class="ma-0 pa-0 list-body">
                 <draggable
                 class="list-group"
                 handle=".handle"
@@ -27,16 +27,16 @@
                         </list-row>
                     </transition-group>
                 </draggable>
-            </div>
-            <div class="list-footer">
-                <div class="add-item-container">
+            </v-container>
+            <v-container class="ma-0 list-footer">
+                <v-container class="ma-0 add-item-container">
                     <a v-on:click="addNewItem" class="add-item-anchor">
                         <span class="mdi mdi-plus-circle add-item-icon"></span>
                         <span class="add-item-text">Add Item</span>
                     </a>
-                </div>
-            </div>
-        </div>
+                </v-container>
+            </v-container>
+        </v-container>
   <!-- <v-btn @click.native="saveList">Save</v-btn> -->
   <!-- <v-btn @click.native="addNewItem">Add item</v-btn> -->
 
