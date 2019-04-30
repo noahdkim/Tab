@@ -38,7 +38,7 @@ export const store = new Vuex.Store({
         activeItemID: 0,
         appTitle: 'Tab',
         dateFilterHeader: {},
-        showAll: true,
+        filterByDate: true,
         selectedDate: '',
         selectedIntegerField: '',
         error: null,
@@ -338,7 +338,6 @@ export const store = new Vuex.Store({
             let batch = db.batch();
             for (var i = 0, n = state.personalLists.length; i < n; i++){
                 let list = state.personalLists[i];
-                console.log(list.index)
                 let listDocRef = db.collection('lists_meta').doc(state.user.uid).collection('personal_lists').doc(list.id);
                 batch.set(listDocRef, list, {merge: true});
             }

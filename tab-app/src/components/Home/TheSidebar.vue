@@ -58,8 +58,6 @@ export default {
     },
     computed: {
         personalLists () {
-            console.log(this.$store.state.selectedList)
-
             return this.$store.state.personalLists
         },
          dragOptions() {

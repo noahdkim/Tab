@@ -1,9 +1,18 @@
 <template>
     <v-container>
         <div class="list-all">
-            <div class="list-title">
-                <span class="list-title-text">{{ this.$store.state.selectedList.name }}</span>
-            </div>
+            <v-layout>
+                <v-flex>
+                    <div class="list-title">
+                        <span class="list-title-text">{{ this.$store.state.selectedList.name }}</span>
+                    </div>
+                </v-flex>
+                <v-flex>
+                    <div>
+                         <v-switch v-model="filterByDate" label="Filter by Date"></v-switch>
+                    </div>
+                </v-flex>
+            </v-layout>
             <div class="list-head">
                 <list-header :headers=selectedListHeaders></list-header>
             </div>
@@ -65,15 +74,13 @@
             drag: false
         }),
         created() {
-            console.log("thelist created");
-            console.log(this);
+
         },
         computed: {
             ...mapGetters({
                 selectedListHeaders: 'getSelectedListHeaders',
                 selectedListItems: 'getSelectedListItems',
                 dateFilterHeader: 'getDateFilterHeader',
-                selectedDate: 'getSelectedDate',
             }),
             dragOptions() {
                 return {
@@ -85,15 +92,30 @@
             },
             filteredListItems: {
                 get(){
+                    console.log("SHOWALL:")
+                    console.log(this.$store.state.showAll)
                     let filteredListItems = this.selectedListItems;
-                    if (!this.$store.state.showAll){
+                    if (this.$store.state.filterByDate){
                         filteredListItems = filteredListItems.filter((item)=>{
-                            return item.values[this.dateFilterHeader.name].toDate().getTime() === selectedDate.getTime() ||
+                            return item.values[this.dateFilterHeader.id].toDate().getTime() === this.selectedDate.getTime() ||
                                         item.item_meta.active
                         })
                     }
 
                     return filteredListItems;
+                }
+            },
+            selectedDate:{
+                get(){
+                    return new Date(this.$store.state.selectedDate)
+                }
+            },
+            filterByDate:{
+                get(){
+                    return this.$store.state.filterByDate;
+                },
+                set(newValue){
+                    this.$store.state.filterByDate = newValue;
                 }
             }
     },
@@ -103,9 +125,6 @@
             this.$store.dispatch('createNewItem').then((newItemID) => {
                 // wait for the new Item to be rendered and then make it active
                 Vue.nextTick(() => {
-                    console.log(Object.keys(this.$refs))
-                    console.log(newItemID)
-                    console.log(this.$refs[newItemID])                                      // changed here
                     this.$refs[newItemID][0].makeActive()
                 });
 

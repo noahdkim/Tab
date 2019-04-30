@@ -40,7 +40,6 @@
           }),
           computed: {
               isActive () {
-                  console.log(this.listSelector===this.$store.state.selectedList)
                   return this.listSelector===this.$store.state.selectedList
               }
           },
@@ -53,9 +52,6 @@
             deleteList(event){
                 console.log("deleting list.....")
                 this.$store.dispatch('deleteList', this.listSelector);
-            },
-            showDropdown() {
-                console.log("show dropdown")
             },
             mouseOver(event)    {
                 this.showHandle = true;
