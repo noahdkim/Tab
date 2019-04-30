@@ -12,47 +12,33 @@
                         color="#197bbd"></v-date-picker>
     </v-layout>
     <v-layout row>
-        <v-flex v-if="dateFields.length > 1">
-            Display
-            <v-radio-group v-model="dateFilterHeader">
-              <v-radio
-                v-for="dateField in dateFields"
-                :key="dateField"
-                :label="dateField"
-                :value="dateField"
-              ></v-radio>
-            </v-radio-group>
-        </v-flex>
-        <v-flex v-if="integerFields.length > 0">
-            Weight
-            <v-radio-group v-model="selectedIntegerField">
-              <v-radio
-                v-for="integerField in integerFields"
-                :key="integerField"
-                :label="integerField"
-                :value="integerField"
-              ></v-radio>
-              <v-radio
-                label="None"
-                value="None"
-              ></v-radio>
-            </v-radio-group>
-        </v-flex>
+        <calendar-date-card v-if="dateFields.length > 1"
+                                :dateFields="dateFields">
+        </calendar-date-card>
+
+        <calendar-weight-card v-if="integerFields.length > 0"
+                                :integerFields="integerFields">
+        </calendar-weight-card>
     </v-layout>
     </v-container>
 </template>
 
 <script>
 import firebase from 'firebase'
+import CalendarDateCard from './Calendar/CalendarDateCard'
+import CalendarWeightCard from './Calendar/CalendarWeightCard'
 require("@/assets/styles/TheCalendar.css");
 
 export default  {
+    components: {
+        CalendarDateCard,
+        CalendarWeightCard,
+    },
     data(){
         return{
             dateWeights: {},
             totalItems: 0,
             landscape: false,
-            selectedIntegerField: '',
             selectedValue: new Date(),
             reactive: true
         }
@@ -69,8 +55,8 @@ export default  {
                 this.totalWeights = 0;
                 let listDates = this.$store.state.selectedListItems.map((item) =>{
                     let date = item.values[this.dateFilterHeader.id].toDate().toISOString().substr(0, 10)
-                    let priority = item.values[this.selectedIntegerField];
-                    priority = priority ? parseInt(item.values[this.selectedIntegerField]) : 0;
+                    let priority = item.values[this.selectedIntegerField.id];
+                    priority = priority ? parseInt(item.values[this.selectedIntegerField.id]) : 0;
                     this.totalWeights += priority;
                     this.dateWeights[date] = this.dateWeights[date] ? this.dateWeights[date] + priority : priority;
                     return date;
@@ -84,6 +70,14 @@ export default  {
             },
             set(newDateHeader) {
                 this.$store.state.dateFilterHeader = newDateHeader
+            }
+        },
+        selectedIntegerField: {
+            get() {
+                return this.$store.state.selectedIntegerField ? this.$store.state.selectedIntegerField : '';
+            },
+            set(newIntegerField) {
+                this.$store.commit('setSelectedIntegerField', newIntegerField);
             }
         },
         picker: {
@@ -111,7 +105,7 @@ export default  {
                 let integerFields = [];
                 this.$store.state.selectedListHeaders.forEach(header => {
                     if (header.type === "integer"){
-                        integerFields.push(header.name);
+                        integerFields.push(header);
                     }
                 })
                 this.selectedIntegerField = integerFields[0];

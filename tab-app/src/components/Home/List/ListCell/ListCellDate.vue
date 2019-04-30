@@ -5,7 +5,7 @@
         v-model="menu"
         :close-on-content-click="false"
         :nudge-right="40"
-        :return-value.sync="date"
+        :return-value.sync="dateValue"
         lazy
         transition="scale-transition"
         offset-y
@@ -13,7 +13,7 @@
         min-width="290px"
       >
           <v-text-field
-            v-model="date"
+            v-model="dateValue"
             readonly
             slot="activator"
             hide-details
@@ -21,10 +21,10 @@
             solo
             flat
           ></v-text-field>
-        <v-date-picker v-model="date" no-title scrollable>
+        <v-date-picker v-model="dateValue" no-title scrollable>
           <v-spacer></v-spacer>
           <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
-          <v-btn flat color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+          <v-btn flat color="primary" @click="$refs.menu.save(dateValue)">OK</v-btn>
         </v-date-picker>
       </v-menu>
 </div>
@@ -42,37 +42,35 @@ export default {
             landscape: false,
             reactive: true,
             menu: false,
+            listCellDateValue: new Date(this.item.values[this.header.id].seconds * 1000).toISOString().substring(0,10)
         }
     },
     computed: {
-        date: {
+        dateValue: {
             get: function() {
-                return new Date(this.item.values[this.header.id].seconds * 1000).toISOString().substring(0,10);
+                return this.listCellDateValue
             },
             set: function(newDate) {
-                let header = this.header.id;
-                let itemID = this.item.item_meta.id;
                 let newValue = this.parseISOString(newDate);
-                // let newValue = newDate.getTime();
-                this.updateItemState(newValue);
-                //this.$store.dispatch('updateItemState', {itemID, header, newValue});
+                this.listCellDateValue = newDate
             }
         }
 
     },
     methods: {
-        updateItemState (newValue){
-            console.log(newValue);
-            this.$emit('update', newValue);
-        },
         parseISOString(ISOString) {
           let splitString = ISOString.split(/\D+/);
           let d = new Date(Date.UTC(splitString[0], --splitString[1], splitString[2]));
           let firebaseDateSeconds = d.getTime() / 1000;
           let timestamp = new firebase.firestore.Timestamp(firebaseDateSeconds, 0);
-          console.log(timestamp);
           return timestamp;
-        }
+      },
+      getValue(){
+          return this.parseISOString(this.dateValue);
+      },
+      setValue(newValue){
+          this.dateValue = newValue.toDate().toISOString().substring(0,10);
+      },
 
     }
   }

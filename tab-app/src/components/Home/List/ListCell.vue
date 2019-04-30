@@ -3,22 +3,22 @@
         <ListCellDate v-if="header.type === 'date'"
                             :item= "item"
                             :header= "header"
-                            @update="updateItemState"
-                            ref="{{item.id}}-{{header.text}}"
+                            @update="updateCellValue"
+                            :ref="item.item_meta.id + '-' + header.id"
                             single-line>
         </ListCellDate>
         <ListCellInt v-if="header.type === 'integer'"
                             :item= "item"
                             :header= "header"
-                            @update="updateItemState"
-                            ref="{{item.id}}-{{header.text}}"
+                            @update="updateCellValue"
+                            :ref="item.item_meta.id + '-' + header.id"
                             single-line>
         </ListCellInt>
         <ListCellText v-if="header.type === 'string'"
                               :item= "item"
                               :header= "header"
-                              @update="updateItemState"
-                              ref="{{item.id}}-{{header.text}}"
+                              @update="updateCellValue"
+                              :ref="item.item_meta.id + '-' + header.id"
                               single-line>
         </ListCellText>
     </v-container>
@@ -37,14 +37,29 @@ export default {
         return{
             /* this is currently not being used */
             checkbox: true,
+            value: this.item.values[this.header.id]
+        }
+    },
+    computed:{
+        cellValue:{
+            get: function(){
+                return this.value;
+            },
+            set: function(newValue){
+                this.$refs[this.item.item_meta.id+'-'+this.header.id].setValue(newValue)
+                this.value = newValue
+            }
         }
     },
     methods: {
-        updateItemState (newValue){
-            console.log(this.item)
-            let item = this.item;
-            let headerId = this.header.id;
-            this.$store.dispatch('updateItemState', {item, headerId, newValue});
+        updateCellValue (newValue){
+            this.cellValue = newValue
+        },
+        getValue(){
+            return this.$refs[this.item.item_meta.id+'-'+this.header.id].getValue()
+        },
+        setValue(newValue){
+            this.$refs[this.item.item_meta.id+'-'+this.header.id].setValue(newValue)
         }
     }
   }

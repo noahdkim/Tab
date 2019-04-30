@@ -1,18 +1,17 @@
 <template>
     <v-textarea class="text-field"
-                @input="updateItemState"
-                :value="item.values[header.id]"
-                :readonly="!item.item_meta.active"
-                :id="header.name"
-                ref="{{item.id}}-{{header.text}}"
-                hide-details
-                solo
-                flat
-                no-resize
-                rows="1"
-                row-height=46
-                auto-grow
-                >
+                          @input="updateCellValue"
+                          v-model="textValue"
+                          :readonly="!item.item_meta.active"
+                          :id="header.name"
+                          ref="{{item.id}}-{{header.text}}"
+                          single-line
+                          hide-details
+                          solo
+                          flat
+                          rows="1"
+                          row-height=46
+                          auto-grow>
     </v-textarea>
 </template>
 
@@ -24,12 +23,29 @@ export default {
         return{
             /* this is currently not being used */
             checkbox: true,
+            listCellTextValue: this.item.values[this.header.id]
 
         }
     },
+    computed: {
+        textValue:{
+            get: function(){
+                return this.listCellTextValue
+            },
+            set: function(newValue){
+                this.listCellTextValue = newValue
+            }
+        }
+    },
     methods: {
-        updateItemState (newValue){
+        updateCellValue (newValue){
             this.$emit('update', newValue);
+        },
+        setValue(newValue){
+            this.textValue = newValue
+        },
+        getValue(){
+            return this.textValue
         }
     }
   }

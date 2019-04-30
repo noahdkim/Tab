@@ -7,7 +7,7 @@
 			@mouseleave="mouseLeave()"
 			>
 			<span class="fa fa-align-justify handle" :style="{ opacity: showHandle ? 0.3 : 0 }">::</span>
-			<v-checkbox class="checkbox" default v-model="checkbox"></v-checkbox>
+			<v-checkbox @click.stop="checkbox=!checkbox" class="checkbox" default v-model="checkbox"></v-checkbox>
 			<v-layout col
 				v-for="header in headers"
 				:key="header.id"
@@ -16,28 +16,28 @@
 				<list-cell
 					:item = "item"
 					:header = "header"
-					ref="{{item.item_meta.id}}-{{header.text}}"
+					:ref="item.item_meta.id + '-' + header.id"
 					single-line
 					:class="{ 'activeRow': item.item_meta.active }"
 					>
 				</list-cell>
 			</v-layout>
-			<v-btn flat icon @click="deleteItem" :style="{ opacity: showHandle ? 0.3 : 0 }">
+			<v-btn flat icon @click.stop="deleteItem" :style="{ opacity: showHandle ? 0.3 : 0 }">
 				<v-icon class="deleteIcon" >delete</v-icon>
 			</v-btn>
 		</v-layout>
 		<!-- Hidden Options Row is shown when row is active -->
 		<v-layout row class="hiddenOptionsRow" v-show="item.item_meta.active">
-			<v-container class="pa-0" id="saveCancelContainer">
-				<v-btn 	class="saveRowBtn" 
-						@click.native="saveList"
+			<div id="saveCancelContainer">
+				<v-btn 	class="saveRowBtn"
+						@click.native="saveItem"
 						small
 						flat
 						color="#197bbd">
 						<strong>Save</strong>
 				</v-btn>
-				<v-btn 	class="cancelRowBtn2" 
-						@click.native="saveList"
+				<v-btn 	class="cancelRowBtn2"
+						@click.native="cancel"
 						small
 						flat
 						color="#555">
@@ -65,40 +65,71 @@
 		data () {
 			return{
 				/* this is currently not being used */
-				checkbox: false,
+				checkbox2: false,
 				showHandle: false,
 			}
 		},
+        computed: {
+            checkbox: {
+                get: function() {
+                    return this.item.item_meta.checkbox
+                },
+                set: function(newCheckboxValue) {
+                    this.item.item_meta.checkbox = newCheckboxValue
+                    this.$store.dispatch('saveItem', this.item)
+                }
+            }
+        },
 		methods: {
 			deleteItem (event) {
 				this.$store.dispatch('deleteItem', this.item);
 			},
 			makeActive (event) {
-              // When the row is clicked, dispatch changeActiveItem to the store passing
-              // the current ID.
-              // the changeActiveItem method searches for the ID and modifies the active attribute
-              // to true
               this.showHandle = false;
-              this.$store.dispatch('changeActiveItem', this.item);
+              this.item.item_meta.active = true;
+              this.$root.$emit('changeActive', this.item.item_meta.id);
+              return "made Active"
           },
           mouseOver(event)    {
           	this.showHandle = true;
-          	console.log("this.item_meta.active: " + this.item.item_meta.active);
           },
           mouseLeave(event)   {
           	this.showHandle = false;
           },
           saveList() {
           	/* this is async */
-          	this.item.item_meta.active = false;
-          	this.$store.dispatch('saveList');
+          	this.$store.dispatch('saveListToFirestore');
           },
-          cancel()    {
-          	this.item.item_meta.active = false;
+          saveItem(){
+              this.item.item_meta.active = false;
+              let item = this.item
+              for (var i=0; i<this.headers.length; i++) {
+                      let newValue = this.$refs[this.item.item_meta.id+'-'+this.headers[i].id][0].getValue()
+                      let headerId = this.headers[i].id
+                      this.$store.dispatch('updateItemState', {item, headerId, newValue});
+              }
+              this.$store.dispatch('saveItem', this.item)
+          },
+          cancel(){
+              this.item.item_meta.active = false;
+              let item = this.item
+              for (var i=0; i<this.headers.length; i++) {
+                  let originalValue = this.item.values[this.headers[i].id]
+                  this.$refs[this.item.item_meta.id+'-'+this.headers[i].id][0].setValue(originalValue)
+              }
+              this.$store.dispatch('saveItem', this.item)
           	/* More cancel actions needed here TODO */
           }
 
-      }
+      },
+      mounted() {
+            this.$root.$on('changeActive', data => {
+                if (this.item.item_meta.id !== data && this.item.item_meta.active){
+                    this.saveItem();
+                    this.item.item_meta.active = false;
+                }
+            });
+        }
   }
 
 

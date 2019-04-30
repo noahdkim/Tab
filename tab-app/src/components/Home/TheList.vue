@@ -17,14 +17,15 @@
                 :list="this.selectedListItems"
                 >
                     <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-                        <list-row v-for="item in filteredListItems"
-                        :key="item.item_meta.id"
-                        :item="item"
-                        :headers="selectedListHeaders"
-                        :ref="item.item_meta.id"
-                        class="draggable-row"
-                        >
-                        </list-row>
+                        <div class="listRows" v-for="item in filteredListItems" :key="item.item_meta.id">
+                            <list-row
+                            :item="item"
+                            :headers="selectedListHeaders"
+                            :ref="item.item_meta.id"
+                            class="draggable-row"
+                            >
+                            </list-row>
+                        </div>
                     </transition-group>
                 </draggable>
             </v-container>
@@ -64,15 +65,13 @@
             drag: false
         }),
         created() {
-            console.log("thelist created");
-            console.log(this);
+
         },
         computed: {
             ...mapGetters({
                 selectedListHeaders: 'getSelectedListHeaders',
                 selectedListItems: 'getSelectedListItems',
                 dateFilterHeader: 'getDateFilterHeader',
-                selectedDate: 'getSelectedDate',
             }),
             dragOptions() {
                 return {
@@ -84,31 +83,50 @@
             },
             filteredListItems: {
                 get(){
+                    console.log("SHOWALL:")
+                    console.log(this.$store.state.showAll)
                     let filteredListItems = this.selectedListItems;
-                    if (!this.$store.state.showAll){
+                    if (this.$store.state.filterByDate){
                         filteredListItems = filteredListItems.filter((item)=>{
-                            return item.values[this.dateFilterHeader.name].toDate().getTime() === selectedDate.getTime() ||
+                            return item.values[this.dateFilterHeader.id].toDate().getTime() === this.selectedDate.getTime() ||
                                         item.item_meta.active
                         })
                     }
 
                     return filteredListItems;
                 }
+            },
+            selectedDate:{
+                get(){
+                    return new Date(this.$store.state.selectedDate)
+                }
+            },
+            filterByDate:{
+                get(){
+                    return this.$store.state.filterByDate;
+                },
+                set(newValue){
+                    this.$store.state.filterByDate = newValue;
+                }
             }
     },
     methods: {
         addNewItem() {
             /* wait for the promise */
-            this.$store.dispatch('createNewItem').then((result) => {
-                this.saveList();
+            this.$store.dispatch('createNewItem').then((newItemID) => {
+                // wait for the new Item to be rendered and then make it active
+                Vue.nextTick(() => {
+                    this.$refs[newItemID][0].makeActive()
+                });
+
             });
         },
-        saveList() {
+        saveListToFirestore() {
             /* this is async */
-            this.$store.dispatch('saveList');
+            this.$store.dispatch('saveListToFirestore');
         },
-        saveListOrderToFirestore()  {
-            this.$store.dispatch('saveListOrderToFirestore').then((result) => {
+        saveListOrder()  {
+            this.$store.dispatch('saveListOrder').then((result) => {
                 console.log(result);
             });
         },
@@ -122,8 +140,8 @@
         },
         endDrag() {
             this.drag = false;
-            this.saveListOrderToFirestore();
-            this.saveList();
+            this.saveListOrder();
+            this.saveListToFirestore();
 
             EventBus.$emit('the-list-drag-event', this.drag);
         },

@@ -1,7 +1,8 @@
 <template>
     <v-text-field class="text-field"
                           :mask="mask"
-                          @input="updateItemState"
+                          @input="updateCellValue"
+                          v-model="intValue"
                           :value="item.values[header.id]"
                           :readonly="!item.item_meta.active"
                           :id="header.name"
@@ -23,13 +24,30 @@ export default {
         return{
             checkbox: true,
             /* Only three digit number allowed */
+            listCellIntValue: this.item.values[this.header.id],
             mask: '###'
 
         }
     },
+    computed: {
+        intValue:{
+            get: function(){
+                return this.listCellIntValue
+            },
+            set: function(newValue){
+                this.listCellIntValue = newValue
+            }
+        }
+    },
     methods: {
-        updateItemState (newValue){
+        updateCellValue (newValue){
             this.$emit('update', newValue);
+        },
+        setValue(newValue){
+            this.intValue = newValue
+        },
+        getValue(){
+            return this.intValue
         }
     }
   }

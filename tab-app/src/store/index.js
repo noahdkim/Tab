@@ -38,8 +38,9 @@ export const store = new Vuex.Store({
         activeItemID: 0,
         appTitle: 'Tab',
         dateFilterHeader: {},
-        showAll: true,
+        filterByDate: true,
         selectedDate: '',
+        selectedIntegerField: '',
         error: null,
         loading: false,
         user: null,
@@ -85,6 +86,9 @@ export const store = new Vuex.Store({
         setSelectedListHeaders(state, payload) {
             state.selectedListHeaders = payload;
         },
+        setSelectedIntegerField(state, payload) {
+            state.selectedIntegerField = payload;
+        },
         setUser(state, payload) {
             state.user = payload;
         },
@@ -100,11 +104,9 @@ export const store = new Vuex.Store({
         },
         changeActiveItem({ state, commit, dispatch }, item){
             /* change previously active item to not active */
-            console.log(state.activeItemID)
             // save the previously active item and set the state of the item to false
             let prevActiveItemIndex = findIndexOfItem(state.selectedListItems, state.activeItemID)
             if(prevActiveItemIndex >= 0){
-                console.log(state.selectedListItems[prevActiveItemIndex])
                 dispatch('saveItem', state.selectedListItems[prevActiveItemIndex]);
                 commit('changeActiveState', {active: false, id: state.activeItemID});
             }
@@ -123,17 +125,15 @@ export const store = new Vuex.Store({
             let myRef = firebase.database().ref().push();
             var key = myRef.key;
             let today = new Date()
-            console.log(today);
-            console.log(this.state.selectedDate)
-            console.log(new Date(this.state.selectedDate))
             // need Date object with no seconds or miliseconds in order to parse into timestamp
             let d = new Date(this.state.selectedDate)
             let firebaseDateSeconds = d.getTime() / 1000;
             let todayTimestamp = new firebase.firestore.Timestamp(firebaseDateSeconds, 0)
             let newItem = {
                             item_meta:{
-                                id: key,
                                 active: false,
+                                checkbox: false,
+                                id: key,
                                 index: state.selectedListItems.length,
                             },
                             values: {}
@@ -148,8 +148,8 @@ export const store = new Vuex.Store({
 
             )
             state.selectedListItems.push(newItem);
-            dispatch('changeActiveItem', newItem);
-            return "added";
+            //dispatch('changeActiveItem', newItem);
+            return key;
         },
         createNewList({ state, commit }, params){
             let listName = params.listName;
@@ -195,7 +195,7 @@ export const store = new Vuex.Store({
             let itemDocRef = db.collection('lists_content').doc(state.selectedList.listContentKey).collection('items').doc(item.item_meta.id);
             itemDocRef.delete()
                 .then(function() {
-                    dispatch('saveListOrderToFirestore');
+                    dispatch('saveListOrder');
                     console.log("Document successfully deleted!");
                 })
                 .catch(function(error) {
@@ -213,9 +213,6 @@ export const store = new Vuex.Store({
             // let data = {path:'/lists_content/'+list.listContentKey}
             // recursiveDelete(data).then((result) => console.log(result))
             listMetaRef.delete().then((result)=>{
-                                        console.log(result)
-                                        console.log("done")
-                                        console.log(list.id)
                                         let personalLists = state.personalLists
                                         let listIndex = personalLists
                                                             .findIndex((personalList)=>{return personalList===list})
@@ -236,21 +233,18 @@ export const store = new Vuex.Store({
             personal_lists_ref.get().then(function(querySnapshot) {
                 querySnapshot.forEach(function(doc) {
                     // doc.data() is never undefined for query doc snapshots
-                    console.log(doc.id, " => ", doc.data());
                 });
             });
         },
         loadPersonalListData({ state, commit, dispatch }) {
             console.log('load personal list data')
             let user_meta = db.collection("lists_meta").doc(state.user.uid);
-            let personal_lists_ref = user_meta.collection("personal_lists");
-            let groups = user_meta.collection("groups");
+            let personal_lists_ref = user_meta.collection("personal_lists").orderBy("index");
             var personalLists = [];
             personal_lists_ref.get().then(function(querySnapshot) {
                 querySnapshot.forEach(function(doc) {
                     // doc.data() is never undefined for query doc snapshots
                     personalLists.push(doc.data());
-                    console.log(doc.data())
                 });
                 commit('setPersonalLists', personalLists);
                 commit('setSelectedList', personalLists[0]);
@@ -308,7 +302,7 @@ export const store = new Vuex.Store({
                 console.error("Error writing document: ", error);
             });
         },
-        saveList({ state, commit }, params){
+        saveListToFirestore({ state, commit }, params){
             let batch = db.batch();
             for (var i = 0, n = state.selectedListItems.length; i < n; i++){
                 let item = state.selectedListItems[i];
@@ -317,7 +311,7 @@ export const store = new Vuex.Store({
             }
             batch.commit().then().catch(error=>{console.log(error)});
         },
-        saveListOrderToFirestore({ state, commit }, params) {
+        saveListOrder({ state, commit }, params) {
             let selectedListItems = state.selectedListItems;
             if(selectedListItems == null) {
                 return false;
@@ -328,6 +322,26 @@ export const store = new Vuex.Store({
             }
             commit('setSelectedListItems', selectedListItems);
             return "savedListOrder";
+        },
+        saveSidebarOrder({ state, commit }, params){
+            let personalLists = state.personalLists;
+            if(personalLists == null) {
+                return false;
+            }
+            for(let i = 0; i < personalLists.length; i++)   {
+                personalLists[i].index = i;
+            }
+            commit('setPersonalLists', personalLists);
+            return "savedSidebarOrder";
+        },
+        saveSidebarToFirestore({ state }, params){
+            let batch = db.batch();
+            for (var i = 0, n = state.personalLists.length; i < n; i++){
+                let list = state.personalLists[i];
+                let listDocRef = db.collection('lists_meta').doc(state.user.uid).collection('personal_lists').doc(list.id);
+                batch.set(listDocRef, list, {merge: true});
+            }
+            batch.commit().then().catch(error=>{console.log(error)});
         },
         updateItemState({ state, commit }, params){
             let item = params.item;
