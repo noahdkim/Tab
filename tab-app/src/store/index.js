@@ -49,6 +49,8 @@ export const store = new Vuex.Store({
         selectedListItems: [],
         selectedListHeaders: [],
         showCalendar: '',
+        sortColumnIndex: -1,
+        sortDescending: true
     },
     /* change state values */
     mutations: {
@@ -93,6 +95,12 @@ export const store = new Vuex.Store({
         setUser(state, payload) {
             state.user = payload;
         },
+        setSortColumnIndex(state, newColumnIndex) {
+            state.sortColumnIndex = newColumnIndex
+        },
+        setSortDescending(state, newValue) {
+            state.sortDescending = newValue
+        }
     },
     actions: {
         autoSignIn({

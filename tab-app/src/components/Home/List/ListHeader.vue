@@ -3,29 +3,15 @@
 		<v-layout row class="header-row">
 			<span class="spacer-handle"></span>
 			<span class="spacer-checkbox"></span>
-			<v-layout col 
-			v-for="header in headers" 
+			<v-layout col
+			v-for="header in headers"
 			:key="header.name"
 			justify-start
 			>
-	<!-- <div class="font-weight-bold" style="text-align: left">{{ header.name }}</div> -->
-          <!-- <list-cell
-          	:key="header.id"
-          	:item="header"
-          	single-line>
-          </list-cell> -->
-          <!-- <v-text-field class="textfield"
-                    @input="updateItemState"
-                    :value="item.values[header.name]"
-                    :readonly="!item.item_meta.active"
-                    :id="header.name"
-                    ref="{{item.id}}-{{header.text}}"
-                    single-line
-                    hide-details> -->
                     <v-textarea class="header-field"
                     :value="header.name"
-                    :id="header.name"
-                    ref="{{item.id}}-{{header.text}}"
+                    :id="header.id"
+                    :ref="header.id"
                     single-line
                     hide-details
                     readonly
@@ -33,9 +19,8 @@
                     flat
                     rows="1"
                     no-resize
+                    @click="modifySort(header.index)"
                     >
-
-                    <!-- :outline="!item.item_meta.active" -->
                 </v-textarea>
 
             </v-layout>
@@ -44,14 +29,24 @@
     </v-layout>
 </template>
 
-          <script>
-          	import ListCell from './ListCell'
+<script>
+	import ListCell from './ListCell'
 
-          	export default {
-          		components: {ListCell},
-          		props: ['headers'],
-          	};
-          </script>
+	export default {
+		components: {ListCell},
+		props: ['headers'],
+        methods:{
+            modifySort(columnIndex){
+                if(this.$store.state.sortColumnIndex === columnIndex){
+                    this.$store.commit('setSortDescending', !this.$store.state.sortDescending)
+                } else{
+                    this.$store.commit('setSortColumnIndex', columnIndex)
+                    this.$store.commit('setSortDescending', true)
+                }
+            }
+        }
+	};
+</script>
 
           <style scoped>
           .spacer-checkbox  {

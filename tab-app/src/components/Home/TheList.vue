@@ -9,7 +9,7 @@
                 </v-flex>
                 <v-flex>
                    <div>
-                        <v-switch v-model="filterByDate" label="Filter by Date"></v-switch>
+                        <v-switch v-if="showCalendar" v-model="filterByDate" label="Filter by Date"></v-switch>
                    </div>
                </v-flex>
            </v-layout>
@@ -26,7 +26,7 @@
                 :list="this.selectedListItems"
                 >
                     <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-                        <div class="listRows" v-for="item in filteredListItems" :key="item.item_meta.id">
+                        <div class="listRows" v-for="item in filteredAndSortedListItems" :key="item.item_meta.id">
                             <list-row
                             :item="item"
                             :headers="selectedListHeaders"
@@ -71,7 +71,7 @@
             ListRow
         },
         data: () => ({
-            drag: false
+            drag: false,
         }),
         created() {
 
@@ -99,8 +99,29 @@
                                         item.item_meta.active
                         })
                     }
-
                     return filteredListItems;
+                }
+            },
+            filteredAndSortedListItems: {
+                get(){
+                    if(this.sortColumnIndex > -1){
+                        console.log("sorting......")
+                        this.filteredListItems.sort(this.sortFilteredList)
+                    } else {
+                        console.log("not sorting.....")
+                        return this.filteredListItems
+                    }
+                    return this.filteredListItems
+                }
+            },
+            sortColumnIndex:{
+                get(){
+                    return this.$store.state.sortColumnIndex
+                }
+            },
+            sortDescending: {
+                get(){
+                    return this.$store.state.sortDescending
                 }
             },
             selectedDate:{
@@ -119,6 +140,14 @@
                 },
                 set(newValue){
                     this.$store.state.filterByDate = newValue;
+                }
+            },
+            sortKey: {
+                get: function() {
+                    return this.sortKeyData
+                },
+                set: function(newKey){
+                    this.sortKeyData = newKey
                 }
             }
     },
@@ -157,6 +186,24 @@
 
             EventBus.$emit('the-list-drag-event', this.drag);
         },
+        sortFilteredList(a, b){
+            console.log(this.headers)
+            let headerID = this.selectedListHeaders[this.sortColumnIndex].id
+            let headerType = this.selectedListHeaders[this.sortColumnIndex].type
+            console.log(this.selectedListHeaders)
+            let sortResult
+            if(headerType==="date"){
+                sortResult = (a.values[headerID].seconds > b.values[headerID].seconds)
+            } else if(headerType === "integer"){
+                sortResult = (a.values[headerID] < b.values[headerID])
+            }
+            else if(headerType ==="string"){
+                console.log((a.values[headerID] > b.values[headerID]))
+                sortResult = (a.values[headerID] > b.values[headerID])
+            }
+            return this.sortDescending ? sortResult : !sortResult
+
+        }
     }
 };
 </script>

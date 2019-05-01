@@ -67,6 +67,7 @@
 				/* this is currently not being used */
 				checkbox2: false,
 				showHandle: false,
+                sortKeyData: '',
 			}
 		},
         computed: {
@@ -78,13 +79,21 @@
                     this.item.item_meta.checkbox = newCheckboxValue
                     this.$store.dispatch('saveItem', this.item)
                 }
+            },
+            sortKey: {
+                get: function() {
+                    return this.sortKey
+                },
+                set: function(newKey){
+                    this.sortKey = newKey
+                }
             }
         },
 		methods: {
-			deleteItem (event) {
-				this.$store.dispatch('deleteItem', this.item);
-			},
-			makeActive (event) {
+          deleteItem (event) {
+              this.$store.dispatch('deleteItem', this.item);
+	      },
+	      makeActive (event) {
               this.showHandle = false;
               this.item.item_meta.active = true;
               this.$root.$emit('changeActive', this.item.item_meta.id);
@@ -129,7 +138,6 @@
                   this.item.item_meta.active = false;
               }
           }
-
       },
       mounted() {
             this.$root.$on('changeActive', this.listener);
