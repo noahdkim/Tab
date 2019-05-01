@@ -103,13 +103,8 @@
           saveItem(){
               this.item.item_meta.active = false;
               let item = this.item
-              console.log(Object.keys(this.$refs))
               for (var i=0; i<this.headers.length; i++) {
-                  // console.log("item id")
-                  // console.log(this.item.item_meta.id)
-                  // console.log("header id")
-                  console.log(this.headers[i].id)
-                  
+
                   //console.log(this.$refs[this.headers[i].id])
                   let newValue = this.$refs[this.headers[i].id][0].getValue()
 
@@ -127,16 +122,20 @@
               }
               this.$store.dispatch('saveItem', this.item)
           	/* More cancel actions needed here TODO */
+        },
+          listener(data){
+              if (this.item.item_meta.id !== data && this.item.item_meta.active){
+                  this.saveItem();
+                  this.item.item_meta.active = false;
+              }
           }
 
       },
       mounted() {
-            this.$root.$on('changeActive', data => {
-                if (this.item.item_meta.id !== data && this.item.item_meta.active){
-                    this.saveItem();
-                    this.item.item_meta.active = false;
-                }
-            });
+            this.$root.$on('changeActive', this.listener);
+        },
+        destroyed(){
+            this.$root.$off('changeActive', this.listener);
         }
   }
 
