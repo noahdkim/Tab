@@ -1,9 +1,18 @@
 <template>
     <v-container>
         <v-container class="ma-0 pa-0 list-all">
-            <v-container class="pa-0 list-title">
-                <span class="list-title-text">{{ this.$store.state.selectedList.name }}</span>
-            </v-container>
+            <v-layout class="pa-0 list-title">
+                <v-flex>
+                    <div class="list-title">
+                        <span class="list-title-text">{{ this.$store.state.selectedList.name }}</span>
+                    </div>
+                </v-flex>
+                <v-flex>
+                   <div>
+                        <v-switch v-model="filterByDate" label="Filter by Date"></v-switch>
+                   </div>
+               </v-flex>
+           </v-layout>
             <v-container class="ma-0 pa-0 list-head">
                 <list-header :headers=selectedListHeaders></list-header>
             </v-container>
@@ -83,10 +92,8 @@
             },
             filteredListItems: {
                 get(){
-                    console.log("SHOWALL:")
-                    console.log(this.$store.state.showAll)
                     let filteredListItems = this.selectedListItems;
-                    if (this.$store.state.filterByDate){
+                    if (this.filterByDate){
                         filteredListItems = filteredListItems.filter((item)=>{
                             return item.values[this.dateFilterHeader.id].toDate().getTime() === this.selectedDate.getTime() ||
                                         item.item_meta.active
@@ -101,9 +108,14 @@
                     return new Date(this.$store.state.selectedDate)
                 }
             },
+            showCalendar:{
+                get(){
+                    return this.$store.state.showCalendar;
+                }
+            },
             filterByDate:{
                 get(){
-                    return this.$store.state.filterByDate;
+                    return this.showCalendar ? this.$store.state.filterByDate : false;
                 },
                 set(newValue){
                     this.$store.state.filterByDate = newValue;

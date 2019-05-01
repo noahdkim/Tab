@@ -43,12 +43,13 @@ export default {
      computed: {
          showCalendar () {
              let listHeaders = this.$store.state.selectedListHeaders
+             this.$store.state.showCalendar = false;
              for(var i = 0; i < listHeaders.length; ++i){
                  if (listHeaders[i].type === "date"){
-                     return true
+                     this.$store.state.showCalendar = true;
                  }
              }
-             return false
+             return this.$store.state.showCalendar
          }
      },
      mounted() {
