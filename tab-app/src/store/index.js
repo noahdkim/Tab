@@ -38,7 +38,7 @@ export const store = new Vuex.Store({
         activeItemID: 0,
         appTitle: 'Tab',
         dateFilterHeader: {},
-        filterByDate: true,
+        filterByDate: false,
         selectedDate: '',
         selectedIntegerField: '',
         error: null,
@@ -48,6 +48,7 @@ export const store = new Vuex.Store({
         selectedList: {},
         selectedListItems: [],
         selectedListHeaders: [],
+        showCalendar: '',
     },
     /* change state values */
     mutations: {

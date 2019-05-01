@@ -9,7 +9,7 @@
                 </v-flex>
                 <v-flex>
                     <div>
-                         <v-switch v-model="filterByDate" label="Filter by Date"></v-switch>
+                         <v-switch v-if="showCalendar" v-model="filterByDate" label="Filter by Date"></v-switch>
                     </div>
                 </v-flex>
             </v-layout>
@@ -92,10 +92,8 @@
             },
             filteredListItems: {
                 get(){
-                    console.log("SHOWALL:")
-                    console.log(this.$store.state.showAll)
                     let filteredListItems = this.selectedListItems;
-                    if (this.$store.state.filterByDate){
+                    if (this.filterByDate){
                         filteredListItems = filteredListItems.filter((item)=>{
                             return item.values[this.dateFilterHeader.id].toDate().getTime() === this.selectedDate.getTime() ||
                                         item.item_meta.active
@@ -110,9 +108,14 @@
                     return new Date(this.$store.state.selectedDate)
                 }
             },
+            showCalendar:{
+                get(){
+                    return this.$store.state.showCalendar;
+                }
+            },
             filterByDate:{
                 get(){
-                    return this.$store.state.filterByDate;
+                    return this.showCalendar ? this.$store.state.filterByDate : false;
                 },
                 set(newValue){
                     this.$store.state.filterByDate = newValue;

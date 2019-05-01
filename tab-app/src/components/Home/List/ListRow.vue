@@ -16,7 +16,7 @@
 				<list-cell
 					:item = "item"
 					:header = "header"
-					:ref="item.item_meta.id + '-' + header.id"
+					:ref="header.id"
 					single-line
 					:class="{ 'activeRow': item.item_meta.active }"
 					>
@@ -103,10 +103,18 @@
           saveItem(){
               this.item.item_meta.active = false;
               let item = this.item
+              console.log(Object.keys(this.$refs))
               for (var i=0; i<this.headers.length; i++) {
-                      let newValue = this.$refs[this.item.item_meta.id+'-'+this.headers[i].id][0].getValue()
-                      let headerId = this.headers[i].id
-                      this.$store.dispatch('updateItemState', {item, headerId, newValue});
+                  // console.log("item id")
+                  // console.log(this.item.item_meta.id)
+                  // console.log("header id")
+                  console.log(this.headers[i].id)
+                  
+                  //console.log(this.$refs[this.headers[i].id])
+                  let newValue = this.$refs[this.headers[i].id][0].getValue()
+
+                  let headerId = this.headers[i].id
+                  this.$store.dispatch('updateItemState', {item, headerId, newValue});
               }
               this.$store.dispatch('saveItem', this.item)
           },
@@ -115,7 +123,7 @@
               let item = this.item
               for (var i=0; i<this.headers.length; i++) {
                   let originalValue = this.item.values[this.headers[i].id]
-                  this.$refs[this.item.item_meta.id+'-'+this.headers[i].id][0].setValue(originalValue)
+                  this.$refs[this.headers[i].id][0].setValue(originalValue)
               }
               this.$store.dispatch('saveItem', this.item)
           	/* More cancel actions needed here TODO */
