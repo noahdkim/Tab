@@ -28,7 +28,7 @@
 		</v-layout>
 		<!-- Hidden Options Row is shown when row is active -->
 		<v-layout row class="hiddenOptionsRow" v-show="item.item_meta.active">
-			<div id="saveCancelContainer">
+			<v-container class="pa-0" id="saveCancelContainer">
 				<v-btn 	class="saveRowBtn"
 						@click.native="saveItem"
 						small
@@ -43,7 +43,7 @@
 						color="#555">
 						<strong>Cancel</strong>
 				</v-btn>
-			</div>
+			</v-container>
 
 		</v-layout>
 	</v-layout>

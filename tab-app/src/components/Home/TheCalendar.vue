@@ -8,7 +8,8 @@
                         :event-color="date => colorFunction(date)"
                         :landscape="landscape"
                         :reactive="reactive"
-                        full-width></v-date-picker>
+                        full-width
+                        color="#197bbd"></v-date-picker>
     </v-layout>
     <v-layout row>
         <calendar-date-card v-if="dateFields.length > 1"

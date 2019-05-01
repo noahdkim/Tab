@@ -1,22 +1,22 @@
 <template>
     <v-container>
-        <div class="list-all">
-            <v-layout>
+        <v-container class="ma-0 pa-0 list-all">
+            <v-layout class="pa-0 list-title">
                 <v-flex>
                     <div class="list-title">
                         <span class="list-title-text">{{ this.$store.state.selectedList.name }}</span>
                     </div>
                 </v-flex>
                 <v-flex>
-                    <div>
-                         <v-switch v-if="showCalendar" v-model="filterByDate" label="Filter by Date"></v-switch>
-                    </div>
-                </v-flex>
-            </v-layout>
-            <div class="list-head">
+                   <div>
+                        <v-switch v-model="filterByDate" label="Filter by Date"></v-switch>
+                   </div>
+               </v-flex>
+           </v-layout>
+            <v-container class="ma-0 pa-0 list-head">
                 <list-header :headers=selectedListHeaders></list-header>
-            </div>
-            <div class="list-body">
+            </v-container>
+            <v-container class="ma-0 pa-0 list-body">
                 <draggable
                 class="list-group"
                 handle=".handle"
@@ -37,16 +37,16 @@
                         </div>
                     </transition-group>
                 </draggable>
-            </div>
-            <div class="list-footer">
-                <div class="add-item-container">
+            </v-container>
+            <v-container class="ma-0 list-footer">
+                <v-container class="ma-0 add-item-container">
                     <a v-on:click="addNewItem" class="add-item-anchor">
                         <span class="mdi mdi-plus-circle add-item-icon"></span>
                         <span class="add-item-text">Add Item</span>
                     </a>
-                </div>
-            </div>
-        </div>
+                </v-container>
+            </v-container>
+        </v-container>
   <!-- <v-btn @click.native="saveList">Save</v-btn> -->
   <!-- <v-btn @click.native="addNewItem">Add item</v-btn> -->
 
