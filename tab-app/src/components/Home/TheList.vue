@@ -1,57 +1,51 @@
 <template>
-    <v-container>
-        <v-container class="ma-0 pa-0 list-all">
-            <v-layout class="pa-0 list-title">
-                <v-flex>
-                    <div class="list-title">
-                        <span class="list-title-text">{{ this.$store.state.selectedList.name }}</span>
+    <v-container class="ma-0 list-all">
+        <v-layout class="pa-0 ma-0">
+            <v-flex class="ma-0 pa-0">
+                <div class="list-title">
+                    <span class="list-title-text">{{ this.$store.state.selectedList.name }}</span>
+                </div>
+            </v-flex>
+            <v-flex class="ma-0 pa-0">
+               <div class="list-filter-switch">
+                    <v-switch v-model="filterByDate" label="Filter by Date"></v-switch>
+               </div>
+           </v-flex>
+       </v-layout>
+        <v-container class="ma-0 pa-0 list-head">
+            <list-header :headers=selectedListHeaders></list-header>
+        </v-container>
+        <v-container class="ma-0 pa-0 list-body">
+            <draggable
+            class="list-group"
+            handle=".handle"
+            v-bind="dragOptions"
+            @start="startDrag()"
+            @end="endDrag()"
+            :list="this.selectedListItems"
+            >
+                <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+                    <div class="listRows" v-for="item in filteredListItems" :key="item.item_meta.id">
+                        <list-row
+                        :item="item"
+                        :headers="selectedListHeaders"
+                        :ref="item.item_meta.id"
+                        class="draggable-row"
+                        >
+                        </list-row>
                     </div>
-                </v-flex>
-                <v-flex>
-                   <div>
-                        <v-switch v-model="filterByDate" label="Filter by Date"></v-switch>
-                   </div>
-               </v-flex>
-           </v-layout>
-            <v-container class="ma-0 pa-0 list-head">
-                <list-header :headers=selectedListHeaders></list-header>
-            </v-container>
-            <v-container class="ma-0 pa-0 list-body">
-                <draggable
-                class="list-group"
-                handle=".handle"
-                v-bind="dragOptions"
-                @start="startDrag()"
-                @end="endDrag()"
-                :list="this.selectedListItems"
-                >
-                    <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-                        <div class="listRows" v-for="item in filteredListItems" :key="item.item_meta.id">
-                            <list-row
-                            :item="item"
-                            :headers="selectedListHeaders"
-                            :ref="item.item_meta.id"
-                            class="draggable-row"
-                            >
-                            </list-row>
-                        </div>
-                    </transition-group>
-                </draggable>
-            </v-container>
-            <v-container class="ma-0 list-footer">
-                <v-container class="ma-0 add-item-container">
-                    <a v-on:click="addNewItem" class="add-item-anchor">
-                        <span class="mdi mdi-plus-circle add-item-icon"></span>
-                        <span class="add-item-text">Add Item</span>
-                    </a>
-                </v-container>
+                </transition-group>
+            </draggable>
+        </v-container>
+        <v-container class="ma-0 list-footer">
+            <v-container class="ma-0 add-item-container">
+                <a v-on:click="addNewItem" class="add-item-anchor">
+                    <span class="mdi mdi-plus-circle add-item-icon"></span>
+                    <span class="add-item-text">Add Item</span>
+                </a>
             </v-container>
         </v-container>
-  <!-- <v-btn @click.native="saveList">Save</v-btn> -->
-  <!-- <v-btn @click.native="addNewItem">Add item</v-btn> -->
-
-</v-container>
-
+    </v-container>
 </template>
 
 <script>

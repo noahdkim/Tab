@@ -55,11 +55,13 @@ input {
     padding-bottom: 20px;
     padding-right:  20px;*/
     /*background-color: #000;*/
-/*
-    padding-top: 	20px;
+
+    padding-top: 	10px;
     padding-bottom: 20px;
     padding-left:	20px;
-    padding-right: 	20px;*/
+    padding-right: 	20px;
+
+    margin: 20px;
 
     border-radius: 5px;
 
@@ -75,8 +77,16 @@ input {
   font-family: 'Nunito', sans-serif;
   font-weight: bold;
   margin-top: 15px;
-  margin-left: 50px;
-  margin-bottom: 20px;
+  margin-left: 40px;
+  margin-bottom: 10px;
+
+  padding-top: 5px;
+}
+
+.list-filter-switch	{
+	float: right;
+	margin-right: 40px;
+	margin-bottom: 0px;
 }
 
 .list-title-text  {
