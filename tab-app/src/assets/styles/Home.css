@@ -1,0 +1,25 @@
+#the-sidebar-flex	{
+	flex: 0 0 auto;
+
+	/*position: absolute;*/
+
+	max-width: 300px;
+
+	
+}
+
+#the-list-flex	{
+	flex: 1 1 auto;
+	/*position: absolute;*/
+	min-width: 500px;
+}
+
+#the-calendar-flex	{
+	flex: 0 0 auto;
+	
+	max-width: 300px;
+
+	background-color: #fafafa;
+	border-left: 1px solid #dbdbdb;
+
+}
