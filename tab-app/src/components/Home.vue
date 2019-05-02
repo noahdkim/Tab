@@ -1,7 +1,8 @@
 <template>
-  <v-container class="ma-0 pa-0 side-list-cal" fluid>
+  <v-container id="home-layout" class="ma-0 pa-0" fluid>
     <!-- <v-layout align-space-around justify-start row fill-height/> -->
-    <v-layout align-center justify-space-between row style="height: 100%">
+    <!-- <v-layout align-center justify-space-between row style="height: 100%"> -->
+    <v-layout id="parent-flex" class="ma-0 pa-0">
         <!-- Sidebar -->
         <v-flex id="the-sidebar-flex">
             <the-sidebar :show=showTheSidebar></the-sidebar>
