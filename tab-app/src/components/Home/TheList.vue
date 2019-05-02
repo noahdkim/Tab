@@ -1,13 +1,13 @@
 <template>
-    <v-container>
+    <v-container class="ma-0 pt-2">
         <v-container class="ma-0 pa-0 list-all">
-            <v-layout class="pa-0 list-title">
-                <v-flex>
+            <v-layout class="ma-0 pa-0 list-title">
+                <v-flex class="ma-0 pa-0">
                     <div class="list-title">
                         <span class="list-title-text">{{ this.$store.state.selectedList.name }}</span>
                     </div>
                 </v-flex>
-                <v-flex>
+                <v-flex class="ma-0 pa-0">
                    <div>
                         <v-switch v-if="showCalendar" v-model="filterByDate" label="Filter by Date"></v-switch>
                    </div>
