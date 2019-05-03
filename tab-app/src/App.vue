@@ -1,6 +1,6 @@
 <template>
 <v-app>
-    <v-toolbar flat app class="toolbar" color="#197BBD" style="color: #fff">
+    <v-toolbar flat app class="toolbar pa-0 ma-0" color="#197BBD" style="color: #fff">
         <!-- Sidebar Icon -->
         <span v-if="isAuthenticated" class="hidden-lg-and-up">
             <v-toolbar-side-icon class="white--text" @click="emitToggleShowSidebar">
