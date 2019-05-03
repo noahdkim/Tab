@@ -12,6 +12,8 @@
 	min-width:  47px;
 	max-height: 52px;
 	min-height: 52px;
+
+	transform: scale(0.8);
 }
 
 .handle {

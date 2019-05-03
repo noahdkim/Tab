@@ -5,11 +5,11 @@
             <the-sidebar></the-sidebar>
         </v-navigation-drawer>
         <!-- List -->
-    	<v-flex id="the-list-flex" class="ma-0 pa-0" grow>
+    	<v-flex class="ma-0 pa-0 the-list-flex" grow>
     		<the-list></the-list>
     	</v-flex>
         <!-- Calendar -->
-        <v-navigation-drawer v-if="dateColumnExists" class="the-calendar-nav-drawer" v-model="showCalendar" clipped app right :light="false" :width="500">
+        <v-navigation-drawer v-if="dateColumnExists" class="the-calendar-nav-drawer" v-model="showCalendar" clipped app right :light="false" :width="400">
             <the-calendar></the-calendar>
         </v-navigation-drawer>
     </v-container>

@@ -10,7 +10,8 @@
                           single-line
                           hide-details
                           solo
-                          flat>
+                          flat
+                          placeholder="#">
 
                           <!-- :outline="!item.item_meta.active" -->
     </v-text-field>

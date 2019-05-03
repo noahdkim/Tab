@@ -11,6 +11,8 @@
 	height: 100%;
 	width: 100%;
 	/*min-height: 100vh;*/
+
+	margin: 0 !important;
 }
 
 #the-sidebar-flex	{
@@ -23,11 +25,13 @@
 	flex: 1;
 }
 
-#the-list-flex	{
+.the-list-flex	{
 	/*flex: 1 1 auto;*/
 	/*position: absolute;*/
 	/*min-width: 500px;*/
 	/*flex-grow: 1;*/
+
+	width: 100%;
 
 	flex: 1;
 }

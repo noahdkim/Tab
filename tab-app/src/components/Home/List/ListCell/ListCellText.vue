@@ -1,5 +1,5 @@
 <template>
-    <v-textarea class="text-field"
+    <v-textarea class="text-field ma-0 pa-0"
                           @input="updateCellValue"
                           v-model="textValue"
                           :readonly="!item.item_meta.active"
@@ -10,8 +10,9 @@
                           solo
                           flat
                           rows="1"
-                          row-height=46
-                          auto-grow>
+                          row-height=10
+                          auto-grow
+                          placeholder=".....">
     </v-textarea>
 </template>
 
