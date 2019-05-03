@@ -9,7 +9,7 @@
                 </v-flex>
                 <v-flex class="ma-0 pa-0">
                    <div>
-                        <v-switch v-if="showCalendar" v-model="filterByDate" label="Filter by Date"></v-switch>
+                        <v-switch v-if="dateColumnExists" v-model="filterByDate" label="Filter by Date"></v-switch>
                    </div>
                </v-flex>
            </v-layout>
@@ -90,9 +90,13 @@
                     ghostClass: "ghost"
                 };
             },
+            dateColumnExists(){
+                return this.$store.state.dateColumnExists
+            },
             filteredListItems: {
                 get(){
                     let filteredListItems = this.selectedListItems;
+                    console.log(this.filterByDate)
                     if (this.filterByDate){
                         filteredListItems = filteredListItems.filter((item)=>{
                             return item.values[this.dateFilterHeader.id].toDate().getTime() === this.selectedDate.getTime() ||
@@ -134,7 +138,7 @@
             },
             filterByDate:{
                 get(){
-                    return this.showCalendar ? this.$store.state.filterByDate : false;
+                    return this.dateColumnExists ? this.$store.state.filterByDate : false;
                 },
                 set(newValue){
                     this.$store.state.filterByDate = newValue;
