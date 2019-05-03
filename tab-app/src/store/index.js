@@ -38,6 +38,7 @@ export const store = new Vuex.Store({
         activeItemID: 0,
         appTitle: 'Tab',
         dateFilterHeader: {},
+        dateColumnExists: false,
         filterByDate: false,
         selectedDate: '',
         selectedIntegerField: '',
@@ -48,7 +49,6 @@ export const store = new Vuex.Store({
         selectedList: {},
         selectedListItems: [],
         selectedListHeaders: [],
-        showCalendar: '',
         sortColumnIndex: -1,
         sortDescending: true
     },

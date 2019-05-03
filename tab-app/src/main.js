@@ -1,5 +1,6 @@
 import App from './App.vue'
 import axios from 'axios'
+import EventBus from './event-bus'
 import firebase from 'firebase'
 import 'firebase/firestore'
 import router from './router'
@@ -25,6 +26,7 @@ Vue.component('p-radio', PrettyRadio);
 
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
+Vue.prototype.$bus = EventBus
 window.Vue = Vue;
 
 Vue.use(Vuetify, {

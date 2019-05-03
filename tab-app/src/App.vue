@@ -2,8 +2,8 @@
 <v-app>
     <v-toolbar flat app class="toolbar" color="#197BBD" style="color: #fff">
         <!-- Sidebar Icon -->
-        <span class="hidden-lg-and-up">
-            <v-toolbar-side-icon class="white--text" @click="showSidebar = !showSidebar">
+        <span v-if="isAuthenticated" class="hidden-lg-and-up">
+            <v-toolbar-side-icon class="white--text" @click="emitToggleShowSidebar">
             </v-toolbar-side-icon>
         </span>
         <v-toolbar-title>
@@ -17,29 +17,24 @@
                 <v-icon left dark>{{ item.icon }}</v-icon>
                 {{ item.title }}
             </v-btn>
-            <v-btn dark flat v-if="isAuthenticated" @click="userSignOut">
-                <v-icon left>exit_to_app</v-icon>
-                Sign Out
-            </v-btn>
+
         </v-toolbar-items>
+        <v-btn dark flat v-if="isAuthenticated" @click="userSignOut">
+            <v-icon left>exit_to_app</v-icon>
+            Sign Out
+        </v-btn>
 
         <!-- Calendar Icon -->
-        <span class="hidden-lg-and-up">
-            <v-toolbar-side-icon class="white--text" @click="showCalendar = !showCalendar">
+        <span v-if="isAuthenticated" class="hidden-lg-and-up">
+            <v-toolbar-side-icon class="white--text" @click="emitToggleShowCalendar">
                 <span class="mdi mdi-calendar" style="transform: scale(1.5)"></span>
             </v-toolbar-side-icon>
         </span>
     </v-toolbar>
 
-    <!-- Sidebar -->
-    <v-navigation-drawer class="the-sidebar-nav-drawer" v-model="showSidebar" clipped app :light="false">
-        <the-sidebar></the-sidebar>
-    </v-navigation-drawer>
 
-    <!-- Calendar -->
-    <v-navigation-drawer class="the-calendar-nav-drawer" v-model="showCalendar" clipped app right :light="false" :width="500">
-        <the-calendar></the-calendar>
-    </v-navigation-drawer>
+
+
 
 
     <v-content>
@@ -60,9 +55,7 @@ export default {
     components: { TheSidebar, TheCalendar },
     data() {
         return {
-            // appTitle: 'Awesome App',
-            showSidebar: true,
-            showCalendar: true,
+            // appTitle: 'Awesome App'
         }
     },
     /* https://github.com/vuejs/vue/issues/1915#issuecomment-159334432 */
@@ -98,11 +91,17 @@ export default {
         userSignOut() {
             this.$store.dispatch('userSignOut')
         },
-        handleResize: function()    {
+        handleResize() {
             if(document.documentElement.clientWidth >= 600)   {
                 this.sidebar = false;
             }
-        }
+        },
+        emitToggleShowCalendar(){
+            this.$bus.$emit('toggleShowCalendar')
+        },
+        emitToggleShowSidebar(){
+            this.$bus.$emit('emitToggleShowSidebar')
+        },
     },
 
 }
