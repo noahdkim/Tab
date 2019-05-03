@@ -1,26 +1,29 @@
 <template>
-  <v-container class="ma-0 pa-0 side-list-cal" fluid>
-    <v-layout row style="height: 100%">
+  <v-container id="home-layout" class="ma-0 pa-0" fluid>
+    <v-layout id="parent-flex" class="ma-0 pa-0">
         <!-- Sidebar -->
-        <v-flex style="max-width: 300px">
-            <the-sidebar :show=show></the-sidebar>
+        <v-flex id="the-sidebar-flex" v-if=showTheSidebar>
+            <the-sidebar></the-sidebar>
         </v-flex>
-        <!-- Expand/Collapse sidebar -->
-        <button v-on:click="show = !show">
-            <v-icon>{{show ? 'keyboard_arrow_left' : 'keyboard_arrow_right'}}</v-icon>
+
+        <!-- Expand/Collapse TheSidebar -->
+        <button v-on:click="showTheSidebar = !showTheSidebar">
+            <v-icon>{{showTheSidebar ? 'keyboard_arrow_left' : 'keyboard_arrow_right'}}</v-icon>
         </button>
+
         <!-- List -->
-        <v-flex grow xs5 style="min-width: 500px">
+        <v-flex id="the-list-flex" grow>
             <the-list></the-list>
         </v-flex>
+
+        <!-- Expand/Collapse TheCalendar -->
+        <button v-on:click="showTheCalendar = !showTheCalendar">
+            <v-icon>{{showTheCalendar ? 'keyboard_arrow_right' : 'keyboard_arrow_left'}}</v-icon>
+        </button>
+        
         <!-- Calendar -->
-        <v-flex shrink v-if="showCalendar" xs7
-            style="
-                min-width: 300px;
-                background-color: #fafafa;
-                border-left: 1px solid #dbdbdb;
-            ">
-            <the-calendar ></the-calendar>
+        <v-flex id="the-calendar-flex" v-if=showTheCalendar>
+            <the-calendar></the-calendar>
         </v-flex>
     </v-layout>
   </v-container>
@@ -37,7 +40,8 @@ export default {
      components: { TheSidebar, TheList, TheCalendar },
      data () {
          return{
-             show: true,
+             showTheSidebar:    true,
+             showTheCalendar:   true,
          }
      },
      computed: {
@@ -49,7 +53,7 @@ export default {
                      this.$store.state.showCalendar = true;
                  }
              }
-             return this.$store.state.showCalendar
+             return this.$store.state.showCalendar;
          }
      },
      mounted() {
@@ -74,3 +78,5 @@ export default {
 </script>
 
 <style scoped src="@/assets/styles/main.css"></style>
+
+<style scoped src="@/assets/styles/Home.css"></style>

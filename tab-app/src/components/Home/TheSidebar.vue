@@ -1,5 +1,5 @@
 <template>
-<v-navigation-drawer class="sidebar" permanent v-if="show">
+<v-navigation-drawer class="sidebar" permanent>
 
     <v-list>
         <draggable
