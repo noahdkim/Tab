@@ -1,6 +1,6 @@
 <template>
-<v-navigation-drawer class="sidebar" permanent>
-
+<!-- <v-navigation-drawer class="sidebar" hide-overlay> -->
+    <v-container class="ma-0 pa-0 sidebar">
     <v-list>
         <draggable
             handle=".handle"
@@ -31,7 +31,8 @@
              </sidebar-form>
          </v-dialog>
    </v-list>
-</v-navigation-drawer>
+</v-container>
+<!-- </v-navigation-drawer> -->
 </template>
 
 <script>

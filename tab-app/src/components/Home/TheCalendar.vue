@@ -1,26 +1,28 @@
 <template>
-    <v-container class="text-xs-center">
-        <v-layout>
-        <v-date-picker ref="calendarDatePicker"
-                        class="date-range-picker"
-                        v-model="picker"
-                        :events="listDates"
-                        :event-color="date => colorFunction(date)"
-                        :landscape="landscape"
-                        :reactive="reactive"
-                        full-width
-                        color="#197bbd"></v-date-picker>
-    </v-layout>
-    <v-layout row>
-        <calendar-date-card v-if="dateFields.length > 1"
-                                :dateFields="dateFields">
-        </calendar-date-card>
+    <!-- <v-navigation-drawer class="sidebar" right> -->
+        <v-container class="text-xs-center">
+            <v-layout>
+                <v-date-picker ref="calendarDatePicker"
+                class="date-range-picker"
+                v-model="picker"
+                :events="listDates"
+                :event-color="date => colorFunction(date)"
+                :landscape="landscape"
+                :reactive="reactive"
+                full-width
+                color="#197bbd"></v-date-picker>
+            </v-layout>
+            <v-layout row>
+                <calendar-date-card v-if="dateFields.length > 1"
+                    :dateFields="dateFields">
+                </calendar-date-card>
 
-        <calendar-weight-card v-if="integerFields.length > 0"
-                                :integerFields="integerFields">
-        </calendar-weight-card>
-    </v-layout>
-    </v-container>
+                <calendar-weight-card v-if="integerFields.length > 0"
+                    :integerFields="integerFields">
+                </calendar-weight-card>
+            </v-layout>
+        </v-container>
+    <!-- </v-navigation-drawer> -->
 </template>
 
 <script>

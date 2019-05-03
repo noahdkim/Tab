@@ -7,30 +7,39 @@
 }
 
 #parent-flex	{
-	display: flex;
-	min-height: 100vh;
+	background-color: #ffffff;
+	height: 100%;
+	width: 100%;
+	/*min-height: 100vh;*/
 }
 
 #the-sidebar-flex	{
 	/*flex: 0 0 auto;*/
 	/*position: absolute;*/
-	max-width: 300px;
+	/*max-width: 300px;*/
+
+	/*width: 300px;*/
+
+	flex: 1;
 }
 
 #the-list-flex	{
 	/*flex: 1 1 auto;*/
 	/*position: absolute;*/
-	min-width: 500px;
+	/*min-width: 500px;*/
+	/*flex-grow: 1;*/
 
-	flex-grow: 1;
+	flex: 1;
 }
 
 #the-calendar-flex	{
 	/*flex: 0 0 auto;*/
 	/*position: absolute;*/
-	max-width: 300px;
+	/*width: 600px;*/
 
 	background-color: #fafafa;
 	border-left: 1px solid #dbdbdb;
+
+	flex: 1;
 
 }
