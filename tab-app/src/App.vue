@@ -1,25 +1,9 @@
 <template>
 <v-app>
-    <v-navigation-drawer v-model="sidebar" class="hidden-sm-and-up" v-if="sidebar" app>
-        <v-list>
-            <v-list-tile v-for="item in menuItems" :key="item.title" :to="item.path">
-                <v-list-tile-action>
-                    <v-icon>{{ item.icon }}</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>{{ item.title }}</v-list-tile-content>
-            </v-list-tile>
-            <v-list-tile v-if="isAuthenticated" @click="userSignOut">
-                <v-list-tile-action>
-                    <v-icon>exit_to_app</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>Sign Out</v-list-tile-content>
-            </v-list-tile>
-        </v-list>
-    </v-navigation-drawer>
-
-    <v-toolbar app class="toolbar" color="#197BBD" style="color: #fff">
-        <span class="hidden-sm-and-up">
-            <v-toolbar-side-icon @click="sidebar = !sidebar">
+    <v-toolbar flat app class="toolbar" color="#197BBD" style="color: #fff">
+        <!-- Sidebar Icon -->
+        <span class="hidden-lg-and-up">
+            <v-toolbar-side-icon class="white--text" @click="showSidebar = !showSidebar">
             </v-toolbar-side-icon>
         </span>
         <v-toolbar-title>
@@ -38,7 +22,25 @@
                 Sign Out
             </v-btn>
         </v-toolbar-items>
+
+        <!-- Calendar Icon -->
+        <span class="hidden-lg-and-up">
+            <v-toolbar-side-icon class="white--text" @click="showCalendar = !showCalendar">
+                <span class="mdi mdi-calendar" style="transform: scale(1.5)"></span>
+            </v-toolbar-side-icon>
+        </span>
     </v-toolbar>
+
+    <!-- Sidebar -->
+    <v-navigation-drawer class="the-sidebar-nav-drawer" v-model="showSidebar" clipped app :light="false">
+        <the-sidebar></the-sidebar>
+    </v-navigation-drawer>
+
+    <!-- Calendar -->
+    <v-navigation-drawer class="the-calendar-nav-drawer" v-model="showCalendar" clipped app right :light="false" :width="500">
+        <the-calendar></the-calendar>
+    </v-navigation-drawer>
+
 
     <v-content>
         <router-view></router-view>
@@ -49,13 +51,18 @@
 
 <script>
 
+import TheSidebar from '@/components/Home/TheSidebar'
+import TheCalendar from '@/components/Home/TheCalendar'
+
 require('@/assets/styles/main.css');
 
 export default {
+    components: { TheSidebar, TheCalendar },
     data() {
         return {
             // appTitle: 'Awesome App',
-            sidebar: false,
+            showSidebar: true,
+            showCalendar: true,
         }
     },
     /* https://github.com/vuejs/vue/issues/1915#issuecomment-159334432 */

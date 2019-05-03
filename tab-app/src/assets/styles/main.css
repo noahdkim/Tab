@@ -12,6 +12,13 @@
 	z-index: 1;
 }
 
+.the-sidebar-nav-drawer	{
+	background-color: #fafafa;
+}
+
+.the-calendar-nav-drawer	{
+	background-color: #fafafa;
+}
 
 
 .fade-enter-active,
