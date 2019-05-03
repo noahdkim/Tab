@@ -33,7 +33,7 @@
        computed: {
            dateColumnExists () {
                let listHeaders = this.$store.state.selectedListHeaders
-               this.$store.state.showCalendar = false;
+               this.$store.state.dateColumnExists = false;
                for(var i = 0; i < listHeaders.length; ++i){
                    if (listHeaders[i].type === "date"){
                        this.$store.state.dateColumnExists = true;

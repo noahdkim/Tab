@@ -105,10 +105,8 @@
             filteredAndSortedListItems: {
                 get(){
                     if(this.sortColumnIndex > -1){
-                        console.log("sorting......")
                         this.filteredListItems.sort(this.sortFilteredList)
                     } else {
-                        console.log("not sorting.....")
                         return this.filteredListItems
                     }
                     return this.filteredListItems
