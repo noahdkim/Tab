@@ -1,56 +1,58 @@
 <template>
-    <v-container class="ma-0 pt-2 the-list-parent">
-        <v-container class="ma-0 pa-0 list-all" justify-center align-center>
-            <v-layout class="ma-0 pa-0 list-title">
-                <v-flex class="ma-0 pa-0">
-                    <div class="list-title">
-                        <span class="list-title-text">{{ this.$store.state.selectedList.name }}</span>
-                    </div>
-                </v-flex>
-                <v-flex class="ma-0 pa-0">
-                   <div>
-                        <v-switch v-if="showCalendar" v-model="filterByDate" label="Filter by Date"></v-switch>
-                   </div>
-               </v-flex>
-           </v-layout>
-            <v-container class="ma-0 pa-0 list-head">
-                <list-header :headers=selectedListHeaders></list-header>
-            </v-container>
-            <v-container class="ma-0 pa-0 list-body">
-                <draggable
-                class="list-group"
-                handle=".handle"
-                v-bind="dragOptions"
-                @start="startDrag()"
-                @end="endDrag()"
-                :list="this.selectedListItems"
-                >
-                    <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-                        <div class="listRows" v-for="item in filteredAndSortedListItems" :key="item.item_meta.id">
-                            <list-row
-                            :item="item"
-                            :headers="selectedListHeaders"
-                            :ref="item.item_meta.id"
-                            class="draggable-row align-center"
-                            >
-                            </list-row>
+    <v-layout class="ma-0 pt-2 the-list-parent" align-start justify-center>
+        <!-- <center> -->
+            <v-layout column class="ma-0 pa-0 list-all" align-start justify-center>
+                <v-layout row class="ma-0 pa-0 list-title">
+                    <v-flex class="ma-0 pa-0">
+                        <div class="list-title">
+                            <span class="list-title-text">{{ this.$store.state.selectedList.name }}</span>
                         </div>
-                    </transition-group>
-                </draggable>
-            </v-container>
-            <v-container class="ma-0 list-footer">
-                <v-container class="ma-0 add-item-container">
-                    <a v-on:click="addNewItem" class="add-item-anchor">
-                        <span class="mdi mdi-plus-circle add-item-icon"></span>
-                        <span class="add-item-text">Add Item</span>
-                    </a>
-                </v-container>
-            </v-container>
-        </v-container>
+                    </v-flex>
+                    <v-flex class="ma-0 pa-0">
+                       <div>
+                            <v-switch v-if="showCalendar" v-model="filterByDate" label="Filter by Date"></v-switch>
+                       </div>
+                   </v-flex>
+                </v-layout>
+                <v-layout row class="ma-0 pa-0 list-head">
+                    <list-header :headers=selectedListHeaders></list-header>
+                </v-layout>
+                <v-layout row class="ma-0 pa-0 list-body">
+                    <draggable
+                    class="list-group"
+                    handle=".handle"
+                    v-bind="dragOptions"
+                    @start="startDrag()"
+                    @end="endDrag()"
+                    :list="this.selectedListItems"
+                    >
+                        <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+                            <div class="listRows" v-for="item in filteredAndSortedListItems" :key="item.item_meta.id">
+                                <list-row
+                                :item="item"
+                                :headers="selectedListHeaders"
+                                :ref="item.item_meta.id"
+                                class="draggable-row align-center"
+                                >
+                                </list-row>
+                            </div>
+                        </transition-group>
+                    </draggable>
+                </v-layout>
+                <v-layout row class="ma-0 list-footer">
+                    <v-container class="ma-0 add-item-container">
+                        <a v-on:click="addNewItem" class="add-item-anchor">
+                            <span class="mdi mdi-plus-circle add-item-icon"></span>
+                            <span class="add-item-text">Add Item</span>
+                        </a>
+                    </v-container>
+                </v-layout>
+            </v-layout>
+        <!-- </center> -->
   <!-- <v-btn @click.native="saveList">Save</v-btn> -->
   <!-- <v-btn @click.native="addNewItem">Add item</v-btn> -->
 
-</v-container>
+</v-layout>
 
 </template>
 

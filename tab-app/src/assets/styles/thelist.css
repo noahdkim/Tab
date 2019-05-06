@@ -53,6 +53,9 @@ input {
 .the-list-parent	{
 	/*position: relative;*/
 	/*text-align: center;*/
+	/*text-align: center;*/
+	/*justify-content: center;*/
+	text-align: center;
 }
 
 .list-all   {
@@ -66,27 +69,27 @@ input {
 	padding-left:	20px;
 	padding-right: 	20px;
 
-	margin: 20px;
-
 	border-radius: 5px;
 
 	min-width: 500px;
+	/*max-width: 500px;*/
 	overflow: scroll;
 
 	/*flex-grow: 0;*/
 
-	display: inline-block;
+	display: inline-flex;
 
-	/*position: absolute;left: 50%;*/
-    /*margin-right: -50%;*/
-    /*transform: translate(-50%, -50%)*/
+	flex-grow: 0;
+
+	/*margin-left: 50%;*/
+	text-align: center;
 }
 .list-head	{
 	margin: 0px;
 	/*border-bottom: 1px solid rgba(0,0,0,0.125);*/
-	display: inline-block;
+	/*display: inline-flex;*/
 
-	
+
 }
 
 .list-title {
@@ -98,7 +101,7 @@ input {
 
 	padding-top: 5px;	
 
-	display: inline-block;
+	/*display: inline-flex;*/
 }
 
 .list-filter-switch	{
@@ -114,14 +117,14 @@ input {
 .list-body {
 	/*background-color: #0f0;*/
 	/*padding: 20px;*/
-	display: inline-block;
+	/*display: inline-flex;*/
 }
 
 .list-footer	{
 	padding-left: 50px;
 	padding-right: 52px;
 
-	display: inline-block;
+	/*display: inline-flex;*/
 }
 
 /**************** add-item ****************/
@@ -129,6 +132,8 @@ input {
 	/*border-top: 1px solid rgba(0,0,0,.06);*/
 	padding-top: 20px;
 	padding-bottom: 30px;
+	padding-left: 22px;
+	padding-right: 0px;
 }
 
 .add-item-anchor	{
