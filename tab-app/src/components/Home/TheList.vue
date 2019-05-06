@@ -32,7 +32,7 @@
                                 :item="item"
                                 :headers="selectedListHeaders"
                                 :ref="item.item_meta.id"
-                                class="draggable-row align-center"
+                                class="draggable-row align-start"
                                 >
                                 </list-row>
                             </div>

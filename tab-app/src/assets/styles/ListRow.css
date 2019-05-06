@@ -68,12 +68,15 @@ input {
 
 .hiddenOptionsRow {
 	/*padding-top:	4px;*/
+	padding-left: 90px;
 	padding-bottom: 10px;
 	/*background-color: #111;*/
+	position: relative;
+	left: 0;
 }
 
 #saveCancelContainer	{
-	margin-left:	90px;
+	margin-left:	0px;
 	background-color: rgba(0, 0, 0, 0.02);
 	border-radius: 8px;
 }

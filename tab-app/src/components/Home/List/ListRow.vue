@@ -1,5 +1,5 @@
 <template>
-	<v-layout column align-content-center justify-space-around>
+	<v-layout column justify-start>
 		<v-layout row
 			:id="item.item_meta.id"
 			@click="makeActive"
@@ -27,7 +27,7 @@
 			</v-btn>
 		</v-layout>
 		<!-- Hidden Options Row is shown when row is active -->
-		<v-layout row class="hiddenOptionsRow" v-show="item.item_meta.active">
+		<v-layout row class="hiddenOptionsRow" v-show="item.item_meta.active" justify-start>
 			<v-container class="pa-0" id="saveCancelContainer">
 				<v-btn 	class="saveRowBtn"
 						@click.native="saveItem"
@@ -67,84 +67,84 @@
 				/* this is currently not being used */
 				checkbox2: false,
 				showHandle: false,
-                sortKeyData: '',
+				sortKeyData: '',
 			}
 		},
-        computed: {
-            checkbox: {
-                get: function() {
-                    return this.item.item_meta.checkbox
-                },
-                set: function(newCheckboxValue) {
-                    this.item.item_meta.checkbox = newCheckboxValue
-                    this.$store.dispatch('saveItem', this.item)
-                }
-            },
-            sortKey: {
-                get: function() {
-                    return this.sortKey
-                },
-                set: function(newKey){
-                    this.sortKey = newKey
-                }
-            }
-        },
+		computed: {
+			checkbox: {
+				get: function() {
+					return this.item.item_meta.checkbox
+				},
+				set: function(newCheckboxValue) {
+					this.item.item_meta.checkbox = newCheckboxValue
+					this.$store.dispatch('saveItem', this.item)
+				}
+			},
+			sortKey: {
+				get: function() {
+					return this.sortKey
+				},
+				set: function(newKey){
+					this.sortKey = newKey
+				}
+			}
+		},
 		methods: {
-          deleteItem (event) {
-              this.$store.dispatch('deleteItem', this.item);
-	      },
-	      makeActive (event) {
-              this.showHandle = false;
-              this.item.item_meta.active = true;
-              this.$root.$emit('changeActive', this.item.item_meta.id);
-              return "made Active"
-          },
-          mouseOver(event)    {
-          	this.showHandle = true;
-          },
-          mouseLeave(event)   {
-          	this.showHandle = false;
-          },
-          saveList() {
-          	/* this is async */
-          	this.$store.dispatch('saveListToFirestore');
-          },
-          saveItem(){
-              this.item.item_meta.active = false;
-              let item = this.item
-              for (var i=0; i<this.headers.length; i++) {
+		  deleteItem (event) {
+			  this.$store.dispatch('deleteItem', this.item);
+		  },
+		  makeActive (event) {
+			  this.showHandle = false;
+			  this.item.item_meta.active = true;
+			  this.$root.$emit('changeActive', this.item.item_meta.id);
+			  return "made Active"
+		  },
+		  mouseOver(event)    {
+			this.showHandle = true;
+		  },
+		  mouseLeave(event)   {
+			this.showHandle = false;
+		  },
+		  saveList() {
+			/* this is async */
+			this.$store.dispatch('saveListToFirestore');
+		  },
+		  saveItem(){
+			  this.item.item_meta.active = false;
+			  let item = this.item
+			  for (var i=0; i<this.headers.length; i++) {
 
-                  //console.log(this.$refs[this.headers[i].id])
-                  let newValue = this.$refs[this.headers[i].id][0].getValue()
+				  //console.log(this.$refs[this.headers[i].id])
+				  let newValue = this.$refs[this.headers[i].id][0].getValue()
 
-                  let headerId = this.headers[i].id
-                  this.$store.dispatch('updateItemState', {item, headerId, newValue});
-              }
-              this.$store.dispatch('saveItem', this.item)
-          },
-          cancel(){
-              this.item.item_meta.active = false;
-              let item = this.item
-              for (var i=0; i<this.headers.length; i++) {
-                  let originalValue = this.item.values[this.headers[i].id]
-                  this.$refs[this.headers[i].id][0].setValue(originalValue)
-              }
-              this.$store.dispatch('saveItem', this.item)
-          	/* More cancel actions needed here TODO */
-        },
-          listener(data){
-              if (this.item.item_meta.id !== data && this.item.item_meta.active){
-                  this.saveItem();
-                  this.item.item_meta.active = false;
-              }
-          }
-      },
-      mounted() {
-            this.$root.$on('changeActive', this.listener);
-        },
-        destroyed(){
-            this.$root.$off('changeActive', this.listener);
-        }
+				  let headerId = this.headers[i].id
+				  this.$store.dispatch('updateItemState', {item, headerId, newValue});
+			  }
+			  this.$store.dispatch('saveItem', this.item)
+		  },
+		  cancel(){
+			  this.item.item_meta.active = false;
+			  let item = this.item
+			  for (var i=0; i<this.headers.length; i++) {
+				  let originalValue = this.item.values[this.headers[i].id]
+				  this.$refs[this.headers[i].id][0].setValue(originalValue)
+			  }
+			  this.$store.dispatch('saveItem', this.item)
+			/* More cancel actions needed here TODO */
+		},
+		  listener(data){
+			  if (this.item.item_meta.id !== data && this.item.item_meta.active){
+				  this.saveItem();
+				  this.item.item_meta.active = false;
+			  }
+		  }
+	  },
+	  mounted() {
+			this.$root.$on('changeActive', this.listener);
+		},
+		destroyed(){
+			this.$root.$off('changeActive', this.listener);
+		}
   }
 
 
