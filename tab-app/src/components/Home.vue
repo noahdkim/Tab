@@ -5,7 +5,7 @@
             <the-sidebar></the-sidebar>
         </v-navigation-drawer>
         <!-- List -->
-    	<v-flex class="ma-0 pa-0 the-list-flex" grow>
+    	<v-flex class="ma-0 pa-0 the-list-flex" grow justify-center>
     		<the-list></the-list>
     	</v-flex>
         <!-- Calendar -->

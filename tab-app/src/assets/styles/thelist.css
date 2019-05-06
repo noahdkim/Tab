@@ -9,7 +9,7 @@
   background-color: #0f0;
 }
 .flip-list  {
-    background-color: #0f0;
+	background-color: #0f0;
 }
 .no-move {
   transition: transform 0s;
@@ -50,37 +50,55 @@ input {
 
 
 /*************************************************/
+.the-list-parent	{
+	/*position: relative;*/
+	/*text-align: center;*/
+}
+
 .list-all   {
-    /*padding-top:    20px;
-    padding-bottom: 20px;
-    padding-right:  20px;*/
-    /*background-color: #000;*/
+	/*padding-top:    20px;
+	padding-bottom: 20px;
+	padding-right:  20px;*/
+	/*background-color: #000;*/
 
-    padding-top: 	10px;
-    padding-bottom: 20px;
-    padding-left:	20px;
-    padding-right: 	20px;
+	padding-top: 	10px;
+	padding-bottom: 20px;
+	padding-left:	20px;
+	padding-right: 	20px;
 
-    margin: 20px;
+	margin: 20px;
 
-    border-radius: 5px;
+	border-radius: 5px;
 
-    min-width: 500px;
-    overflow: scroll;
+	min-width: 500px;
+	overflow: scroll;
+
+	/*flex-grow: 0;*/
+
+	display: inline-block;
+
+	/*position: absolute;left: 50%;*/
+    /*margin-right: -50%;*/
+    /*transform: translate(-50%, -50%)*/
 }
 .list-head	{
 	margin: 0px;
 	/*border-bottom: 1px solid rgba(0,0,0,0.125);*/
+	display: inline-block;
+
+	
 }
 
 .list-title {
-  font-family: 'Nunito', sans-serif;
-  font-weight: bold;
-  margin-top: 15px;
-  margin-left: 40px;
-  margin-bottom: 10px;
+	font-family: 'Nunito', sans-serif;
+	font-weight: bold;
+	margin-top: 15px;
+	margin-left: 40px;
+	margin-bottom: 10px;
 
-  padding-top: 5px;
+	padding-top: 5px;	
+
+	display: inline-block;
 }
 
 .list-filter-switch	{
@@ -94,13 +112,16 @@ input {
 }
 
 .list-body {
-    /*background-color: #0f0;*/
-    /*padding: 20px;*/
+	/*background-color: #0f0;*/
+	/*padding: 20px;*/
+	display: inline-block;
 }
 
 .list-footer	{
 	padding-left: 50px;
 	padding-right: 52px;
+
+	display: inline-block;
 }
 
 /**************** add-item ****************/
@@ -131,15 +152,15 @@ input {
 }
 
 .draggable-row  {
-    background-color: #ffffff;
+	background-color: #ffffff;
 
-    /*border-radius: 1px;*/
-    /*border-bottom:  1px solid rgba(0,0,0,.125);*/
+	/*border-radius: 1px;*/
+	/*border-bottom:  1px solid rgba(0,0,0,.125);*/
 }
 
 hr {
-    background-color: #000;
-    color: #000;
+	background-color: #000;
+	color: #000;
 }
 
 

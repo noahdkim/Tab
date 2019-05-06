@@ -1,6 +1,6 @@
 <template>
-    <v-container class="ma-0 pt-2">
-        <v-container class="ma-0 pa-0 list-all">
+    <v-container class="ma-0 pt-2 the-list-parent">
+        <v-container class="ma-0 pa-0 list-all" justify-center align-center>
             <v-layout class="ma-0 pa-0 list-title">
                 <v-flex class="ma-0 pa-0">
                     <div class="list-title">
@@ -31,7 +31,7 @@
                             :item="item"
                             :headers="selectedListHeaders"
                             :ref="item.item_meta.id"
-                            class="draggable-row"
+                            class="draggable-row align-center"
                             >
                             </list-row>
                         </div>

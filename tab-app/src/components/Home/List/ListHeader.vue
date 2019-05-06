@@ -1,5 +1,5 @@
 <template>
-	<v-layout column align-start>
+	<v-layout column align-center>
 		<v-layout row class="header-row">
 			<span class="spacer-handle"></span>
 			<span class="spacer-checkbox"></span>

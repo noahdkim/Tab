@@ -1,5 +1,5 @@
 <template>
-	<v-layout column align-start>
+	<v-layout column align-content-center justify-space-around>
 		<v-layout row
 			:id="item.item_meta.id"
 			@click="makeActive"
