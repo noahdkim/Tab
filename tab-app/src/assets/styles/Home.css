@@ -9,8 +9,14 @@
 #parent-flex	{
 	background-color: #ffffff;
 	height: 100%;
-	width: 100%;
+	min-width: 100%;
+	max-width: 100%;
+	/*width: 150%;*/
 	/*min-height: 100vh;*/
+
+	margin: auto;
+
+	justify-content: center;
 }
 
 #the-sidebar-flex	{
@@ -23,13 +29,18 @@
 	flex: 1;
 }
 
-#the-list-flex	{
+.the-list-flex	{
 	/*flex: 1 1 auto;*/
 	/*position: absolute;*/
 	/*min-width: 500px;*/
 	/*flex-grow: 1;*/
 
+	width: 100%;
+
 	flex: 1;
+
+
+	justify-content: center;
 }
 
 #the-calendar-flex	{

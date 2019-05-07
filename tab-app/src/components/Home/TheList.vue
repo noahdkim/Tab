@@ -1,56 +1,52 @@
 <template>
-    <v-container class="ma-0 pt-2">
-        <v-container class="ma-0 pa-0 list-all">
-            <v-layout class="ma-0 pa-0 list-title">
-                <v-flex class="ma-0 pa-0">
-                    <div class="list-title">
-                        <span class="list-title-text">{{ this.$store.state.selectedList.name }}</span>
-                    </div>
-                </v-flex>
-                <v-flex class="ma-0 pa-0">
-                   <div>
-                        <v-switch v-if="dateColumnExists" v-model="filterByDate" label="Filter by Date"></v-switch>
-                   </div>
-               </v-flex>
-           </v-layout>
-            <v-container class="ma-0 pa-0 list-head">
-                <list-header :headers="selectedListHeaders"></list-header>
-            </v-container>
-            <v-container class="ma-0 pa-0 list-body">
-                <draggable
-                class="list-group"
-                handle=".handle"
-                v-bind="dragOptions"
-                @start="startDrag()"
-                @end="endDrag()"
-                :list="this.selectedListItems"
-                >
-                    <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-                        <div class="listRows" v-for="item in filteredAndSortedListItems" :key="item.item_meta.id">
-                            <list-row
-                            :item="item"
-                            :headers="selectedListHeaders"
-                            :ref="item.item_meta.id"
-                            class="draggable-row"
-                            >
-                            </list-row>
+    <v-layout class="ma-0 pt-2 the-list-parent" justify-center>
+            <v-layout column class="ma-0 pa-0 list-all">
+                <v-layout row class="ma-0 pa-0 list-title">
+                    <v-flex>
+                        <div class="list-title">
+                            <span class="list-title list-title-text">{{ this.$store.state.selectedList.name }}</span>
                         </div>
-                    </transition-group>
-                </draggable>
-            </v-container>
-            <v-container class="ma-0 list-footer">
-                <v-container class="ma-0 add-item-container">
-                    <a v-on:click="addNewItem" class="add-item-anchor">
-                        <span class="mdi mdi-plus-circle add-item-icon"></span>
-                        <span class="add-item-text">Add Item</span>
-                    </a>
-                </v-container>
-            </v-container>
-        </v-container>
-  <!-- <v-btn @click.native="saveList">Save</v-btn> -->
-  <!-- <v-btn @click.native="addNewItem">Add item</v-btn> -->
+                    </v-flex>
+                    <v-flex>
+                        <v-switch v-if="dateColumnExists" v-model="filterByDate" label="Filter by Date"></v-switch>
+                    </v-flex>
+                </v-layout>
+                <v-layout row class="ma-0 pa-0 list-head">
+                    <list-header :headers="selectedListHeaders"></list-header>
+                </v-layout>
+                <v-layout row class="ma-0 pa-0 list-body">
+                    <draggable
+                    class="list-group"
+                    handle=".handle"
+                    v-bind="dragOptions"
+                    @start="startDrag()"
+                    @end="endDrag()"
+                    :list="this.selectedListItems"
+                    >
+                        <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+                            <div class="listRows" v-for="item in filteredAndSortedListItems" :key="item.item_meta.id">
+                                <list-row
+                                :item="item"
+                                :headers="selectedListHeaders"
+                                :ref="item.item_meta.id"
+                                class="draggable-row align-start"
+                                >
+                                </list-row>
+                            </div>
+                        </transition-group>
+                    </draggable>
+                </v-layout>
+                <v-layout row class="ma-0 list-footer">
+                    <v-container class="ma-0 add-item-container">
+                        <a v-on:click="addNewItem" class="add-item-anchor">
+                            <span class="mdi mdi-plus-circle add-item-icon"></span>
+                            <span class="add-item-text">Add Item</span>
+                        </a>
+                    </v-container>
+                </v-layout>
+            </v-layout>
 
-</v-container>
+</v-layout>
 
 </template>
 
@@ -96,7 +92,6 @@
             filteredListItems: {
                 get(){
                     let filteredListItems = this.selectedListItems;
-                    console.log(this.filterByDate)
                     if (this.filterByDate){
                         filteredListItems = filteredListItems.filter((item)=>{
                             return item.values[this.dateFilterHeader.id].toDate().getTime() === this.selectedDate.getTime() ||
@@ -108,8 +103,9 @@
             },
             filteredAndSortedListItems: {
                 get(){
-                    if(this.sortColumnIndex > -1){
+                    if(this.sortColumnIndex > -1 && this.sorting){
                         this.filteredListItems.sort(this.sortFilteredList)
+                        this.$store.commit('setSorting', false)
                     } else {
                         return this.filteredListItems
                     }
@@ -119,11 +115,16 @@
             sortColumnIndex:{
                 get(){
                     return this.$store.state.sortColumnIndex
-                }
+                },
             },
             sortDescending: {
                 get(){
                     return this.$store.state.sortDescending
+                }
+            },
+            sorting:{
+                get(){
+                    return this.$store.state.sorting
                 }
             },
             selectedDate:{

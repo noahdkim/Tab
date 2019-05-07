@@ -1,5 +1,5 @@
 <template>
-	<v-layout column align-start>
+	<v-layout column align-center>
 		<v-layout row class="header-row">
 			<span class="spacer-handle"></span>
 			<span class="spacer-checkbox"></span>
@@ -37,6 +37,7 @@
 		props: ['headers'],
         methods:{
             modifySort(columnIndex){
+                this.$store.commit('setSorting', true)
                 if(this.$store.state.sortColumnIndex === columnIndex){
                     this.$store.commit('setSortDescending', !this.$store.state.sortDescending)
                 } else{
