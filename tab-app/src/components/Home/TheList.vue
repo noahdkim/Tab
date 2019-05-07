@@ -14,7 +14,7 @@
                </v-flex>
            </v-layout>
             <v-container class="ma-0 pa-0 list-head">
-                <list-header :headers=selectedListHeaders></list-header>
+                <list-header :headers="selectedListHeaders"></list-header>
             </v-container>
             <v-container class="ma-0 pa-0 list-body">
                 <draggable
