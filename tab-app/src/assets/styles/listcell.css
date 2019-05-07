@@ -2,6 +2,29 @@
  * listcell.css
  */
 
-.textfield	{
+.text-field	{
 	padding: 0px;
+	min-width: 130px;
+	font-size: 1.0em;
+}
+
+.v-textarea.v-text-field--box .v-text-field__prefix,
+.v-textarea.v-text-field--enclosed .v-text-field__prefix,
+.v-textarea.v-text-field--box textarea,
+.v-textarea.v-text-field--enclosed textarea {
+  margin-top: 0px !important;
+}
+.v-textarea.v-text-field--box.v-text-field--single-line .v-text-field__prefix,
+.v-textarea.v-text-field--enclosed.v-text-field--single-line .v-text-field__prefix,
+.v-textarea.v-text-field--box.v-text-field--single-line textarea,
+.v-textarea.v-text-field--enclosed.v-text-field--single-line textarea {
+  margin-top: 0px !important;
+}
+.header-field  {
+	/*margin: 0px;*/
+	padding: 0px;
+	min-width: 130px;
+	border-bottom: 1px solid rgba(0,0,0,0.125);
+
+	font-size: 1.0em;
 }

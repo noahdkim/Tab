@@ -1,43 +1,58 @@
 <template>
-    <v-container>
-        <div class="list-all">
-            <div class="list-head">
-                <list-header :headers=selectedListHeaders></list-header>
-            </div>
-            <div class="list-body">
-                <draggable
-                class="list-group"
-                handle=".handle"
-                v-bind="dragOptions"
-                @start="startDrag()"
-                @end="endDrag()"
-                :list="this.selectedListItems"
-                >
-                    <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-                        <list-row v-for="item in filteredListItems"
-                        :key="item.item_meta.id"
-                        :item="item"
-                        :headers="selectedListHeaders"
-                        :ref="item.item_meta.id"
-                        class="draggable-row"
-                        >
-                        </list-row>
-                    </transition-group>
-                </draggable>
-            </div>
-            <div class="list-footer">
-                <div class="add-item-container">
-                    <a v-on:click="addNewItem" class="add-item-anchor">
-                        <span class="mdi mdi-plus-circle add-item-icon"></span>
-                        <span class="add-item-text">Add Item</span>
-                    </a>
-                </div>
-            </div>
-        </div>
+    <v-layout class="ma-0 pt-2 the-list-parent" align-start justify-center>
+        <!-- <center> -->
+            <v-layout column class="ma-0 pa-0 list-all" align-start justify-center>
+                <v-layout row class="ma-0 pa-0 list-title">
+                    <v-flex class="ma-0 pa-0">
+                        <div class="list-title">
+                            <span class="list-title-text">{{ this.$store.state.selectedList.name }}</span>
+                        </div>
+                    </v-flex>
+                    <v-flex class="ma-0 pa-0">
+                       <div>
+                            <v-switch v-if="showCalendar" v-model="filterByDate" label="Filter by Date"></v-switch>
+                       </div>
+                   </v-flex>
+                </v-layout>
+                <v-layout row class="ma-0 pa-0 list-head">
+                    <list-header :headers=selectedListHeaders></list-header>
+                </v-layout>
+                <v-layout row class="ma-0 pa-0 list-body">
+                    <draggable
+                    class="list-group"
+                    handle=".handle"
+                    v-bind="dragOptions"
+                    @start="startDrag()"
+                    @end="endDrag()"
+                    :list="this.selectedListItems"
+                    >
+                        <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+                            <div class="listRows" v-for="item in filteredAndSortedListItems" :key="item.item_meta.id">
+                                <list-row
+                                :item="item"
+                                :headers="selectedListHeaders"
+                                :ref="item.item_meta.id"
+                                class="draggable-row align-start"
+                                >
+                                </list-row>
+                            </div>
+                        </transition-group>
+                    </draggable>
+                </v-layout>
+                <v-layout row class="ma-0 list-footer">
+                    <v-container class="ma-0 add-item-container">
+                        <a v-on:click="addNewItem" class="add-item-anchor">
+                            <span class="mdi mdi-plus-circle add-item-icon"></span>
+                            <span class="add-item-text">Add Item</span>
+                        </a>
+                    </v-container>
+                </v-layout>
+            </v-layout>
+        <!-- </center> -->
   <!-- <v-btn @click.native="saveList">Save</v-btn> -->
   <!-- <v-btn @click.native="addNewItem">Add item</v-btn> -->
 
-</v-container>
+</v-layout>
 
 </template>
 
@@ -58,16 +73,16 @@
             ListRow
         },
         data: () => ({
-            drag: false
+            drag: false,
         }),
         created() {
+
         },
         computed: {
             ...mapGetters({
                 selectedListHeaders: 'getSelectedListHeaders',
                 selectedListItems: 'getSelectedListItems',
                 dateFilterHeader: 'getDateFilterHeader',
-                selectedDate: 'getSelectedDate',
             }),
             dragOptions() {
                 return {
@@ -80,22 +95,73 @@
             filteredListItems: {
                 get(){
                     let filteredListItems = this.selectedListItems;
-                    if (!this.$store.state.showAll){
+                    if (this.filterByDate){
                         filteredListItems = filteredListItems.filter((item)=>{
-                            return item.values[this.dateFilterHeader.name].toDate().getTime() === selectedDate.getTime() ||
+                            return item.values[this.dateFilterHeader.id].toDate().getTime() === this.selectedDate.getTime() ||
                                         item.item_meta.active
                         })
                     }
-
                     return filteredListItems;
+                }
+            },
+            filteredAndSortedListItems: {
+                get(){
+                    if(this.sortColumnIndex > -1){
+                        console.log("sorting......")
+                        this.filteredListItems.sort(this.sortFilteredList)
+                    } else {
+                        console.log("not sorting.....")
+                        return this.filteredListItems
+                    }
+                    return this.filteredListItems
+                }
+            },
+            sortColumnIndex:{
+                get(){
+                    return this.$store.state.sortColumnIndex
+                }
+            },
+            sortDescending: {
+                get(){
+                    return this.$store.state.sortDescending
+                }
+            },
+            selectedDate:{
+                get(){
+                    return new Date(this.$store.state.selectedDate)
+                }
+            },
+            showCalendar:{
+                get(){
+                    return this.$store.state.showCalendar;
+                }
+            },
+            filterByDate:{
+                get(){
+                    return this.showCalendar ? this.$store.state.filterByDate : false;
+                },
+                set(newValue){
+                    this.$store.state.filterByDate = newValue;
+                }
+            },
+            sortKey: {
+                get: function() {
+                    return this.sortKeyData
+                },
+                set: function(newKey){
+                    this.sortKeyData = newKey
                 }
             }
     },
     methods: {
         addNewItem() {
             /* wait for the promise */
-            this.$store.dispatch('createNewItem').then((result) => {
-                this.saveList();
+            this.$store.dispatch('createNewItem').then((newItemID) => {
+                // wait for the new Item to be rendered and then make it active
+                Vue.nextTick(() => {
+                    this.$refs[newItemID][0].makeActive()
+                });
+
             });
         },
         saveListToFirestore() {
@@ -122,6 +188,24 @@
 
             EventBus.$emit('the-list-drag-event', this.drag);
         },
+        sortFilteredList(a, b){
+            console.log(this.headers)
+            let headerID = this.selectedListHeaders[this.sortColumnIndex].id
+            let headerType = this.selectedListHeaders[this.sortColumnIndex].type
+            console.log(this.selectedListHeaders)
+            let sortResult
+            if(headerType==="date"){
+                sortResult = (a.values[headerID].seconds > b.values[headerID].seconds)
+            } else if(headerType === "integer"){
+                sortResult = (a.values[headerID] < b.values[headerID])
+            }
+            else if(headerType ==="string"){
+                console.log((a.values[headerID] > b.values[headerID]))
+                sortResult = (a.values[headerID] > b.values[headerID])
+            }
+            return this.sortDescending ? sortResult : !sortResult
+
+        }
     }
 };
 </script>

@@ -6,7 +6,7 @@
               prepend-icon="remove"
               @click:prepend="removeItem"
               @input="updateColumnOptionName"
-              :counter="10"
+              :counter="20"
               :rules="columnNameRules"
               :value="columnOption.name"
               required
@@ -34,7 +34,7 @@ export default {
             columnName: '',
             columnNameRules: [
             v => !!v || 'Column name is required',
-            v => (v && v.length <= 10) || 'Column name must be less than 10 characters'
+            v => (v && v.length <= 20) || 'Column name must be less than 20 characters'
           ],
         }),
         computed: {

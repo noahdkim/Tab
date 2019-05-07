@@ -1,5 +1,6 @@
 import App from './App.vue'
 import axios from 'axios'
+import EventBus from './event-bus'
 import firebase from 'firebase'
 import 'firebase/firestore'
 import router from './router'
@@ -9,9 +10,10 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css' /* Vuetify css */
 import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-loader
 import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loader
+import './stylus/main.styl'
 
-/* 
- * Use pretty-checkbox-vue from 
+/*
+ * Use pretty-checkbox-vue from
  * https://hamed-ehtesham.github.io/pretty-checkbox-vue/
  */
 import PrettyInput from 'pretty-checkbox-vue/input';
@@ -24,7 +26,8 @@ Vue.component('p-radio', PrettyRadio);
 
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
-
+Vue.prototype.$bus = EventBus
+window.Vue = Vue;
 
 Vue.use(Vuetify, {
   iconfont: 'mdi'

@@ -38,7 +38,8 @@ export const store = new Vuex.Store({
         activeItemID: 0,
         appTitle: 'Tab',
         dateFilterHeader: {},
-        showAll: true,
+        dateColumnExists: false,
+        filterByDate: false,
         selectedDate: '',
         selectedIntegerField: '',
         error: null,
@@ -48,6 +49,8 @@ export const store = new Vuex.Store({
         selectedList: {},
         selectedListItems: [],
         selectedListHeaders: [],
+        sortColumnIndex: -1,
+        sortDescending: true
     },
     /* change state values */
     mutations: {
@@ -92,6 +95,12 @@ export const store = new Vuex.Store({
         setUser(state, payload) {
             state.user = payload;
         },
+        setSortColumnIndex(state, newColumnIndex) {
+            state.sortColumnIndex = newColumnIndex
+        },
+        setSortDescending(state, newValue) {
+            state.sortDescending = newValue
+        }
     },
     actions: {
         autoSignIn({
@@ -131,8 +140,9 @@ export const store = new Vuex.Store({
             let todayTimestamp = new firebase.firestore.Timestamp(firebaseDateSeconds, 0)
             let newItem = {
                             item_meta:{
-                                id: key,
                                 active: false,
+                                checkbox: false,
+                                id: key,
                                 index: state.selectedListItems.length,
                             },
                             values: {}
@@ -147,8 +157,8 @@ export const store = new Vuex.Store({
 
             )
             state.selectedListItems.push(newItem);
-            dispatch('changeActiveItem', newItem);
-            return "added";
+            //dispatch('changeActiveItem', newItem);
+            return key;
         },
         createNewList({ state, commit }, params){
             let listName = params.listName;
@@ -238,8 +248,7 @@ export const store = new Vuex.Store({
         loadPersonalListData({ state, commit, dispatch }) {
             console.log('load personal list data')
             let user_meta = db.collection("lists_meta").doc(state.user.uid);
-            let personal_lists_ref = user_meta.collection("personal_lists");
-            let groups = user_meta.collection("groups");
+            let personal_lists_ref = user_meta.collection("personal_lists").orderBy("index");
             var personalLists = [];
             personal_lists_ref.get().then(function(querySnapshot) {
                 querySnapshot.forEach(function(doc) {
@@ -323,12 +332,31 @@ export const store = new Vuex.Store({
             commit('setSelectedListItems', selectedListItems);
             return "savedListOrder";
         },
+        saveSidebarOrder({ state, commit }, params){
+            let personalLists = state.personalLists;
+            if(personalLists == null) {
+                return false;
+            }
+            for(let i = 0; i < personalLists.length; i++)   {
+                personalLists[i].index = i;
+            }
+            commit('setPersonalLists', personalLists);
+            return "savedSidebarOrder";
+        },
+        saveSidebarToFirestore({ state }, params){
+            let batch = db.batch();
+            for (var i = 0, n = state.personalLists.length; i < n; i++){
+                let list = state.personalLists[i];
+                let listDocRef = db.collection('lists_meta').doc(state.user.uid).collection('personal_lists').doc(list.id);
+                batch.set(listDocRef, list, {merge: true});
+            }
+            batch.commit().then().catch(error=>{console.log(error)});
+        },
         updateItemState({ state, commit }, params){
             let item = params.item;
             let itemIndex = findIndexOfItem(state.selectedListItems, item.item_meta.id)
             let newSelectedListItems = state.selectedListItems;
             newSelectedListItems[itemIndex]['values'][params.headerId] = params.newValue;
-            console.log(params)
             commit('setSelectedListItems', newSelectedListItems);
         },
         userSignIn({

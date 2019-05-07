@@ -5,21 +5,21 @@
  */
 
 
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
 .toolbar	{
 	background-color: #197BBD;
 	z-index: 1;
 }
 
-.side-list-cal	{
-	background-color: #ffffff;
-	height: 100%;
+.the-sidebar-nav-drawer	{
+	background-color: #fafafa;
 }
 
-.sidebar	{
+.the-calendar-nav-drawer	{
 	background-color: #fafafa;
-	color: black;
-    z-index:0;
 }
+
 
 .fade-enter-active,
 .fade-leave-active

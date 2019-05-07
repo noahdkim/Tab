@@ -1,24 +1,18 @@
 <template>
-  <v-container class="ma-0 pa-0 side-list-cal" fluid>
-    <v-layout row style="height: 100%">
+    <v-container id="parent-flex" class="ma-0 pa-0">
         <!-- Sidebar -->
-        <v-flex grow>
-            <the-sidebar :show=show></the-sidebar>
-        </v-flex>
-        <!-- Expand/Collapse sidebar -->
-        <button v-on:click="show = !show">
-            <v-icon>{{show ? 'keyboard_arrow_left' : 'keyboard_arrow_right'}}</v-icon>
-        </button>
+        <v-navigation-drawer class="the-sidebar-nav-drawer" v-model="showSidebar" clipped app :light="false">
+            <the-sidebar></the-sidebar>
+        </v-navigation-drawer>
         <!-- List -->
-        <v-flex xs7>
-            <the-list></the-list>
-        </v-flex>
+    	<v-flex class="ma-0 pa-0 the-list-flex" grow justify-center>
+    		<the-list></the-list>
+    	</v-flex>
         <!-- Calendar -->
-        <v-flex v-if="showCalendar" xs5>
+        <v-navigation-drawer v-if="dateColumnExists" class="the-calendar-nav-drawer" v-model="showCalendar" clipped app right :light="false" :width="400">
             <the-calendar></the-calendar>
-        </v-flex>
-    </v-layout>
-  </v-container>
+        </v-navigation-drawer>
+    </v-container>
 </template>
 
 <script>
@@ -26,45 +20,56 @@
     import TheList from './Home/TheList'
     import TheCalendar from './Home/TheCalendar'
 
-require("@/assets/styles/main.css");
+    require("@/assets/styles/main.css");
 
-export default {
-     components: { TheSidebar, TheList, TheCalendar },
-     data () {
-         return{
-             show: true,
-         }
-     },
-     computed: {
-         showCalendar () {
-             let listHeaders = this.$store.state.selectedListHeaders
-             for(var i = 0; i < listHeaders.length; ++i){
-                 if (listHeaders[i].type === "date"){
-                     return true
-                 }
-             }
-             return false
-         }
-     },
-     mounted() {
-         /* polyfillScript for vCalendar */
-        let polyfillScript = document.createElement('script')
-        polyfillScript.setAttribute('src', 'https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.prototype.find,Intl')
-        document.head.appendChild(polyfillScript)
-      },
-     /* https://github.com/vuejs/vue/issues/1915#issuecomment-159334432 */
-     created() {
-         window.addEventListener('resize', this.handleResize)
-     },
-     destroyed() {
-         window.removeEventListener('resize', this.handleResize)
-     },
-     methods: {
-         handleResize: function()    {
-             this.show = (document.documentElement.clientWidth >= 935);
-         }
-     },
-}
+    export default {
+       components: { TheSidebar, TheList, TheCalendar },
+       data () {
+           return{
+               showCalendar: true,
+               showSidebar: true
+           }
+       },
+       computed: {
+           dateColumnExists () {
+               let listHeaders = this.$store.state.selectedListHeaders
+               this.$store.state.showCalendar = false;
+               for(var i = 0; i < listHeaders.length; ++i){
+                   if (listHeaders[i].type === "date"){
+                       this.$store.state.dateColumnExists = true;
+                   }
+               }
+               return this.$store.state.dateColumnExists;
+           }
+       },
+       mounted() {
+           /* polyfillScript for vCalendar */
+           let polyfillScript = document.createElement('script')
+           polyfillScript.setAttribute('src', 'https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.prototype.find,Intl')
+           document.head.appendChild(polyfillScript)
+       },
+       /* https://github.com/vuejs/vue/issues/1915#issuecomment-159334432 */
+       created() {
+           window.addEventListener('resize', this.handleResize);
+           this.$bus.$on('toggleShowCalendar', () => {
+             this.showCalendar = !this.showCalendar
+           })
+           this.$bus.$on('emitToggleShowSidebar', () => {
+               this.showSidebar = !this.showSidebar
+           })
+
+       },
+       destroyed() {
+           window.removeEventListener('resize', this.handleResize)
+       },
+       methods: {
+           handleResize: function()    {
+               this.show = (document.documentElement.clientWidth >= 935);
+           }
+       },
+   }
 </script>
 
 <style scoped src="@/assets/styles/main.css"></style>
+
+<style scoped src="@/assets/styles/Home.css"></style>

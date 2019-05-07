@@ -1,25 +1,9 @@
 <template>
 <v-app>
-    <v-navigation-drawer v-model="sidebar" class="hidden-sm-and-up" v-if="sidebar" app>
-        <v-list>
-            <v-list-tile v-for="item in menuItems" :key="item.title" :to="item.path">
-                <v-list-tile-action>
-                    <v-icon>{{ item.icon }}</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>{{ item.title }}</v-list-tile-content>
-            </v-list-tile>
-            <v-list-tile v-if="isAuthenticated" @click="userSignOut">
-                <v-list-tile-action>
-                    <v-icon>exit_to_app</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>Sign Out</v-list-tile-content>
-            </v-list-tile>
-        </v-list>
-    </v-navigation-drawer>
-
-    <v-toolbar app class="toolbar" color="#197BBD">
-        <span class="hidden-sm-and-up">
-            <v-toolbar-side-icon @click="sidebar = !sidebar">
+    <v-toolbar flat app class="toolbar pa-0 ma-0" color="#197BBD" style="color: #fff">
+        <!-- Sidebar Icon -->
+        <span v-if="isAuthenticated" class="hidden-lg-and-up">
+            <v-toolbar-side-icon class="white--text" @click="emitToggleShowSidebar">
             </v-toolbar-side-icon>
         </span>
         <v-toolbar-title>
@@ -33,12 +17,25 @@
                 <v-icon left dark>{{ item.icon }}</v-icon>
                 {{ item.title }}
             </v-btn>
-            <v-btn flat v-if="isAuthenticated" @click="userSignOut">
-                <v-icon left>exit_to_app</v-icon>
-                Sign Out
-            </v-btn>
+
         </v-toolbar-items>
+        <v-btn dark flat v-if="isAuthenticated" @click="userSignOut">
+            <v-icon left>exit_to_app</v-icon>
+            Sign Out
+        </v-btn>
+
+        <!-- Calendar Icon -->
+        <span v-if="isAuthenticated" class="hidden-lg-and-up">
+            <v-toolbar-side-icon class="white--text" @click="emitToggleShowCalendar">
+                <span class="mdi mdi-calendar" style="transform: scale(1.5)"></span>
+            </v-toolbar-side-icon>
+        </span>
     </v-toolbar>
+
+
+
+
+
 
     <v-content>
         <router-view></router-view>
@@ -49,13 +46,16 @@
 
 <script>
 
+import TheSidebar from '@/components/Home/TheSidebar'
+import TheCalendar from '@/components/Home/TheCalendar'
+
 require('@/assets/styles/main.css');
 
 export default {
+    components: { TheSidebar, TheCalendar },
     data() {
         return {
-            // appTitle: 'Awesome App',
-            sidebar: false,
+            // appTitle: 'Awesome App'
         }
     },
     /* https://github.com/vuejs/vue/issues/1915#issuecomment-159334432 */
@@ -91,11 +91,17 @@ export default {
         userSignOut() {
             this.$store.dispatch('userSignOut')
         },
-        handleResize: function()    {
+        handleResize() {
             if(document.documentElement.clientWidth >= 600)   {
                 this.sidebar = false;
             }
-        }
+        },
+        emitToggleShowCalendar(){
+            this.$bus.$emit('toggleShowCalendar')
+        },
+        emitToggleShowSidebar(){
+            this.$bus.$emit('emitToggleShowSidebar')
+        },
     },
 
 }

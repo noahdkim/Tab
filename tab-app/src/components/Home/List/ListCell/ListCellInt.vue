@@ -1,5 +1,5 @@
 <template>
-    <v-text-field class="textfield"
+    <v-text-field class="text-field"
                           :mask="mask"
                           @input="updateCellValue"
                           v-model="intValue"
@@ -10,7 +10,8 @@
                           single-line
                           hide-details
                           solo
-                          flat>
+                          flat
+                          placeholder="#">
 
                           <!-- :outline="!item.item_meta.active" -->
     </v-text-field>

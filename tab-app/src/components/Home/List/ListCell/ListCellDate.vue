@@ -17,9 +17,10 @@
             readonly
             slot="activator"
             hide-details
-            class="textfield"
+            class="text-field"
             solo
             flat
+            placeholder="####-##-##"
           ></v-text-field>
         <v-date-picker v-model="dateValue" no-title scrollable>
           <v-spacer></v-spacer>

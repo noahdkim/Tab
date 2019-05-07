@@ -9,7 +9,7 @@
   background-color: #0f0;
 }
 .flip-list  {
-    background-color: #0f0;
+	background-color: #0f0;
 }
 .no-move {
   transition: transform 0s;
@@ -50,42 +50,95 @@ input {
 
 
 /*************************************************/
-.list-all   {
-    /*padding-top:    20px;
-    padding-bottom: 20px;
-    padding-right:  20px;*/
-    /*background-color: #000;*/
-/*
-    padding-top: 	20px;
-    padding-bottom: 20px;
-    padding-left:	20px;
-    padding-right: 	20px;*/
+.the-list-parent	{
+	/*position: relative;*/
+	/*text-align: center;*/
+	/*text-align: center;*/
+	/*justify-content: center;*/
+	text-align: center;
+}
 
-    border-radius: 5px;
+.list-all   {
+	/*padding-top:    20px;
+	padding-bottom: 20px;
+	padding-right:  20px;*/
+	/*background-color: #000;*/
+
+	padding-top: 	10px;
+	padding-bottom: 20px;
+	padding-left:	20px;
+	padding-right: 	20px;
+
+	border-radius: 5px;
+
+	min-width: 500px;
+	/*max-width: 500px;*/
+	overflow: scroll;
+
+	/*flex-grow: 0;*/
+
+	display: inline-flex;
+
+	flex-grow: 0;
+
+	/*margin-left: 50%;*/
+	text-align: center;
 }
 .list-head	{
 	margin: 0px;
 	/*border-bottom: 1px solid rgba(0,0,0,0.125);*/
+	/*display: inline-flex;*/
+
+
 }
+
+.list-title {
+	font-family: 'Nunito', sans-serif;
+	font-weight: bold;
+	margin-top: 15px;
+	margin-left: 40px;
+	margin-bottom: 10px;
+
+	padding-top: 5px;	
+
+	/*display: inline-flex;*/
+}
+
+.list-filter-switch	{
+	float: right;
+	margin-right: 40px;
+	margin-bottom: 0px;
+}
+
+.list-title-text  {
+  font-size: 1.5em;
+}
+
 .list-body {
-    /*background-color: #0f0;*/
-    /*padding: 20px;*/
+	/*background-color: #0f0;*/
+	/*padding: 20px;*/
+	/*display: inline-flex;*/
 }
 
 .list-footer	{
 	padding-left: 50px;
 	padding-right: 52px;
+
+	/*display: inline-flex;*/
 }
 
 /**************** add-item ****************/
 .add-item-container	{
 	/*border-top: 1px solid rgba(0,0,0,.06);*/
-	padding-top: 20px;
+	padding-top: 30px;
 	padding-bottom: 30px;
+	padding-left: 22px;
+	padding-right: 0px;
 }
 
 .add-item-anchor	{
 	text-decoration: none;
+  font-size: 1.15em;
 }
 .add-item-icon	{
 	margin-right: 10px;
@@ -104,13 +157,18 @@ input {
 }
 
 .draggable-row  {
-    background-color: #ffffff;
+	background-color: #ffffff;
 
-    /*border-radius: 1px;*/
-    /*border-bottom:  1px solid rgba(0,0,0,.125);*/
+	/*border-radius: 1px;*/
+	/*border-bottom:  1px solid rgba(0,0,0,.125);*/
 }
 
 hr {
-    background-color: #000;
-    color: #000;
+	background-color: #000;
+	color: #000;
+}
+
+
+.list-title-text  {
+	font-size: 1.5em;
 }

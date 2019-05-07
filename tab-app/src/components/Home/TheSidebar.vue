@@ -1,10 +1,11 @@
 <template>
-<v-navigation-drawer class="sidebar" permanent v-if="show">
-    
+<!-- <v-navigation-drawer class="sidebar" hide-overlay> -->
+    <v-container class="ma-0 pa-0 sidebar">
     <v-list>
         <draggable
             handle=".handle"
             v-bind="dragOptions"
+            @end="endDrag()"
             :list="this.personalLists"
             >
             <sidebar-tile
@@ -30,7 +31,8 @@
              </sidebar-form>
          </v-dialog>
    </v-list>
-</v-navigation-drawer>
+</v-container>
+<!-- </v-navigation-drawer> -->
 </template>
 
 <script>
@@ -57,8 +59,6 @@ export default {
     },
     computed: {
         personalLists () {
-            console.log(this.$store.state.selectedList)
-
             return this.$store.state.personalLists
         },
          dragOptions() {
@@ -80,6 +80,20 @@ export default {
         loadUserLists() {
             console.log("loading user lists....")
             this.$store.dispatch('loadPersonalListData');
+        },
+        endDrag() {
+            this.drag = false;
+            this.saveSidebarOrder();
+            this.saveSidebarToFirestore();
+        },
+        saveSidebarToFirestore() {
+            /* this is async */
+            this.$store.dispatch('saveSidebarToFirestore');
+        },
+        saveSidebarOrder()  {
+            this.$store.dispatch('saveSidebarOrder').then((result) => {
+                console.log(result);
+            });
         },
         openCreateListDialog() {
             this.dialog = true
