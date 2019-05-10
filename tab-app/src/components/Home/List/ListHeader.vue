@@ -2,6 +2,7 @@
 	<v-layout column align-center>
 		<v-layout row class="header-row">
 			<span class="spacer-handle"></span>
+            <v-icon @click="modifySort('checked')">check</v-icon>
 			<span class="spacer-checkbox"></span>
 			<v-layout col
 			v-for="header in headers"
@@ -37,6 +38,7 @@
 		props: ['headers'],
         methods:{
             modifySort(columnIndex){
+                console.log(columnIndex)
                 this.$store.commit('setSorting', true)
                 if(this.$store.state.sortColumnIndex === columnIndex){
                     this.$store.commit('setSortDescending', !this.$store.state.sortDescending)

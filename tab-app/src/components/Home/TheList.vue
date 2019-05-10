@@ -108,7 +108,7 @@
             },
             filteredAndSortedListItems: {
                 get(){
-                    if(this.sortColumnIndex > -1 && this.sorting){
+                    if((this.sortColumnIndex === "checked" || this.sortColumnIndex > -1) && this.sorting){
                         this.filteredListItems.sort(this.sortFilteredList)
                         this.$store.commit('setSorting', false)
                     } else {
@@ -200,19 +200,22 @@
             EventBus.$emit('the-list-drag-event', this.drag);
         },
         sortFilteredList(a, b){
-            console.log(this.headers)
-            let headerID = this.selectedListHeaders[this.sortColumnIndex].id
-            let headerType = this.selectedListHeaders[this.sortColumnIndex].type
-            console.log(this.selectedListHeaders)
             let sortResult
-            if(headerType==="date"){
-                sortResult = (a.values[headerID].seconds > b.values[headerID].seconds)
-            } else if(headerType === "integer"){
-                sortResult = (a.values[headerID] < b.values[headerID])
+            if (this.sortColumnIndex === 'checked'){
+                sortResult = ((a.item_meta.checked === b.item_meta.checked)? 0 : a.item_meta.checked ? false : true)
             }
-            else if(headerType ==="string"){
-                console.log((a.values[headerID] > b.values[headerID]))
-                sortResult = (a.values[headerID] > b.values[headerID])
+            else{
+                let headerID = this.selectedListHeaders[this.sortColumnIndex].id
+                let headerType = this.selectedListHeaders[this.sortColumnIndex].type
+                if(headerType==="date"){
+                    sortResult = (a.values[headerID].seconds > b.values[headerID].seconds)
+                } else if(headerType === "integer"){
+                    sortResult = (a.values[headerID] < b.values[headerID])
+                }
+                else if(headerType ==="string"){
+                    console.log((a.values[headerID] > b.values[headerID]))
+                    sortResult = (a.values[headerID] > b.values[headerID])
+                }
             }
             return this.sortDescending ? sortResult : !sortResult
 
