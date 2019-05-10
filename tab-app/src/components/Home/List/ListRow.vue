@@ -7,7 +7,7 @@
 			@mouseleave="mouseLeave()"
 			>
 			<span class="fa fa-align-justify handle" :style="{ opacity: showHandle ? 0.3 : 0 }">::</span>
-			<v-checkbox @click.stop="checkbox=!checkbox" class="checkbox" default v-model="checkbox"></v-checkbox>
+			<v-checkbox @click.stop="checked=!checked" class="checkbox" default v-model="checked"></v-checkbox>
 			<v-layout col
 				v-for="header in headers"
 				:key="header.id"
@@ -71,12 +71,12 @@
 			}
 		},
 		computed: {
-			checkbox: {
+			checked: {
 				get: function() {
-					return this.item.item_meta.checkbox
+					return this.item.item_meta.checked
 				},
 				set: function(newCheckboxValue) {
-					this.item.item_meta.checkbox = newCheckboxValue
+					this.item.item_meta.checked = newCheckboxValue
 					this.$store.dispatch('saveItem', this.item)
 				}
 			},

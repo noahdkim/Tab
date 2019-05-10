@@ -92,9 +92,14 @@
             filteredListItems: {
                 get(){
                     let filteredListItems = this.selectedListItems;
+                    if (!this.showChecked){
+                        filteredListItems = filteredListItems.filter((item)=>{
+                            return !item.item_meta.checked;
+                        })
+                    }
                     if (this.filterByDate){
                         filteredListItems = filteredListItems.filter((item)=>{
-                            return item.values[this.dateFilterHeader.id].toDate().getTime() === this.selectedDate.getTime() ||
+                            return (item.values[this.dateFilterHeader.id].toDate().getTime() === this.selectedDate.getTime()) ||
                                         item.item_meta.active
                         })
                     }
@@ -135,6 +140,11 @@
             showCalendar:{
                 get(){
                     return this.$store.state.showCalendar;
+                }
+            },
+            showChecked:{
+                get(){
+                    return this.$store.state.showChecked
                 }
             },
             filterByDate:{

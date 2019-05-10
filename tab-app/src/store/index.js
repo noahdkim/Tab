@@ -49,6 +49,7 @@ function initialState(){
         selectedList: {},
         selectedListItems: [],
         selectedListHeaders: [],
+        showChecked: false,
         sortColumnIndex: -1,
         sortDescending: true,
         sorting: false
@@ -71,6 +72,7 @@ export const store = new Vuex.Store({
         selectedList: {},
         selectedListItems: [],
         selectedListHeaders: [],
+        showChecked: false,
         sortColumnIndex: -1,
         sortDescending: true,
         sorting: false
@@ -174,7 +176,7 @@ export const store = new Vuex.Store({
             let newItem = {
                             item_meta:{
                                 active: false,
-                                checkbox: false,
+                                checked: false,
                                 id: key,
                                 index: state.selectedListItems.length,
                             },
