@@ -276,6 +276,14 @@ export const store = new Vuex.Store({
                                 console.error("Error removing document: ", error);
                             });
         },
+        listDragSwap({state, commit}, newList){
+            let selectedListItems = state.selectedListItems
+            newList.forEach((item, index) => {
+                let itemIndex = findIndexOfItem(selectedListItems, item.item_meta.id);
+                [selectedListItems[index], selectedListItems[itemIndex]] = [selectedListItems[itemIndex], selectedListItems[index]];
+            })
+            commit('setSelectedListItems', selectedListItems)
+        },
         loadGroupListData({ state, commit }) {
             let user_meta = db.collection("lists_meta").doc(state.user.uid);
             let personal_lists_ref = user_meta.collection("personal_lists");
@@ -429,8 +437,7 @@ export const store = new Vuex.Store({
                     db.collection('lists_meta').doc(firebaseUser.user.uid).set({
                         "email": firebaseUser.user.email,
                     })
-                    /* add new user to list_names collection */
-                    db.collection('lists_content').doc(firebaseUser.user.uid).set({
+                    db.collection('settings').doc(firebaseUser.user.uid).set({
                         "email": firebaseUser.user.email,
                     })
                     commit('setUser', {

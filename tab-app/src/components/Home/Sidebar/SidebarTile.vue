@@ -11,7 +11,7 @@
           <v-list-tile-title>{{ listSelector.name }}</v-list-tile-title>
        </v-list-tile-content>
        <v-menu @click.native.stop>
-               <v-btn icon slot="activator"
+               <v-btn icon slot="activator" :style="{ opacity: showHandle ? 0.3 : 0 }"
                >
                    <v-icon>more_horiz</v-icon>
                </v-btn>

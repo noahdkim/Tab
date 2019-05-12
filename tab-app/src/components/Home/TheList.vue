@@ -188,7 +188,7 @@
             console.log("startDrag()");
             this.drag = true;
             console.log("selectedListItems:");
-            console.log(this.selectedListItems);
+            console.log(this.filteredAndSortedListItems);
 
             EventBus.$emit('the-list-drag-event', this.drag);
         },
