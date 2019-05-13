@@ -21,7 +21,7 @@
                     v-bind="dragOptions"
                     @start="startDrag()"
                     @end="endDrag()"
-                    :list="this.selectedListItems"
+                    :list="filteredAndSortedListItems"
                     >
                         <transition-group type="transition" :name="!drag ? 'flip-list' : null">
                             <div class="listRows" v-for="item in filteredAndSortedListItems" :key="item.item_meta.id">
@@ -219,6 +219,21 @@
             }
             return this.sortDescending ? sortResult : !sortResult
 
+        },
+        filterList(){
+            let filteredListItems = this.selectedListItems;
+            if (!this.showChecked){
+                filteredListItems = filteredListItems.filter((item)=>{
+                    return !item.item_meta.checked;
+                })
+            }
+            if (this.filterByDate){
+                filteredListItems = filteredListItems.filter((item)=>{
+                    return (item.values[this.dateFilterHeader.id].toDate().getTime() === this.selectedDate.getTime()) ||
+                                item.item_meta.active
+                })
+            }
+            return filteredListIT
         }
     }
 };

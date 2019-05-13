@@ -72,7 +72,7 @@ export const store = new Vuex.Store({
         selectedList: {},
         selectedListItems: [],
         selectedListHeaders: [],
-        showChecked: false,
+        showChecked: true,
         sortColumnIndex: -1,
         sortDescending: true,
         sorting: false
