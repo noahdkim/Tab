@@ -28,9 +28,7 @@
 						>
 					</list-cell>
 				</v-layout>
-				<v-btn flat icon @click.stop="deleteItem" :style="{ opacity: showHandle ? 0.3 : 0 }">
-					<v-icon class="deleteIcon" >delete</v-icon>
-				</v-btn>
+				<!-- Old delete icon here -->
 			</v-layout>
 			<!-- Hidden Options Row is shown when row is active -->
 			<v-layout row class="hiddenOptionsRow" v-show="item.item_meta.active" justify-start>
@@ -52,6 +50,11 @@
 				</v-container>
 
 			</v-layout>
+		</v-layout>
+		<v-layout column justify-start>
+			<v-btn flat icon @click.stop="deleteItem" :style="{ opacity: showHandle ? 0.3 : 0 }">
+				<v-icon class="deleteIcon" >delete</v-icon>
+			</v-btn>
 		</v-layout>
 	</v-layout>
 </template>

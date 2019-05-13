@@ -41,11 +41,11 @@ input {
 	/*width: 50%;*/
 }
 .listcells  {
-	border-top:     1px solid rgba(0,0,0,.06);
+	/*border-top:     1px solid rgba(0,0,0,.06);*/
 	/*border-bottom:  1px solid rgba(0,0,0,.06);*/
 }
 .listrow	{
-	border-bottom: 1px solid rgba(255,0,255,1.0);
+	border-bottom: 1px solid rgba(0,0,0,.06);
 }
 
 .text {

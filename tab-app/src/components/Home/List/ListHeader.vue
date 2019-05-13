@@ -2,8 +2,8 @@
 	<v-layout column align-center>
 		<v-layout row class="header-row">
 			<span class="spacer-handle"></span>
-            <v-icon @click="modifySort('checked')">check</v-icon>
-			<span class="spacer-checkbox"></span>
+      <v-icon class="spacer-checkbox" @click="modifySort('checked')">check</v-icon>
+			<!-- <span class="spacer-checkbox"></span> -->
 			<v-layout col
 			v-for="header in headers"
 			:key="header.name"
@@ -58,11 +58,13 @@
             max-height:   52px;
             min-height:   52px;
 
-            opacity:      0;
-            color: rgba(0, 0, 0, 0);
-            background-color: rgba(0, 0, 0, 0);
+            padding-right: 20px;
 
-            border: 1px solid #000;
+            /*opacity:      0;*/
+            /*color: rgba(0, 0, 0, 0);*/
+            /*background-color: rgba(0, 0, 0, 0);*/
+
+            border: 1px solid rgba(0, 0, 0, 0);
           }
 
           .spacer-handle	{
