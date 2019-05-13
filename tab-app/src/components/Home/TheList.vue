@@ -224,4 +224,4 @@
 };
 </script>
 
-<style scoped src="@/assets/styles/thelist.css"></style>
+<style scoped src="@/assets/styles/TheList.css"></style>

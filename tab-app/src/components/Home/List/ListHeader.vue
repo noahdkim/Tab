@@ -100,4 +100,4 @@
           }
       </style>
 
-<style scoped src="@/assets/styles/listcell.css"></style>
+<style scoped src="@/assets/styles/ListCell.css"></style>

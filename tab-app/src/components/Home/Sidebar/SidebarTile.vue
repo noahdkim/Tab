@@ -103,4 +103,4 @@
     }
 </script>
 
-<style scoped src="@/assets/styles/thesidebar.css"></style>
+<style scoped src="@/assets/styles/TheSidebar.css"></style>
