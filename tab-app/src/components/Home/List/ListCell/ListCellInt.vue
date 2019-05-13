@@ -11,7 +11,7 @@
                           hide-details
                           solo
                           flat
-                          placeholder="#">
+                          placeholder="###">
 
                           <!-- :outline="!item.item_meta.active" -->
     </v-text-field>

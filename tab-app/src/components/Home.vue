@@ -5,11 +5,11 @@
             <the-sidebar></the-sidebar>
         </v-navigation-drawer>
         <!-- List -->
-    	<v-flex class="ma-0 pa-0 the-list-flex" grow justify-center>
+    	<v-flex v-if="listIsSelected" class="ma-0 pa-0 the-list-flex" grow justify-center>
     		<the-list></the-list>
     	</v-flex>
         <!-- Calendar -->
-        <v-navigation-drawer v-if="dateColumnExists" class="the-calendar-nav-drawer" v-model="showCalendar" clipped app right :light="false" :width="400">
+        <v-navigation-drawer v-if="dateColumnExists && listIsSelected" class="the-calendar-nav-drawer" v-model="showCalendar" clipped app right :light="false" :width="400">
             <the-calendar></the-calendar>
         </v-navigation-drawer>
     </v-container>
@@ -33,13 +33,16 @@
        computed: {
            dateColumnExists () {
                let listHeaders = this.$store.state.selectedListHeaders
-               this.$store.state.showCalendar = false;
+               this.$store.state.dateColumnExists = false;
                for(var i = 0; i < listHeaders.length; ++i){
                    if (listHeaders[i].type === "date"){
                        this.$store.state.dateColumnExists = true;
                    }
                }
                return this.$store.state.dateColumnExists;
+           },
+           listIsSelected () {
+               return !(typeof(this.$store.state.selectedList) == 'undefined')
            }
        },
        mounted() {

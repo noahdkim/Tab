@@ -33,6 +33,29 @@ function findIndexOfItem(list, id) {
     return foundIndex;
 }
 
+function initialState(){
+    return {
+        activeItemID: 0,
+        appTitle: 'Tab',
+        dateFilterHeader: {},
+        dateColumnExists: false,
+        filterByDate: false,
+        selectedDate: '',
+        selectedIntegerField: '',
+        error: null,
+        loading: false,
+        user: null,
+        personalLists: [],
+        selectedList: {},
+        selectedListItems: [],
+        selectedListHeaders: [],
+        showChecked: false,
+        sortColumnIndex: -1,
+        sortDescending: true,
+        sorting: false
+    }
+}
+
 export const store = new Vuex.Store({
     state: {
         activeItemID: 0,
@@ -49,8 +72,10 @@ export const store = new Vuex.Store({
         selectedList: {},
         selectedListItems: [],
         selectedListHeaders: [],
+        showChecked: false,
         sortColumnIndex: -1,
-        sortDescending: true
+        sortDescending: true,
+        sorting: false
     },
     /* change state values */
     mutations: {
@@ -100,6 +125,16 @@ export const store = new Vuex.Store({
         },
         setSortDescending(state, newValue) {
             state.sortDescending = newValue
+        },
+        setSorting(state, newValue){
+            state.sorting = newValue
+        },
+        reset (state) {
+          // acquire initial state
+          const s = initialState()
+          Object.keys(s).forEach(key => {
+            state[key] = s[key]
+          })
         }
     },
     actions: {
@@ -141,7 +176,7 @@ export const store = new Vuex.Store({
             let newItem = {
                             item_meta:{
                                 active: false,
-                                checkbox: false,
+                                checked: false,
                                 id: key,
                                 index: state.selectedListItems.length,
                             },
@@ -171,7 +206,8 @@ export const store = new Vuex.Store({
             let listContentKey = myRef.key;
             let newListData = {listContentKey: listContentKey,
                                   name: listName,
-                                  id: listMetaKey}
+                                  id: listMetaKey,
+                                  index: state.personalLists.length}
             // create in db first and then switch in UI or the other way?
             let newListMeta = db.collection("lists_meta")
                                 .doc(state.user.uid)
@@ -182,6 +218,7 @@ export const store = new Vuex.Store({
                                             .doc(listContentKey)
                                             .collection("headers")
 
+
             let batch = db.batch();
             for(let i=0; i<columnOptions.length; ++i){
                 let headerRef = firebase.database().ref().push();
@@ -190,11 +227,15 @@ export const store = new Vuex.Store({
                 columnOptions[i].id = newHeaderKey;
                 batch.set(newListHeadersRef.doc(newHeaderKey), (columnOptions[i]));
             }
-            batch.commit().then(function () {
+            batch.commit().then(function (result) {
                 let personalLists = state.personalLists
+                console.log(result)
                 personalLists.push(newListData)
                 commit('setPersonalLists', personalLists)
+            }).catch(function(error) {
+                console.log("Transaction failed: ", error);
             });
+
         },
         deleteItem({ state, commit, dispatch }, item){
             // using found index is better than item.item_meta.index bc it allows us to be ahead of the db
@@ -234,6 +275,14 @@ export const store = new Vuex.Store({
                                     }).catch(function(error) {
                                 console.error("Error removing document: ", error);
                             });
+        },
+        listDragSwap({state, commit}, newList){
+            let selectedListItems = state.selectedListItems
+            newList.forEach((item, index) => {
+                let itemIndex = findIndexOfItem(selectedListItems, item.item_meta.id);
+                [selectedListItems[index], selectedListItems[itemIndex]] = [selectedListItems[itemIndex], selectedListItems[index]];
+            })
+            commit('setSelectedListItems', selectedListItems)
         },
         loadGroupListData({ state, commit }) {
             let user_meta = db.collection("lists_meta").doc(state.user.uid);
@@ -388,8 +437,7 @@ export const store = new Vuex.Store({
                     db.collection('lists_meta').doc(firebaseUser.user.uid).set({
                         "email": firebaseUser.user.email,
                     })
-                    /* add new user to list_names collection */
-                    db.collection('lists_content').doc(firebaseUser.user.uid).set({
+                    db.collection('settings').doc(firebaseUser.user.uid).set({
                         "email": firebaseUser.user.email,
                     })
                     commit('setUser', {
@@ -411,6 +459,7 @@ export const store = new Vuex.Store({
             firebase.auth().signOut()
             .then(()=>{
                 commit('setUser', null)
+                commit('reset')
                 router.push('/')
             })
             .catch(error => {

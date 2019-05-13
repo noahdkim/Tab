@@ -15,17 +15,30 @@
              >
             </sidebar-tile>
         </draggable>
+
+        <!-- Constant sidebar tiles -->
          <v-list-tile
             class="create-new-list-tile"
             @click="openCreateListDialog"
          >
-            <v-list-tile-action>
+            <v-list-tile-avatar>
                 <v-icon class="create-new-list-icon">add</v-icon>
-            </v-list-tile-action>
+            </v-list-tile-avatar>
             <v-list-tile-content>
                 <v-list-tile-title >Create New List</v-list-tile-title>
             </v-list-tile-content>
          </v-list-tile>
+
+         <v-list-tile
+         >
+            <v-switch
+                v-model="showChecked"
+                label="Show Checked Items">
+            </v-switch>
+
+         </v-list-tile>
+
+         <!-- Create new list dialog form -->
          <v-dialog v-model="dialog"  max-width="600px">
              <sidebar-form @close-dialog="dialog=false">
              </sidebar-form>
@@ -69,6 +82,14 @@ export default {
                 ghostClass: "ghost"
             };
         },
+        showChecked:{
+            get(){
+                return this.$store.state.showChecked
+            },
+            set(newValue){
+                this.$store.state.showChecked = newValue;
+            }
+        }
     },
     props:{
         show: Boolean,

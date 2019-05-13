@@ -12,7 +12,10 @@
           <v-container grid-list-md>
             <v-layout wrap>
               <v-flex xs12 sm6 md4>
-                <v-text-field label="New List Name" v-model="listName" :counter="20" :rules="listNameRules" required></v-text-field>
+                <v-text-field label="New List Name"
+                                :rules="listNameRules"
+                                v-model="listName" required>
+                </v-text-field>
               </v-flex>
               <sidebar-form-row v-for="(columnOption, index) in columnOptions"
                                   :columnOption="columnOption"
@@ -50,12 +53,13 @@ export default {
         listName: '',
         listNameRules: [
         v => !!v || 'Name is required',
-        v => (v && v.length <= 20) || 'Name must be less than 20 characters'
       ],
     }),
     methods:{
         addColumnOption(){
-            this.columnOptions.push({});
+            if (this.columnOptions.length < 4){
+                this.columnOptions.push({});
+            }
         },
         createNewList(){
             if (this.$refs.form.validate()) {

@@ -12,7 +12,7 @@
                           rows="1"
                           row-height=10
                           auto-grow
-                          placeholder=".....">
+                          placeholder="________________________">
     </v-textarea>
 </template>
 
