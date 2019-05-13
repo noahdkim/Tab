@@ -1,5 +1,5 @@
 <template>
-	<v-layout row justify-start	
+	<v-layout row justify-start
 				:id="item.item_meta.id"
 				@click="makeActive"
 				@mouseover="mouseOver()"
@@ -10,7 +10,7 @@
 		<v-layout column>
 			<v-checkbox @click.stop="checked=!checked" class="checkbox" default v-model="checked"></v-checkbox>
 		</v-layout>
-		<v-layout column 
+		<v-layout column
 				  justify-start
 				  class="listrow">
 			<v-layout row>
@@ -36,14 +36,14 @@
 			<v-layout row class="hiddenOptionsRow" v-show="item.item_meta.active" justify-start>
 				<v-container class="pa-0" id="saveCancelContainer">
 					<v-btn 	class="saveRowBtn"
-							@click.native="saveItem"
+							@click.stop="saveItem"
 							small
 							flat
 							color="#197bbd">
 							<strong>Save</strong>
 					</v-btn>
 					<v-btn 	class="cancelRowBtn2"
-							@click.native="cancel"
+							@click.stop="cancel"
 							small
 							flat
 							color="#555">
@@ -121,7 +121,6 @@
 			  let item = this.item
 			  for (var i=0; i<this.headers.length; i++) {
 
-				  //console.log(this.$refs[this.headers[i].id])
 				  let newValue = this.$refs[this.headers[i].id][0].getValue()
 
 				  let headerId = this.headers[i].id
@@ -137,12 +136,10 @@
 				  this.$refs[this.headers[i].id][0].setValue(originalValue)
 			  }
 			  this.$store.dispatch('saveItem', this.item)
-			/* More cancel actions needed here TODO */
 		},
 		  listener(data){
 			  if (this.item.item_meta.id !== data && this.item.item_meta.active){
 				  this.saveItem();
-				  this.item.item_meta.active = false;
 			  }
 		  }
 	  },
