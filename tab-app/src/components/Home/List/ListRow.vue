@@ -1,50 +1,57 @@
 <template>
-	<v-layout column justify-start>
-		<v-layout row
-			:id="item.item_meta.id"
-			@click="makeActive"
-			@mouseover="mouseOver()"
-			@mouseleave="mouseLeave()"
-			>
+	<v-layout row justify-start	
+				:id="item.item_meta.id"
+				@click="makeActive"
+				@mouseover="mouseOver()"
+				@mouseleave="mouseLeave()">
+		<v-layout column justify-start>
 			<span class="fa fa-align-justify handle" :style="{ opacity: showHandle ? 0.3 : 0 }">::</span>
-			<v-checkbox @click.stop="checked=!checked" class="checkbox" default v-model="checked"></v-checkbox>
-			<v-layout col
-				v-for="header in headers"
-				:key="header.id"
-				align-start
-				class="listcells">
-				<list-cell
-					:item = "item"
-					:header = "header"
-					:ref="header.id"
-					single-line
-					:class="{ 'activeRow': item.item_meta.active }"
-					>
-				</list-cell>
-			</v-layout>
-			<v-btn flat icon @click.stop="deleteItem" :style="{ opacity: showHandle ? 0.3 : 0 }">
-				<v-icon class="deleteIcon" >delete</v-icon>
-			</v-btn>
 		</v-layout>
-		<!-- Hidden Options Row is shown when row is active -->
-		<v-layout row class="hiddenOptionsRow" v-show="item.item_meta.active" justify-start>
-			<v-container class="pa-0" id="saveCancelContainer">
-				<v-btn 	class="saveRowBtn"
-						@click.native="saveItem"
-						small
-						flat
-						color="#197bbd">
-						<strong>Save</strong>
+		<v-layout column>
+			<v-checkbox @click.stop="checked=!checked" class="checkbox" default v-model="checked"></v-checkbox>
+		</v-layout>
+		<v-layout column 
+				  justify-start
+				  class="listrow">
+			<v-layout row>
+				<v-layout col
+					v-for="header in headers"
+					:key="header.id"
+					align-start
+					class="listcells">
+					<list-cell
+						:item = "item"
+						:header = "header"
+						:ref="header.id"
+						single-line
+						:class="{ 'activeRow': item.item_meta.active }"
+						>
+					</list-cell>
+				</v-layout>
+				<v-btn flat icon @click.stop="deleteItem" :style="{ opacity: showHandle ? 0.3 : 0 }">
+					<v-icon class="deleteIcon" >delete</v-icon>
 				</v-btn>
-				<v-btn 	class="cancelRowBtn2"
-						@click.native="cancel"
-						small
-						flat
-						color="#555">
-						<strong>Cancel</strong>
-				</v-btn>
-			</v-container>
+			</v-layout>
+			<!-- Hidden Options Row is shown when row is active -->
+			<v-layout row class="hiddenOptionsRow" v-show="item.item_meta.active" justify-start>
+				<v-container class="pa-0" id="saveCancelContainer">
+					<v-btn 	class="saveRowBtn"
+							@click.native="saveItem"
+							small
+							flat
+							color="#197bbd">
+							<strong>Save</strong>
+					</v-btn>
+					<v-btn 	class="cancelRowBtn2"
+							@click.native="cancel"
+							small
+							flat
+							color="#555">
+							<strong>Cancel</strong>
+					</v-btn>
+				</v-container>
 
+			</v-layout>
 		</v-layout>
 	</v-layout>
 </template>
