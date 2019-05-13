@@ -210,7 +210,7 @@
                 if(headerType==="date"){
                     sortResult = (a.values[headerID].seconds > b.values[headerID].seconds)
                 } else if(headerType === "integer"){
-                    sortResult = (a.values[headerID] < b.values[headerID])
+                    sortResult = (parseInt(a.values[headerID]) < parseInt(b.values[headerID]))
                 }
                 else if(headerType ==="string"){
                     console.log((a.values[headerID] > b.values[headerID]))
