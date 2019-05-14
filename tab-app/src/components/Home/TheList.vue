@@ -23,7 +23,7 @@
                     @end="endDrag()"
                     :list="filteredAndSortedListItems"
                     >
-                        <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+                        <transition-group type="transition" :name="!drag ? '' : null">
                             <div class="listRows" v-for="item in filteredAndSortedListItems" :key="item.item_meta.id">
                                 <list-row
                                 :item="item"
