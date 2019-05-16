@@ -33,7 +33,8 @@
          >
             <v-switch
                 v-model="showChecked"
-                label="Show Checked Items">
+                label="Show Checked Items"
+                >
             </v-switch>
 
          </v-list-tile>
@@ -87,6 +88,7 @@ export default {
                 return this.$store.state.showChecked
             },
             set(newValue){
+                this.$store.state.filtering = true;
                 this.$store.state.showChecked = newValue;
             }
         }

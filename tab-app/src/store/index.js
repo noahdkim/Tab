@@ -63,6 +63,7 @@ export const store = new Vuex.Store({
         dateFilterHeader: {},
         dateColumnExists: false,
         filterByDate: false,
+        filtering: false,
         selectedDate: '',
         selectedIntegerField: '',
         error: null,
@@ -98,6 +99,9 @@ export const store = new Vuex.Store({
         },
         setError(state, payload) {
             state.error = payload;
+        },
+        setFiltering(state, payload){
+            state.filtering = payload
         },
         setLoading(state, payload) {
             state.loading = payload;

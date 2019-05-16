@@ -23,7 +23,7 @@
                     @end="endDrag()"
                     :list="filteredAndSortedListItems"
                     >
-                        <transition-group type="transition" :name="!drag ? '' : null">
+                        <transition-group type="transition" :name="sorting || filtering ? 'flip-list' : null">
                             <div class="listRows" v-for="item in filteredAndSortedListItems" :key="item.item_meta.id">
                                 <list-row
                                 :item="item"
@@ -89,6 +89,15 @@
             dateColumnExists(){
                 return this.$store.state.dateColumnExists
             },
+            filterByDate:{
+                get(){
+                    return this.dateColumnExists ? this.$store.state.filterByDate : false;
+                },
+                set(newValue){
+                    this.filtering = true;
+                    this.$store.state.filterByDate = newValue;
+                }
+            },
             filteredListItems: {
                 get(){
                     let filteredListItems = this.selectedListItems;
@@ -103,18 +112,32 @@
                                         item.item_meta.active
                         })
                     }
+                    Vue.nextTick(() => {
+                        this.$store.commit('setFiltering', false)
+                    });
                     return filteredListItems;
                 }
             },
             filteredAndSortedListItems: {
                 get(){
+                    // sorting is set in ListHeader
                     if((this.sortColumnIndex === "checked" || this.sortColumnIndex > -1) && this.sorting){
                         this.filteredListItems.sort(this.sortFilteredList)
-                        this.$store.commit('setSorting', false)
+                        Vue.nextTick(() => {
+                            this.$store.commit('setSorting', false)
+                        });
                     } else {
                         return this.filteredListItems
                     }
                     return this.filteredListItems
+                }
+            },
+            filtering:{
+                get(){
+                    return this.$store.state.filtering
+                },
+                set(newValue){
+                    this.$store.commit('setFiltering', newValue)
                 }
             },
             sortColumnIndex:{
@@ -145,14 +168,6 @@
             showChecked:{
                 get(){
                     return this.$store.state.showChecked
-                }
-            },
-            filterByDate:{
-                get(){
-                    return this.dateColumnExists ? this.$store.state.filterByDate : false;
-                },
-                set(newValue){
-                    this.$store.state.filterByDate = newValue;
                 }
             },
             sortKey: {

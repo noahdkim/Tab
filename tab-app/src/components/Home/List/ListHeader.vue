@@ -38,8 +38,9 @@
 		props: ['headers'],
         methods:{
             modifySort(columnIndex){
-                console.log(columnIndex)
                 this.$store.commit('setSorting', true)
+
+                console.log(columnIndex)
                 if(this.$store.state.sortColumnIndex === columnIndex){
                     this.$store.commit('setSortDescending', !this.$store.state.sortDescending)
                 } else{
