@@ -11,17 +11,22 @@
           <v-list-tile-title>{{ listSelector.name }}</v-list-tile-title>
        </v-list-tile-content>
        <v-menu @click.native.stop>
-               <v-btn icon slot="activator" :style="{ opacity: showHandle ? 0.3 : 0 }"
-               >
+               <v-btn icon slot="activator" :style="{ opacity: showHandle ? 0.3 : 0 }">
                    <v-icon>more_horiz</v-icon>
                </v-btn>
            <v-list>
-            <v-list-tile
-              v-for="(option, index) in listDialogOptions"
-              :key="index"
-            >
-              <v-list-tile-title @click.stop="option.action">{{ option.title }}</v-list-tile-title>
-            </v-list-tile>
+                <v-list-tile
+                  v-for="(option, index) in listDialogOptions"
+                  :key="index"
+                >
+                    <v-list-tile-title @click.stop="option.action">{{ option.title }}</v-list-tile-title>
+                </v-list-tile>
+
+                <!-- Edit list dialog form -->
+                <v-dialog v-model="dialog"  max-width="600px">
+                    <sidebar-edit-form @close-dialog="dialog=false" :listSelector="listSelector">
+                    </sidebar-edit-form>
+                </v-dialog>
           </v-list>
        </v-menu>
 
@@ -54,15 +59,23 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <!-- End Hesitation Dialog -->
+
     </v-list-tile>
 </template>
 
 <script>
+    import SidebarEditForm from './SidebarEditForm'
+
     export default{
+        components: {
+            SidebarEditForm
+        },
         props: ['listSelector'],
         data: () => ({
             showHandle: false,
-            deleteDialog: false
+            deleteDialog: false,
+            dialog: false,
           }),
           computed: {
               isActive () {
@@ -70,7 +83,7 @@
               },
               listDialogOptions(){
                   return [{ title: 'Edit List',
-                            action: 'editList'},
+                            action: this.editList},
                           { title: 'Delete List',
                             action: this.openDeleteDialog},]
               }
@@ -78,7 +91,6 @@
 
         methods: {
             changeSelectedList(event) {
-                // console.log(this.listSelector===this.$store.state.selectedList)
                 this.$store.dispatch('changeSelectedList', this.listSelector)
             },
             deleteList(event){
@@ -89,6 +101,8 @@
             },
             editList(event){
                 console.log("editing list........")
+                console.log(this.listSelector)
+                this.dialog = true
             },
             openDeleteDialog(event){
                 this.deleteDialog = true

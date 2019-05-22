@@ -6,7 +6,7 @@
   >
     <v-card>
         <v-card-title>
-          <span class="headline">Create New List</span>
+          <span class="headline">Edit List</span>
         </v-card-title>
         <v-card-text>
           <v-container grid-list-md>
@@ -47,14 +47,17 @@ export default {
     components: {
         SidebarFormRow
     },
-    data: () => ({
+    props:['listSelector'],
+    data(){
+        return{
         columnOptions: [{}],
         valid: true,
-        listName: '',
+        listName: this.listSelector.name,
         listNameRules: [
         v => !!v || 'Name is required',
-      ],
-    }),
+      ]
+    }
+    },
     methods:{
         addColumnOption(){
             if (this.columnOptions.length < 4){

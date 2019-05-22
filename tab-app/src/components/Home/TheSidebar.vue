@@ -41,8 +41,8 @@
 
          <!-- Create new list dialog form -->
          <v-dialog v-model="dialog"  max-width="600px">
-             <sidebar-form @close-dialog="dialog=false">
-             </sidebar-form>
+             <sidebar-create-form @close-dialog="dialog=false">
+             </sidebar-create-form>
          </v-dialog>
    </v-list>
 </v-container>
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import SidebarForm from './Sidebar/SidebarForm'
+import SidebarCreateForm from './Sidebar/SidebarCreateForm'
 import SidebarTile from './Sidebar/SidebarTile'
 import router from '@/router'
 
@@ -59,7 +59,7 @@ import draggable from 'vuedraggable'
 
 export default {
     components: {
-        SidebarForm,
+        SidebarCreateForm,
         SidebarTile,
         draggable
     },
