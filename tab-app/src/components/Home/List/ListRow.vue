@@ -97,51 +97,52 @@
 			}
 		},
 		methods: {
-		  deleteItem (event) {
-			  this.$store.dispatch('deleteItem', this.item);
-		  },
-		  makeActive (event) {
-			  this.showHandle = false;
-			  this.item.item_meta.active = true;
-			  this.$root.$emit('changeActive', this.item.item_meta.id);
-			  return "made Active"
-		  },
-		  mouseOver(event)    {
-			this.showHandle = true;
-		  },
-		  mouseLeave(event)   {
-			this.showHandle = false;
-		  },
-		  saveList() {
-			/* this is async */
-			this.$store.dispatch('saveListToFirestore');
-		  },
-		  saveItem(){
-			  this.item.item_meta.active = false;
-			  let item = this.item
-			  for (var i=0; i<this.headers.length; i++) {
+              cancel(){
+      			  this.item.item_meta.active = false;
+      			  let item = this.item
+      			  for (var i=0; i<this.headers.length; i++) {
+      				  let originalValue = this.item.values[this.headers[i].id]
+      				  this.$refs[this.headers[i].id][0].setValue(originalValue)
+      			  }
+      			  this.$store.dispatch('saveItem', this.item)
+    	      },
+    		  deleteItem (event) {
+    			  this.$store.dispatch('deleteItem', this.item);
+    		  },
+              listener(data){
+    			  if (this.item.item_meta.id !== data && this.item.item_meta.active){
+    				  this.saveItem();
+    			  }
+    		  },
+    		  makeActive (event) {
+    			  this.showHandle = false;
+    			  this.item.item_meta.active = true;
+    			  this.$root.$emit('changeActive', this.item.item_meta.id);
+    			  return "made Active"
+    		  },
+    		  mouseOver(event)    {
+    			this.showHandle = true;
+    		  },
+    		  mouseLeave(event)   {
+    			this.showHandle = false;
+    		  },
+    		  saveList() {
+    			/* this is async */
+    			this.$store.dispatch('saveListToFirestore');
+    		  },
+    		  saveItem(){
+    			  this.item.item_meta.active = false;
+    			  let item = this.item
+    			  for (var i=0; i<this.headers.length; i++) {
 
-				  let newValue = this.$refs[this.headers[i].id][0].getValue()
+    				  let newValue = this.$refs[this.headers[i].id][0].getValue()
 
-				  let headerId = this.headers[i].id
-				  this.$store.dispatch('updateItemState', {item, headerId, newValue});
-			  }
-			  this.$store.dispatch('saveItem', this.item)
-		  },
-		  cancel(){
-			  this.item.item_meta.active = false;
-			  let item = this.item
-			  for (var i=0; i<this.headers.length; i++) {
-				  let originalValue = this.item.values[this.headers[i].id]
-				  this.$refs[this.headers[i].id][0].setValue(originalValue)
-			  }
-			  this.$store.dispatch('saveItem', this.item)
-		},
-		  listener(data){
-			  if (this.item.item_meta.id !== data && this.item.item_meta.active){
-				  this.saveItem();
-			  }
-		  }
+    				  let headerId = this.headers[i].id
+    				  this.$store.dispatch('updateItemState', {item, headerId, newValue});
+    			  }
+    			  this.$store.dispatch('saveItem', this.item)
+    		  },
+
 	  },
 	  mounted() {
 			this.$root.$on('changeActive', this.listener);

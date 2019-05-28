@@ -40,9 +40,15 @@
          </v-list-tile>
 
          <!-- Create new list dialog form -->
-         <v-dialog v-model="dialog"  max-width="600px">
-             <sidebar-create-form @close-dialog="dialog=false">
+         <v-dialog v-model="createDialog"  max-width="600px">
+             <sidebar-create-form @close-dialog="createDialog=false">
              </sidebar-create-form>
+         </v-dialog>
+
+         <!-- Edit list dialog form -->
+         <v-dialog v-model="editDialog"  max-width="600px">
+             <sidebar-edit-form @close-dialog="editDialog=false" :listSelector="this.listSelector">
+             </sidebar-edit-form>
          </v-dialog>
    </v-list>
 </v-container>
@@ -51,6 +57,7 @@
 
 <script>
 import SidebarCreateForm from './Sidebar/SidebarCreateForm'
+import SidebarEditForm from './Sidebar/SidebarEditForm'
 import SidebarTile from './Sidebar/SidebarTile'
 import router from '@/router'
 
@@ -58,16 +65,21 @@ import draggable from 'vuedraggable'
 
 
 export default {
+    name: 'TheSidebar',
+
     components: {
         SidebarCreateForm,
+        SidebarEditForm,
         SidebarTile,
         draggable
     },
     data() {
             return {
                 userEmail: this.$store.state.user.email,
-                dialog: false,
+                createDialog: false,
+                editDialog: false,
                 showHandle: false,
+                listSelector: {},
 
             }
     },
@@ -97,12 +109,31 @@ export default {
         show: Boolean,
     },
     mounted() {
-                this.loadUserLists();
+            this.loadUserLists();
+            this.$root.$on('editList', this.editListListener);
+    },
+    destroyed(){
+            this.$root.$off('editList', this.editListListener);
     },
     methods: {
         loadUserLists() {
             console.log("loading user lists....")
             this.$store.dispatch('loadPersonalListData');
+        },
+        loadListHeaderInformation(listID){
+
+        },
+        editListListener(listSelector){
+            console.log('listSelector', listSelector)
+            console.log(listSelector)
+            this.$store.dispatch('loadListHeaders', listSelector.listContentKey).then(headers=>{
+                listSelector.headers = headers
+                console.log(headers[0])
+                this.listSelector=listSelector
+                this.editDialog=true
+            })
+
+
         },
         endDrag() {
             this.drag = false;
@@ -119,10 +150,9 @@ export default {
             });
         },
         openCreateListDialog() {
-            this.dialog = true
+            this.createDialog = true
         },
     },
-    name: 'TheSidebar'
 }
 </script>
 <style scoped src="@/assets/styles/TheSidebar.css"></style>

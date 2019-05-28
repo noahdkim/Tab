@@ -50,7 +50,7 @@ export default {
     props:['listSelector'],
     data(){
         return{
-        columnOptions: [{}],
+        columnOptions: this.listSelector.headers,
         valid: true,
         listName: this.listSelector.name,
         listNameRules: [
@@ -85,6 +85,12 @@ export default {
             if(this.columnOptions.length > 1){
                 this.columnOptions.splice(index, 1)
             }
+        }
+    },
+    watch:{
+        listSelector: function(newVal, oldVal) {
+            this.columnOptions = newVal.headers
+            this.listName = newVal.name
         }
     }
 }

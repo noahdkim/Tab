@@ -166,7 +166,9 @@ export const store = new Vuex.Store({
         changeSelectedList({ state, commit, dispatch }, selectedList){
             let indexOfList = this.state.personalLists.findIndex((list)=>{return list === selectedList})
             commit('setSelectedList', this.state.personalLists[indexOfList]);
-            dispatch('loadSelectedListHeaders');
+            dispatch('loadListHeaders', state.selectedList.listContentKey).then(headers=>{
+                commit('setSelectedListHeaders', headers);
+            });
             dispatch('loadSelectedListItems');
         },
         createNewItem({ state, commit, dispatch }, params){
@@ -310,7 +312,10 @@ export const store = new Vuex.Store({
                 });
                 commit('setPersonalLists', personalLists);
                 commit('setSelectedList', personalLists[0]);
-                dispatch('loadSelectedListHeaders');
+                console.log('preload')
+                dispatch('loadListHeaders', state.selectedList.listContentKey).then(headers=>{
+                    commit('setSelectedListHeaders', headers);
+                });
                 dispatch('loadSelectedListItems');
             });
         },
@@ -337,22 +342,23 @@ export const store = new Vuex.Store({
 
             commit('setSelectedListItems', selectedListItems);
         },
-        loadSelectedListHeaders({ state, commit }) {
+        loadListHeaders({ state, commit }, listContentKey) {
             let list_items = db.collection("lists_content")
-                               .doc(state.selectedList.listContentKey)
+                               .doc(listContentKey)
                                .collection("headers")
                                .orderBy("index");
 
-            let newSelectedListHeaders = [];
-            list_items.get().then(querySnapshot => {
+            let listHeaders = [];
+            return list_items.get().then(querySnapshot => {
                 querySnapshot.forEach(doc =>    {
                     let header = doc.data();
-                    newSelectedListHeaders.push(header);
+                    listHeaders.push(header);
                 });
+                return listHeaders
 
             });
 
-            commit('setSelectedListHeaders', newSelectedListHeaders);
+            //commit('setSelectedListHeaders', newSelectedListHeaders);
         },
         saveItem({ state, commit }, item){
             if(item == null){

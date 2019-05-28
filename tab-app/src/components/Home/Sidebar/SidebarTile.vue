@@ -21,12 +21,6 @@
                 >
                     <v-list-tile-title @click.stop="option.action">{{ option.title }}</v-list-tile-title>
                 </v-list-tile>
-
-                <!-- Edit list dialog form -->
-                <v-dialog v-model="dialog"  max-width="600px">
-                    <sidebar-edit-form @close-dialog="dialog=false" :listSelector="listSelector">
-                    </sidebar-edit-form>
-                </v-dialog>
           </v-list>
        </v-menu>
 
@@ -102,7 +96,7 @@
             editList(event){
                 console.log("editing list........")
                 console.log(this.listSelector)
-                this.dialog = true
+                this.$root.$emit('editList', this.listSelector);
             },
             openDeleteDialog(event){
                 this.deleteDialog = true
