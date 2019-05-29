@@ -12,7 +12,7 @@
                     </v-flex>
                 </v-layout>
                 <v-layout row class="ma-0 pa-0 list-head">
-                    <list-column :columns="selectedListColumns"></list-column>
+                    <list-column-header-row :columns="selectedListColumns"></list-column-header-row>
                 </v-layout>
                 <v-layout row class="ma-0 pa-0 list-body">
                     <draggable
@@ -52,7 +52,7 @@
 
 <script>
     import draggable from 'vuedraggable'
-    import ListColumn from './List/ListColumn'
+    import ListColumnHeaderRow from './List/ListColumnHeaderRow'
     import ListRow from './List/ListRow'
     import { mapGetters } from 'vuex'
 
@@ -63,7 +63,7 @@
     export default {
         components: {
             draggable,
-            ListColumn,
+            ListColumnHeaderRow,
             ListRow
         },
         data: () => ({
