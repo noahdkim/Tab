@@ -37,7 +37,7 @@ function initialState(){
     return {
         activeItemID: 0,
         appTitle: 'Tab',
-        dateFilterHeader: {},
+        dateFilterColumn: {},
         dateColumnExists: false,
         filterByDate: false,
         selectedDate: '',
@@ -48,7 +48,7 @@ function initialState(){
         personalLists: [],
         selectedList: {},
         selectedListItems: [],
-        selectedListHeaders: [],
+        selectedListColumns: [],
         showChecked: false,
         sortColumnIndex: -1,
         sortDescending: true,
@@ -60,7 +60,7 @@ export const store = new Vuex.Store({
     state: {
         activeItemID: 0,
         appTitle: 'Tab',
-        dateFilterHeader: {},
+        dateFilterColumn: {},
         dateColumnExists: false,
         filterByDate: false,
         filtering: false,
@@ -72,7 +72,7 @@ export const store = new Vuex.Store({
         personalLists: [],
         selectedList: {},
         selectedListItems: [],
-        selectedListHeaders: [],
+        selectedListColumns: [],
         showChecked: true,
         sortColumnIndex: -1,
         sortDescending: true,
@@ -115,8 +115,8 @@ export const store = new Vuex.Store({
         setSelectedListItems(state, payload) {
             state.selectedListItems = payload;
         },
-        setSelectedListHeaders(state, payload) {
-            state.selectedListHeaders = payload;
+        setSelectedListColumns(state, payload) {
+            state.selectedListColumns = payload;
         },
         setSelectedIntegerField(state, payload) {
             state.selectedIntegerField = payload;
@@ -166,8 +166,8 @@ export const store = new Vuex.Store({
         changeSelectedList({ state, commit, dispatch }, selectedList){
             let indexOfList = this.state.personalLists.findIndex((list)=>{return list === selectedList})
             commit('setSelectedList', this.state.personalLists[indexOfList]);
-            dispatch('loadListHeaders', state.selectedList.listContentKey).then(headers=>{
-                commit('setSelectedListHeaders', headers);
+            dispatch('loadListColumns', state.selectedList.listContentKey).then(columns=>{
+                commit('setSelectedListColumns', columns);
             });
             dispatch('loadSelectedListItems');
         },
@@ -188,11 +188,11 @@ export const store = new Vuex.Store({
                             },
                             values: {}
             }
-            state.selectedListHeaders.forEach((header) =>{
-                if (header.type === "date"){
-                    newItem.values[header.id] = todayTimestamp;
+            state.selectedListColumns.forEach((column) =>{
+                if (column.type === "date"){
+                    newItem.values[column.id] = todayTimestamp;
                 } else {
-                    newItem.values[header.id] = "";
+                    newItem.values[column.id] = "";
                 }
             }
 
@@ -203,7 +203,7 @@ export const store = new Vuex.Store({
         },
         createNewList({ state, commit }, params){
             let listName = params.listName;
-            let columnOptions = params.columnOptions;
+            let columns = params.columns;
 
             let myRef = firebase.database().ref().push();
             var listMetaKey = myRef.key;
@@ -220,18 +220,18 @@ export const store = new Vuex.Store({
                                 .collection("personal_lists")
                                 .doc(listMetaKey)
                                 .set(newListData);
-            let newListHeadersRef = db.collection("lists_content")
+            let newListColumnsRef = db.collection("lists_content")
                                             .doc(listContentKey)
-                                            .collection("headers")
+                                            .collection("columns")
 
 
             let batch = db.batch();
-            for(let i=0; i<columnOptions.length; ++i){
-                let headerRef = firebase.database().ref().push();
-                var newHeaderKey = headerRef.key;
-                columnOptions[i].index = i;
-                columnOptions[i].id = newHeaderKey;
-                batch.set(newListHeadersRef.doc(newHeaderKey), (columnOptions[i]));
+            for(let i=0; i<columns.length; ++i){
+                let columnRef = firebase.database().ref().push();
+                var newColumnKey = columnRef.key;
+                columns[i].index = i;
+                columns[i].id = newColumnKey;
+                batch.set(newListColumnsRef.doc(newColumnKey), (columns[i]));
             }
             batch.commit().then(function (result) {
                 let personalLists = state.personalLists
@@ -283,7 +283,7 @@ export const store = new Vuex.Store({
                             });
         },
         editList({ state, commit, dispatch }, params){
-            let columnOptions = params.columnOptions;
+            let columns = params.columns;
             let listSelector = params.listSelector;
             let listName = params.listName;
             let newListData = {name: listName}
@@ -294,18 +294,21 @@ export const store = new Vuex.Store({
                                 .collection("personal_lists")
                                 .doc(listSelector.id)
                                 .update(newListData);
-            let listHeadersRef = db.collection("lists_content")
+            let listColumnsRef = db.collection("lists_content")
                                             .doc(listSelector.listContentKey)
-                                            .collection("headers")
+                                            .collection("columns")
 
-
+            // batch set all columns
             let batch = db.batch();
-            for(let i=0; i<columnOptions.length; ++i){
-                let myRef = firebase.database().ref().push();                
-                let headerKey = columnOptions[i].id ? columnOptions[i].id : myRef.key;;
-                columnOptions[i].index = i;
-                batch.set(listHeadersRef.doc(headerKey), (columnOptions[i]));
+            for(let i=0; i<columns.length; ++i){
+                let myRef = firebase.database().ref().push();
+                let columnKey = columns[i].id ? columns[i].id : myRef.key;;
+                columns[i].index = i;
+                columns[i].id = columnKey;
+                batch.set(listColumnsRef.doc(columnKey), columns[i]);
             }
+
+            // commit, update in store, change to that list
             batch.commit().then(function (result) {
                 let personalLists = state.personalLists
                 listSelector.name = listName
@@ -347,8 +350,8 @@ export const store = new Vuex.Store({
                 commit('setPersonalLists', personalLists);
                 commit('setSelectedList', personalLists[0]);
                 console.log('preload')
-                dispatch('loadListHeaders', state.selectedList.listContentKey).then(headers=>{
-                    commit('setSelectedListHeaders', headers);
+                dispatch('loadListColumns', state.selectedList.listContentKey).then(columns=>{
+                    commit('setSelectedListColumns', columns);
                 });
                 dispatch('loadSelectedListItems');
             });
@@ -363,11 +366,7 @@ export const store = new Vuex.Store({
             var selectedListItems = [];
             list_items.get().then(querySnapshot => {
                 querySnapshot.forEach(doc => {
-                    //  // Convert Firestore timestamp field to Date class
-                    // let timestamp = new Date(item.date.seconds * 1000);
-                    // item.date = timestamp;
                     let item = doc.data();
-                    // item.item_meta.id = doc.id;
                     item.item_meta.active = false;
                     selectedListItems.push(item);
                 });
@@ -376,23 +375,21 @@ export const store = new Vuex.Store({
 
             commit('setSelectedListItems', selectedListItems);
         },
-        loadListHeaders({ state, commit }, listContentKey) {
+        loadListColumns({ state, commit }, listContentKey) {
             let list_items = db.collection("lists_content")
                                .doc(listContentKey)
-                               .collection("headers")
+                               .collection("columns")
                                .orderBy("index");
 
-            let listHeaders = [];
+            let listColumns = [];
             return list_items.get().then(querySnapshot => {
                 querySnapshot.forEach(doc =>    {
-                    let header = doc.data();
-                    listHeaders.push(header);
+                    let column = doc.data();
+                    listColumns.push(column);
                 });
-                return listHeaders
+                return listColumns
 
             });
-
-            //commit('setSelectedListHeaders', newSelectedListHeaders);
         },
         saveItem({ state, commit }, item){
             if(item == null){
@@ -449,7 +446,7 @@ export const store = new Vuex.Store({
             let item = params.item;
             let itemIndex = findIndexOfItem(state.selectedListItems, item.item_meta.id)
             let newSelectedListItems = state.selectedListItems;
-            newSelectedListItems[itemIndex]['values'][params.headerId] = params.newValue;
+            newSelectedListItems[itemIndex]['values'][params.columnId] = params.newValue;
             commit('setSelectedListItems', newSelectedListItems);
         },
         userSignIn({
@@ -521,11 +518,11 @@ export const store = new Vuex.Store({
         getSelectedListItems(state) {
             return state.selectedListItems;
         },
-        getSelectedListHeaders(state) {
-            return state.selectedListHeaders;
+        getSelectedListColumns(state) {
+            return state.selectedListColumns;
         },
-        getDateFilterHeader: (state) => {
-            return state.dateFilterHeader;
+        getDateFilterColumn: (state) => {
+            return state.dateFilterColumn;
         },
         getSelectedDate: (state) => {
             return state.selectedDate;

@@ -17,14 +17,14 @@
                                 v-model="listName" required>
                 </v-text-field>
               </v-flex>
-              <sidebar-form-row v-for="(columnOption, index) in columnOptions"
-                                  :columnOption="columnOption"
+              <sidebar-form-row v-for="(column, index) in columns"
+                                  :column="column"
                                   :counter="10"
                                   :index="index"
                                   :key="index"
-                                  @removeColumnOption="removeColumnOption($event)"
-                                  @updateColumnOptionName="updateColumnOptionName($event)"
-                                  @updateColumnOptionType="updateColumnOptionType($event)"
+                                  @removeColumn="removeColumn($event)"
+                                  @updateColumnName="updateColumnName($event)"
+                                  @updateColumnType="updateColumnType($event)"
                                   >
               </sidebar-form-row>
           </v-layout>
@@ -32,7 +32,7 @@
       </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click="addColumnOption">Add Column</v-btn>
+          <v-btn color="blue darken-1" flat @click="addColumn">Add Column</v-btn>
           <v-btn color="blue darken-1" flat @click="$emit('close-dialog')">Cancel</v-btn>
           <v-btn color="blue darken-1" flat @click="editList">Save</v-btn>
         </v-card-actions>
@@ -47,10 +47,10 @@ export default {
     components: {
         SidebarFormRow
     },
-    props:['listSelector'],
+    props:['listSelector', 'listColumns'],
     data(){
         return{
-        columnOptions: this.listSelector.headers,
+        columns: this.listColumns,
         valid: true,
         listName: this.listSelector.name,
         listNameRules: [
@@ -59,41 +59,44 @@ export default {
     }
     },
     methods:{
-        addColumnOption(){
-            if (this.columnOptions.length < 4){
-                this.columnOptions.push({});
+        addColumn(){
+            if (this.columns.length < 4){
+                this.columns.push({});
             }
         },
         editList(){
             if (this.$refs.form.validate()) {
-                let columnOptions = this.columnOptions
+                console.log(this.columns)
+                let columns = this.columns
                 let listName = this.listName
-                //let listContentKey = this.listSelector.listContentKey
                 let id = this.listSelector.id
                 let listSelector = this.listSelector
-                this.$store.dispatch('editList', {listSelector, listName, columnOptions}).then(() => {
+                this.$store.dispatch('editList', {listSelector, listName, columns}).then(() => {
                     this.$emit('close-dialog')
-                    // this.$refs.form.reset()
                 })
 
             }
         },
-        updateColumnOptionName(event){
-            this.columnOptions[event.index]['name'] = event.newName
+        updateColumnName(event){
+            console.log("updating name")
+            this.columns[event.index]['name'] = event.newName
         },
-        updateColumnOptionType(event){
-            this.columnOptions[event.index]['type'] = event.newType.toLowerCase();
+        updatetColumnType(event){
+            this.columns[event.index]['type'] = event.newType.toLowerCase();
         },
-        removeColumnOption(index){
-            if(this.columnOptions.length > 1){
-                this.columnOptions.splice(index, 1)
+        removeColumn(index){
+            if(this.columns.length > 1){
+                this.columns.splice(index, 1)
             }
         }
     },
     watch:{
         listSelector: function(newVal, oldVal) {
-            this.columnOptions = newVal.headers
             this.listName = newVal.name
+        },
+        listColumns: function(newVal, oldVal) {
+            console.log("change")
+            this.columns = newVal
         },
     }
 }

@@ -34,7 +34,7 @@
 <script>
 import firebase from 'firebase'
 export default {
-    props: ['item', 'header'],
+    props: ['item', 'column'],
 
     data () {
         return{
@@ -43,7 +43,7 @@ export default {
             landscape: false,
             reactive: true,
             menu: false,
-            listCellDateValue: new Date(this.item.values[this.header.id].seconds * 1000).toISOString().substring(0,10)
+            listCellDateValue: new Date(this.item.values[this.column.id].seconds * 1000).toISOString().substring(0,10)
         }
     },
     computed: {

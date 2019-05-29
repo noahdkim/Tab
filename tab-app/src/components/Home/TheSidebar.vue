@@ -47,7 +47,9 @@
 
          <!-- Edit list dialog form -->
          <v-dialog v-model="editDialog"  max-width="600px">
-             <sidebar-edit-form @close-dialog="editDialog=false" :listSelector="this.listSelector">
+             <sidebar-edit-form @close-dialog="editDialog=false"
+                                    :listSelector="editDialog ? this.listSelector : {}"
+                                    :listColumns="editDialog ? this.columns : []">
              </sidebar-edit-form>
          </v-dialog>
    </v-list>
@@ -80,6 +82,7 @@ export default {
                 editDialog: false,
                 showHandle: false,
                 listSelector: {},
+                columns: [],
 
             }
     },
@@ -120,25 +123,16 @@ export default {
             console.log("loading user lists....")
             this.$store.dispatch('loadPersonalListData');
         },
-        loadListHeaderInformation(listID){
+        loadListColumnInformation(listID){
 
         },
         editListListener(listSelector){
-            console.log('listSelector', listSelector)
-            console.log(listSelector)
-            this.$store.dispatch('loadListHeaders', listSelector.listContentKey).then(headers=>{
-                listSelector.headers = headers
-
-                // clears the edit form, then remakes it
-                this.listSelector={}
-                Vue.nextTick(() => {
-                    this.listSelector=listSelector
-                    this.editDialog=true
-                });
-
+            this.$store.dispatch('loadListColumns', listSelector.listContentKey).then(columns=>{
+                this.columns = columns
+                console.log(columns[0].name)
+                this.listSelector=listSelector
+                this.editDialog=true
             })
-
-
         },
         endDrag() {
             this.drag = false;

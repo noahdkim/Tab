@@ -32,10 +32,10 @@
        },
        computed: {
            dateColumnExists () {
-               let listHeaders = this.$store.state.selectedListHeaders
+               let listColumns = this.$store.state.selectedListColumns
                this.$store.state.dateColumnExists = false;
-               for(var i = 0; i < listHeaders.length; ++i){
-                   if (listHeaders[i].type === "date"){
+               for(var i = 0; i < listColumns.length; ++i){
+                   if (listColumns[i].type === "date"){
                        this.$store.state.dateColumnExists = true;
                    }
                }

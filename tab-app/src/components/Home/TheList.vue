@@ -12,7 +12,7 @@
                     </v-flex>
                 </v-layout>
                 <v-layout row class="ma-0 pa-0 list-head">
-                    <list-header :headers="selectedListHeaders"></list-header>
+                    <list-column :columns="selectedListColumns"></list-column>
                 </v-layout>
                 <v-layout row class="ma-0 pa-0 list-body">
                     <draggable
@@ -27,7 +27,7 @@
                             <div class="listRows" v-for="item in filteredAndSortedListItems" :key="item.item_meta.id">
                                 <list-row
                                 :item="item"
-                                :headers="selectedListHeaders"
+                                :columns="selectedListColumns"
                                 :ref="item.item_meta.id"
                                 class="draggable-row align-start"
                                 >
@@ -52,7 +52,7 @@
 
 <script>
     import draggable from 'vuedraggable'
-    import ListHeader from './List/ListHeader'
+    import ListColumn from './List/ListColumn'
     import ListRow from './List/ListRow'
     import { mapGetters } from 'vuex'
 
@@ -63,7 +63,7 @@
     export default {
         components: {
             draggable,
-            ListHeader,
+            ListColumn,
             ListRow
         },
         data: () => ({
@@ -74,9 +74,9 @@
         },
         computed: {
             ...mapGetters({
-                selectedListHeaders: 'getSelectedListHeaders',
+                selectedListColumns: 'getSelectedListColumns',
                 selectedListItems: 'getSelectedListItems',
-                dateFilterHeader: 'getDateFilterHeader',
+                dateFilterColumn: 'getDateFilterColumn',
             }),
             dragOptions() {
                 return {
@@ -108,7 +108,7 @@
                     }
                     if (this.filterByDate){
                         filteredListItems = filteredListItems.filter((item)=>{
-                            return (item.values[this.dateFilterHeader.id].toDate().getTime() === this.selectedDate.getTime()) ||
+                            return (item.values[this.dateFilterColumn.id].toDate().getTime() === this.selectedDate.getTime()) ||
                                         item.item_meta.active
                         })
                     }
@@ -120,7 +120,7 @@
             },
             filteredAndSortedListItems: {
                 get(){
-                    // sorting is set in ListHeader
+                    // sorting is set in ListColumn
                     if((this.sortColumnIndex === "checked" || this.sortColumnIndex > -1) && this.sorting){
                         this.filteredListItems.sort(this.sortFilteredList)
                         Vue.nextTick(() => {
@@ -220,16 +220,16 @@
                 sortResult = ((a.item_meta.checked === b.item_meta.checked)? 0 : a.item_meta.checked ? false : true)
             }
             else{
-                let headerID = this.selectedListHeaders[this.sortColumnIndex].id
-                let headerType = this.selectedListHeaders[this.sortColumnIndex].type
-                if(headerType==="date"){
-                    sortResult = (a.values[headerID].seconds > b.values[headerID].seconds)
-                } else if(headerType === "integer"){
-                    sortResult = (parseInt(a.values[headerID]) < parseInt(b.values[headerID]))
+                let columnID = this.selectedListColumns[this.sortColumnIndex].id
+                let columnType = this.selectedListColumns[this.sortColumnIndex].type
+                if(columnType==="date"){
+                    sortResult = (a.values[columnID].seconds > b.values[columnID].seconds)
+                } else if(columnType === "integer"){
+                    sortResult = (parseInt(a.values[columnID]) < parseInt(b.values[columnID]))
                 }
-                else if(headerType ==="string"){
-                    console.log((a.values[headerID] > b.values[headerID]))
-                    sortResult = (a.values[headerID] > b.values[headerID])
+                else if(columnType ==="string"){
+                    console.log((a.values[columnID] > b.values[columnID]))
+                    sortResult = (a.values[columnID] > b.values[columnID])
                 }
             }
             return this.sortDescending ? sortResult : !sortResult
@@ -244,7 +244,7 @@
             }
             if (this.filterByDate){
                 filteredListItems = filteredListItems.filter((item)=>{
-                    return (item.values[this.dateFilterHeader.id].toDate().getTime() === this.selectedDate.getTime()) ||
+                    return (item.values[this.dateFilterColumn.id].toDate().getTime() === this.selectedDate.getTime()) ||
                                 item.item_meta.active
                 })
             }

@@ -3,8 +3,8 @@
                           @input="updateCellValue"
                           v-model="textValue"
                           :readonly="!item.item_meta.active"
-                          :id="header.name"
-                          ref="{{item.id}}-{{header.text}}"
+                          :id="column.name"
+                          ref="{{item.id}}-{{column.text}}"
                           single-line
                           hide-details
                           solo
@@ -18,13 +18,13 @@
 
 <script>
 export default {
-    props: ['item', 'header'],
+    props: ['item', 'column'],
 
     data () {
         return{
             /* this is currently not being used */
             checkbox: true,
-            listCellTextValue: this.item.values[this.header.id]
+            listCellTextValue: this.item.values[this.column.id]
 
         }
     },

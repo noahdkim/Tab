@@ -17,22 +17,22 @@
                                 v-model="listName" required>
                 </v-text-field>
               </v-flex>
-              <sidebar-create-form-row v-for="(columnOption, index) in columnOptions"
-                                  :columnOption="columnOption"
+              <sidebar-form-row v-for="(column, index) in columns"
+                                  :column="column"
                                   :counter="10"
                                   :index="index"
                                   :key="index"
-                                  @removeColumnOption="removeColumnOption($event)"
-                                  @updateColumnOptionName="updateColumnOptionName($event)"
-                                  @updateColumnOptionType="updateColumnOptionType($event)"
+                                  @removeColumn="removeColumn($event)"
+                                  @updateColumnName="updateColumnName($event)"
+                                  @updateColumnType="updateColumnType($event)"
                                   >
-              </sidebar-create-form-row>
+              </sidebar-form-row>
           </v-layout>
       </v-container>
       </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click="addColumnOption">Add Column</v-btn>
+          <v-btn color="blue darken-1" flat @click="addColumn">Add Column</v-btn>
           <v-btn color="blue darken-1" flat @click="$emit('close-dialog')">Close</v-btn>
           <v-btn color="blue darken-1" flat @click="createNewList">Create</v-btn>
         </v-card-actions>
@@ -40,15 +40,15 @@
   </v-form>
 </template>
 <script>
-import SidebarCreateFormRow from './SidebarCreateForm/SidebarCreateFormRow'
+import SidebarFormRow from './SidebarForm/SidebarFormRow'
 
 
 export default {
     components: {
-        SidebarCreateFormRow
+        SidebarFormRow
     },
     data: () => ({
-        columnOptions: [{}],
+        columns: [{}],
         valid: true,
         listName: '',
         listNameRules: [
@@ -56,31 +56,31 @@ export default {
       ],
     }),
     methods:{
-        addColumnOption(){
-            if (this.columnOptions.length < 4){
-                this.columnOptions.push({});
+        addColumn(){
+            if (this.columns.length < 4){
+                this.columns.push({});
             }
         },
         createNewList(){
             if (this.$refs.form.validate()) {
-                let columnOptions = this.columnOptions
+                let columns = this.columns
                 let listName = this.listName
-                this.$store.dispatch('createNewList', {listName, columnOptions}).then(() => {
+                this.$store.dispatch('createNewList', {listName, columns}).then(() => {
                     this.$emit('close-dialog')
                     this.$refs.form.reset()
                 })
 
             }
         },
-        updateColumnOptionName(event){
-            this.columnOptions[event.index]['name'] = event.newName
+        updateColumnName(event){
+            this.columns[event.index]['name'] = event.newName
         },
-        updateColumnOptionType(event){
-            this.columnOptions[event.index]['type'] = event.newType.toLowerCase();
+        updateColumnType(event){
+            this.columns[event.index]['type'] = event.newType.toLowerCase();
         },
-        removeColumnOption(index){
-            if(this.columnOptions.length > 1){
-                this.columnOptions.splice(index, 1)
+        removeColumn(index){
+            if(this.columns.length > 1){
+                this.columns.splice(index, 1)
             }
         }
     }

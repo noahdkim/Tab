@@ -5,10 +5,10 @@
               label="Column Name"
               prepend-icon="remove"
               @click:prepend="removeItem"
-              @input="updateColumnOptionName"
+              @input="updateColumnName"
               :counter="20"
               :rules="columnNameRules"
-              :value="columnOption.name"
+              :value="column.name"
               required
             ></v-text-field>
         </v-flex>
@@ -19,8 +19,8 @@
               :items="types"
               label="Type"
               :rules="[v => !!v || 'Item is required']"
-              :value="columnOption.type"
-              @change="updateColumnOptionType"
+              :value="column.type"
+              @change="updateColumnType"
             ></v-overflow-btn>
         </v-flex>
     </v-layout>
@@ -28,7 +28,7 @@
 </template>
 <script>
 export default {
-        props: ['columnOption', 'index'],
+        props: ['column', 'index'],
         data: () => ({
             types: ['Date', 'String', 'Integer'],
             columnName: '',
@@ -40,17 +40,18 @@ export default {
         computed: {
         },
         methods:{
-            updateColumnOptionName (newName){
+            updateColumnName (newName){
+                console.log("updating naem")
                 let index = this.index
-                this.$emit('updateColumnOptionName', {newName, index});
+                this.$emit('updateColumnName', {newName, index});
             },
-            updateColumnOptionType (newType){
+            updateColumnType (newType){
                 console.log(newType)
                 let index = this.index
-                this.$emit('updateColumnOptionType', {newType, index});
+                this.$emit('updateColumnType', {newType, index});
             },
             removeItem(){
-                this.$emit('removeColumnOption', this.index);
+                this.$emit('removeColumn', this.index);
             }
         }
 

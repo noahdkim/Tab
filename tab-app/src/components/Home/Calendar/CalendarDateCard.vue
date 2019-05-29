@@ -1,7 +1,7 @@
 <template>
     <v-flex>
         Display
-        <v-radio-group v-model="dateFilterHeader">
+        <v-radio-group v-model="dateFilterColumn">
           <v-radio
             v-for="dateField in dateFields"
             :key="dateField.index"
@@ -17,12 +17,12 @@
 export default  {
     props: ['dateFields'],
     computed: {
-        dateFilterHeader: {
+        dateFilterColumn: {
             get() {
-                return this.$store.state.dateFilterHeader;
+                return this.$store.state.dateFilterColumn;
             },
-            set(newDateHeader) {
-                this.$store.state.dateFilterHeader = newDateHeader
+            set(newDateColumn) {
+                this.$store.state.dateFilterColumn = newDateColumn
             }
         },
     }

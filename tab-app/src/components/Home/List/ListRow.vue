@@ -15,14 +15,14 @@
 				  class="listrow">
 			<v-layout row>
 				<v-layout col
-					v-for="header in headers"
-					:key="header.id"
+					v-for="column in columns"
+					:key="column.id"
 					align-start
 					class="listcells">
 					<list-cell
 						:item = "item"
-						:header = "header"
-						:ref="header.id"
+						:column = "column"
+						:ref="column.id"
 						single-line
 						:class="{ 'activeRow': item.item_meta.active }"
 						>
@@ -67,7 +67,7 @@
 
 	export default {
 		components: {ListCell, PrettyInput, PrettyCheck, PrettyRadio},
-		props: ['item', 'headers'],
+		props: ['item', 'columns'],
 
 		data () {
 			return{
@@ -100,9 +100,9 @@
               cancel(){
       			  this.item.item_meta.active = false;
       			  let item = this.item
-      			  for (var i=0; i<this.headers.length; i++) {
-      				  let originalValue = this.item.values[this.headers[i].id]
-      				  this.$refs[this.headers[i].id][0].setValue(originalValue)
+      			  for (var i=0; i<this.columns.length; i++) {
+      				  let originalValue = this.item.values[this.columns[i].id]
+      				  this.$refs[this.columns[i].id][0].setValue(originalValue)
       			  }
       			  this.$store.dispatch('saveItem', this.item)
     	      },
@@ -133,12 +133,12 @@
     		  saveItem(){
     			  this.item.item_meta.active = false;
     			  let item = this.item
-    			  for (var i=0; i<this.headers.length; i++) {
+    			  for (var i=0; i<this.columns.length; i++) {
 
-    				  let newValue = this.$refs[this.headers[i].id][0].getValue()
+    				  let newValue = this.$refs[this.columns[i].id][0].getValue()
 
-    				  let headerId = this.headers[i].id
-    				  this.$store.dispatch('updateItemState', {item, headerId, newValue});
+    				  let columnId = this.columns[i].id
+    				  this.$store.dispatch('updateItemState', {item, columnId, newValue});
     			  }
     			  this.$store.dispatch('saveItem', this.item)
     		  },

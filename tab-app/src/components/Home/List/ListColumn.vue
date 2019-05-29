@@ -1,18 +1,18 @@
 <template>
 	<v-layout column align-center>
-		<v-layout row class="header-row">
+		<v-layout row class="column-row">
 			<span class="spacer-handle"></span>
             <v-icon @click="modifySort('checked')">check</v-icon>
 			<span class="spacer-checkbox"></span>
 			<v-layout col
-			v-for="header in headers"
-			:key="header.name"
+			v-for="column in columns"
+			:key="column.name"
 			justify-start
 			>
-                    <v-textarea class="header-field"
-                    :value="header.name"
-                    :id="header.id"
-                    :ref="header.id"
+                    <v-textarea class="column-field"
+                    :value="column.name"
+                    :id="column.id"
+                    :ref="column.id"
                     single-line
                     hide-details
                     readonly
@@ -20,7 +20,7 @@
                     flat
                     rows="1"
                     no-resize
-                    @click="modifySort(header.index)"
+                    @click="modifySort(column.index)"
                     >
                 </v-textarea>
 
@@ -35,7 +35,7 @@
 
 	export default {
 		components: {ListCell},
-		props: ['headers'],
+		props: ['columns'],
         methods:{
             modifySort(columnIndex){
                 this.$store.commit('setSorting', true)

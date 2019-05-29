@@ -94,8 +94,6 @@
                 })
             },
             editList(event){
-                console.log("editing list........")
-                console.log(this.listSelector)
                 this.$root.$emit('editList', this.listSelector);
             },
             openDeleteDialog(event){
