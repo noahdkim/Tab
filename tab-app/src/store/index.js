@@ -282,7 +282,7 @@ export const store = new Vuex.Store({
                                 console.error("Error removing document: ", error);
                             });
         },
-        editList({ state, commit }, params){
+        editList({ state, commit, dispatch }, params){
             let columnOptions = params.columnOptions;
             let listSelector = params.listSelector;
             let listName = params.listName;
@@ -301,14 +301,16 @@ export const store = new Vuex.Store({
 
             let batch = db.batch();
             for(let i=0; i<columnOptions.length; ++i){
-                let headerKey = columnOptions[i].id;
+                let myRef = firebase.database().ref().push();                
+                let headerKey = columnOptions[i].id ? columnOptions[i].id : myRef.key;;
                 columnOptions[i].index = i;
-                batch.update(listHeadersRef.doc(headerKey), (columnOptions[i]));
+                batch.set(listHeadersRef.doc(headerKey), (columnOptions[i]));
             }
             batch.commit().then(function (result) {
                 let personalLists = state.personalLists
                 listSelector.name = listName
                 personalLists[listSelector.index] = listSelector
+                dispatch('changeSelectedList', personalLists[listSelector.index])
             }).catch(function(error) {
                 console.log("Transaction failed: ", error);
             });
