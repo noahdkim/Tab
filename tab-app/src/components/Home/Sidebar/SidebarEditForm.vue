@@ -33,8 +33,8 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click="addColumnOption">Add Column</v-btn>
-          <v-btn color="blue darken-1" flat @click="$emit('close-dialog')">Close</v-btn>
-          <v-btn color="blue darken-1" flat @click="createNewList">Create</v-btn>
+          <v-btn color="blue darken-1" flat @click="$emit('close-dialog')">Cancel</v-btn>
+          <v-btn color="blue darken-1" flat @click="editList">Save</v-btn>
         </v-card-actions>
       </v-card>
   </v-form>
@@ -64,13 +64,16 @@ export default {
                 this.columnOptions.push({});
             }
         },
-        createNewList(){
+        editList(){
             if (this.$refs.form.validate()) {
                 let columnOptions = this.columnOptions
                 let listName = this.listName
-                this.$store.dispatch('createNewList', {listName, columnOptions}).then(() => {
+                //let listContentKey = this.listSelector.listContentKey
+                let id = this.listSelector.id
+                let listSelector = this.listSelector
+                this.$store.dispatch('editList', {listSelector, listName, columnOptions}).then(() => {
                     this.$emit('close-dialog')
-                    this.$refs.form.reset()
+                    // this.$refs.form.reset()
                 })
 
             }
@@ -91,7 +94,7 @@ export default {
         listSelector: function(newVal, oldVal) {
             this.columnOptions = newVal.headers
             this.listName = newVal.name
-        }
+        },
     }
 }
 </script>

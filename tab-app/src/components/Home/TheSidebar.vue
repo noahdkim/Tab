@@ -128,9 +128,14 @@ export default {
             console.log(listSelector)
             this.$store.dispatch('loadListHeaders', listSelector.listContentKey).then(headers=>{
                 listSelector.headers = headers
-                console.log(headers[0])
-                this.listSelector=listSelector
-                this.editDialog=true
+
+                // clears the edit form, then remakes it
+                this.listSelector={}
+                Vue.nextTick(() => {
+                    this.listSelector=listSelector
+                    this.editDialog=true
+                });
+
             })
 
 

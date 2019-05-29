@@ -282,6 +282,38 @@ export const store = new Vuex.Store({
                                 console.error("Error removing document: ", error);
                             });
         },
+        editList({ state, commit }, params){
+            let columnOptions = params.columnOptions;
+            let listSelector = params.listSelector;
+            let listName = params.listName;
+            let newListData = {name: listName}
+
+            // create in db first and then switch in UI or the other way?
+            let listMeta = db.collection("lists_meta")
+                                .doc(state.user.uid)
+                                .collection("personal_lists")
+                                .doc(listSelector.id)
+                                .update(newListData);
+            let listHeadersRef = db.collection("lists_content")
+                                            .doc(listSelector.listContentKey)
+                                            .collection("headers")
+
+
+            let batch = db.batch();
+            for(let i=0; i<columnOptions.length; ++i){
+                let headerKey = columnOptions[i].id;
+                columnOptions[i].index = i;
+                batch.update(listHeadersRef.doc(headerKey), (columnOptions[i]));
+            }
+            batch.commit().then(function (result) {
+                let personalLists = state.personalLists
+                listSelector.name = listName
+                personalLists[listSelector.index] = listSelector
+            }).catch(function(error) {
+                console.log("Transaction failed: ", error);
+            });
+
+        },
         listDragSwap({state, commit}, newList){
             let selectedListItems = state.selectedListItems
             newList.forEach((item, index) => {
