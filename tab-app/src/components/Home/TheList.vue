@@ -190,6 +190,13 @@
 
             });
         },
+        endDrag() {
+            this.drag = false;
+            this.saveListOrder();
+            this.saveListToFirestore();
+
+            EventBus.$emit('the-list-drag-event', this.drag);
+        },
         saveListToFirestore() {
             /* this is async */
             this.$store.dispatch('saveListToFirestore');
@@ -204,13 +211,6 @@
             this.drag = true;
             console.log("selectedListItems:");
             console.log(this.filteredAndSortedListItems);
-
-            EventBus.$emit('the-list-drag-event', this.drag);
-        },
-        endDrag() {
-            this.drag = false;
-            this.saveListOrder();
-            this.saveListToFirestore();
 
             EventBus.$emit('the-list-drag-event', this.drag);
         },

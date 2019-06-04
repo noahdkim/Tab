@@ -17,16 +17,23 @@
                                 v-model="listName" required>
                 </v-text-field>
               </v-flex>
-              <sidebar-form-row v-for="(column, index) in columns"
-                                  :column="column"
-                                  :counter="10"
-                                  :index="index"
-                                  :key="index"
-                                  @removeColumn="removeColumn($event)"
-                                  @updateColumnName="updateColumnName($event)"
-                                  @updateColumnType="updateColumnType($event)"
-                                  >
-              </sidebar-form-row>
+              <draggable
+                  class="list-group"
+                  handle=".handle"
+                  v-bind="dragOptions"
+                  :list="columns"
+              >
+                  <sidebar-form-row v-for="(column, index) in columns"
+                                      :column="column"
+                                      :counter="10"
+                                      :index="index"
+                                      :key="index"
+                                      @removeColumn="removeColumn($event)"
+                                      @updateColumnName="updateColumnName($event)"
+                                      @updateColumnType="updateColumnType($event)"
+                                      >
+                  </sidebar-form-row>
+              </draggable>
           </v-layout>
       </v-container>
       </v-card-text>
@@ -40,15 +47,23 @@
   </v-form>
 </template>
 <script>
+import draggable from 'vuedraggable'
 import SidebarFormRow from './SidebarForm/SidebarFormRow'
 
 
 export default {
     components: {
+        draggable,
         SidebarFormRow
     },
     data: () => ({
         columns: [{}],
+        dragOptions: {
+                animation: 200,
+                group: "description",
+                disabled: false,
+                ghostClass: "ghost"
+        },
         valid: true,
         listName: '',
         listNameRules: [

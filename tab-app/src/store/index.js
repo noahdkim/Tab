@@ -16,7 +16,9 @@ firebase.initializeApp({
 
 export const db = firebase.firestore();
 var functions = firebase.functions();
-
+var provider = new firebase.auth.GoogleAuthProvider();
+provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+firebase.auth().useDeviceLanguage();
 
 
 /*
@@ -449,15 +451,16 @@ export const store = new Vuex.Store({
             newSelectedListItems[itemIndex]['values'][params.columnId] = params.newValue;
             commit('setSelectedListItems', newSelectedListItems);
         },
-        userSignIn({
+        userSignInWithEmail({
             commit
         }, payload) {
             commit('setLoading', true)
             firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
-                .then(firebaseUser => {
+                .then(result => {
+                    let user = result.user;
                     commit('setUser', {
-                        email: firebaseUser.user.email,
-                        uid: firebaseUser.user.uid
+                        email: user.email,
+                        uid: user.uid
                     })
                     commit('setLoading', false)
                     commit('setError', null)
@@ -467,6 +470,32 @@ export const store = new Vuex.Store({
                     commit('setError', error.message)
                     commit('setLoading', false)
                 })
+        },
+        userSignInWithGoogle({ commit }, payload){
+            firebase.auth().signInWithPopup(provider).then(function(result) {
+              // This gives you a Google Access Token. You can use it to access the Google API.
+              var token = result.credential.accessToken;
+              // The signed-in user info.
+              var user = result.user;
+              // ...
+              console.log(user.email)
+              commit('setUser', {
+                  email: user.email,
+                  uid: user.uid
+              })
+              commit('setLoading', false)
+              commit('setError', null)
+              router.push('/Home')
+            }).catch(function(error) {
+              // Handle Errors here.
+              var errorCode = error.code;
+              var errorMessage = error.message;
+              // The email of the user's account used.
+              var email = error.email;
+              // The firebase.auth.AuthCredential type that was used.
+              var credential = error.credential;
+              // ...
+            });
         },
         userSignUp({
             commit

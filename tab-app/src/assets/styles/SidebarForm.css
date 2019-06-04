@@ -1,0 +1,11 @@
+.handle {
+	padding: 5px;
+	margin-left: 10px;
+	margin-right: 10px;
+	/*border: solid #000 1px;*/
+	cursor: grab;
+	font-size: 200%;
+	/*margin-bottom: 30px;*/
+
+	color: rgba(0, 0, 0, 1);
+}

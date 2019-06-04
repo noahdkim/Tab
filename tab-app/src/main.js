@@ -37,6 +37,8 @@ Vue.use(Vuetify, {
 require("firebase/functions");
 
 
+
+
 /* eslint-disable no-new */
 const unsubscribe = firebase.auth()
 .onAuthStateChanged((firebaseUser) => {

@@ -10,7 +10,12 @@
               :rules="columnNameRules"
               :value="column.name"
               required
-            ></v-text-field>
+            >
+            <template slot="prepend">
+                <span class="fa fa-align-justify handle" :style="{ opacity: 0.3 }">::</span>
+                <v-icon>remove</v-icon>
+              </template>
+        </v-text-field>
         </v-flex>
 
         <v-flex xs4 sm4 d-flex>

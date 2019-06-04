@@ -58,12 +58,14 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 import SidebarCreateForm from './Sidebar/SidebarCreateForm'
 import SidebarEditForm from './Sidebar/SidebarEditForm'
 import SidebarTile from './Sidebar/SidebarTile'
 import router from '@/router'
 
-import draggable from 'vuedraggable'
+
+require('@/assets/styles/SidebarForm.css');
 
 
 export default {
