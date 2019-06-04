@@ -9,3 +9,7 @@
     background:#fff;
     padding:0 10px;
 }
+
+.google-sign-in:hover {
+    cursor: pointer;
+}

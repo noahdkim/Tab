@@ -9,6 +9,7 @@
             <v-img
                 @click="googleOauth"
                 :src="require('@/assets/signin-assets/google_signin_buttons/web/2x/btn_google_signin_light_normal_web@2x.png')"
+                class="google-sign-in"
                 max-width= '90%'
                 >
             </v-img>
