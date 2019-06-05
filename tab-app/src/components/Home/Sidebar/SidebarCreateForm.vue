@@ -5,41 +5,42 @@
     lazy-validation
   >
     <v-card>
-        <v-card-title>
-          <span class="headline">Create New List</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <v-flex xs12 sm6 md4>
-                <v-text-field label="New List Name"
-                                :rules="listNameRules"
-                                v-model="listName" required>
-                </v-text-field>
-              </v-flex>
-              <draggable
-                  class="list-group"
-                  handle=".handle"
-                  v-bind="dragOptions"
-                  :list="columns"
-              >
-                  <sidebar-form-row v-for="(column, index) in columns"
-                                      :column="column"
-                                      :counter="10"
-                                      :index="index"
-                                      :key="index"
-                                      @removeColumn="removeColumn($event)"
-                                      @updateColumnName="updateColumnName($event)"
-                                      @updateColumnType="updateColumnType($event)"
-                                      >
-                  </sidebar-form-row>
-              </draggable>
-          </v-layout>
+        <v-container>
+            <span class="headline">Create New List</span>
+            <v-layout>
+                <v-flex xs12 sm6 md4>
+                  <v-text-field label="New List Name"
+                                  :rules="listNameRules"
+                                  v-model="listName" required>
+                  </v-text-field>
+                </v-flex>
+            </v-layout>
+            <v-divider></v-divider>
+            <v-subheader>
+                <span class="subheading"> Select Template </span>
+            </v-subheader>
+            <v-layout pt-2 row wrap>
+                <v-flex  v-for="(template, index) in templates" xs6 pa-1
+                         @click="select(index)"
+                        >
+                <div  :class="{selected: selectedTemplateIndex === index}" class='template-card' >
+                    <sidebar-form-list-template
+                        :imageSrc="template.imageSrc"
+                        :description="template.description"
+                        :examples="template.examples"
+                        :title="template.title"
+                        :key="index"
+                    >
+                    </sidebar-form-list-template>
+                </div>
+                </v-flex>
+
+            </v-layout>
+        </v-container>
+
       </v-container>
-      </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click="addColumn">Add Column</v-btn>
           <v-btn color="blue darken-1" flat @click="$emit('close-dialog')">Close</v-btn>
           <v-btn color="blue darken-1" flat @click="createNewList">Create</v-btn>
         </v-card-actions>
@@ -47,14 +48,14 @@
   </v-form>
 </template>
 <script>
-import draggable from 'vuedraggable'
-import SidebarFormRow from './SidebarForm/SidebarFormRow'
+import SidebarFormListTemplate from './SidebarForm/SidebarFormListTemplate'
+
+require("@/assets/styles/SidebarFormListTemplate.css");
 
 
 export default {
     components: {
-        draggable,
-        SidebarFormRow
+        SidebarFormListTemplate
     },
     data: () => ({
         columns: [{}],
@@ -67,18 +68,46 @@ export default {
         valid: true,
         listName: '',
         listNameRules: [
-        v => !!v || 'Name is required',
-      ],
+            v => !!v || 'Name is required',
+        ],
+        templates:[
+            {
+                imageSrc: require('@/assets/template-images/simple-checklist.png'),
+                title: 'Simple Checklist',
+                description:'Good when tasks have no specific due date.',
+                examples:'(Ex. Shopping lists)',
+                columns:[{name: 'Item', type: 'string'}]
+            },
+            {
+                imageSrc: require('@/assets/template-images/tasks-with-priority.png'),
+                title: 'Tasks (with Priority)',
+                description: 'Good for managing tasks with Due Dates and varying Priority',
+                examples: '(Ex. Homework, Goals, General task management)',
+                columns:[{name: 'Item', type: 'string'},
+                            {name:'Priority', type: 'integer'},
+                            {name: 'Due Date', type: 'date'}]
+
+            },
+            {
+                imageSrc: require('@/assets/template-images/tasks-without-priority.png'),
+                title: 'Tasks (without Priority)',
+                description: 'Good for managing equally important tasks with Due Dates',
+                examples: '(Ex. Homework, Goals, General task management)',
+                columns:[{name: 'Item', type: 'string'},
+                            {name: 'Due Date', type: 'date'}]
+            }
+        ],
+        selectedTemplateIndex: -1
     }),
     methods:{
         addColumn(){
-            if (this.columns.length < 4){
+            if (this.columns.length < 3){
                 this.columns.push({});
             }
         },
         createNewList(){
-            if (this.$refs.form.validate()) {
-                let columns = this.columns
+            if (this.$refs.form.validate() && this.selectedTemplateIndex > -1) {
+                let columns = this.templates[this.selectedTemplateIndex].columns
                 let listName = this.listName
                 this.$store.dispatch('createNewList', {listName, columns}).then(() => {
                     this.$emit('close-dialog')
@@ -87,16 +116,9 @@ export default {
 
             }
         },
-        updateColumnName(event){
-            this.columns[event.index]['name'] = event.newName
-        },
-        updateColumnType(event){
-            this.columns[event.index]['type'] = event.newType.toLowerCase();
-        },
-        removeColumn(index){
-            if(this.columns.length > 1){
-                this.columns.splice(index, 1)
-            }
+        select(index){
+            this.selectedTemplateIndex = index
+            console.log(index)
         }
     }
 }

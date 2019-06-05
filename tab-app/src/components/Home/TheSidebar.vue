@@ -80,7 +80,7 @@ export default {
     data() {
             return {
                 userEmail: this.$store.state.user.email,
-                createDialog: false,
+                createDialog: true,
                 editDialog: false,
                 showHandle: false,
                 listSelector: {},
@@ -131,7 +131,9 @@ export default {
         editListListener(listSelector){
             this.$store.dispatch('loadListColumns', listSelector.listContentKey).then(columns=>{
                 this.columns = columns
-                console.log(columns[0].name)
+                this.columns.forEach((column)=>{
+                    column.isOriginal = true
+                })
                 this.listSelector=listSelector
                 this.editDialog=true
             })

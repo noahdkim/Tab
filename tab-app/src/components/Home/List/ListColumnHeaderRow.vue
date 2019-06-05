@@ -6,7 +6,7 @@
 			<span class="spacer-checkbox"></span>
 			<v-layout col
 			v-for="column in columns"
-			:key="column.name"
+			:key="column.id"
 			justify-start
 			>
                     <v-textarea class="column-field"

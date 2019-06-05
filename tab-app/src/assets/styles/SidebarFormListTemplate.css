@@ -1,0 +1,10 @@
+.selected{
+    border: 5px solid #257AFD;
+    background: #257AFD;
+    border-radius: 5px;
+    padding: 0px !important;
+}
+
+.template-card{
+    padding: 5px;
+}

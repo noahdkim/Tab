@@ -6,7 +6,7 @@
   >
     <v-card>
         <v-card-title>
-          <span class="headline">Edit List</span>
+          <span class="headline">Create New List</span>
         </v-card-title>
         <v-card-text>
           <v-container grid-list-md>
@@ -20,27 +20,28 @@
               <draggable
                   class="list-group"
                   handle=".handle"
+                  v-bind="dragOptions"
                   :list="columns"
               >
-              <sidebar-form-row v-for="(column, index) in columns"
-                                  :column="column"
-                                  :counter="10"
-                                  :index="index"
-                                  :key="index"
-                                  @removeColumn="removeColumn($event)"
-                                  @updateColumnName="updateColumnName($event)"
-                                  @updateColumnType="updateColumnType($event)"
-                                  >
-              </sidebar-form-row>
-          </draggable>
+                  <sidebar-form-row v-for="(column, index) in columns"
+                                      :column="column"
+                                      :counter="10"
+                                      :index="index"
+                                      :key="index"
+                                      @removeColumn="removeColumn($event)"
+                                      @updateColumnName="updateColumnName($event)"
+                                      @updateColumnType="updateColumnType($event)"
+                                      >
+                  </sidebar-form-row>
+              </draggable>
           </v-layout>
       </v-container>
       </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click="addColumn">Add Column</v-btn>
-          <v-btn color="blue darken-1" flat @click="$emit('close-dialog')">Cancel</v-btn>
-          <v-btn color="blue darken-1" flat @click="editList">Save</v-btn>
+          <v-btn color="blue darken-1" flat @click="$emit('close-dialog')">Close</v-btn>
+          <v-btn color="blue darken-1" flat @click="createNewList">Create</v-btn>
         </v-card-actions>
       </v-card>
   </v-form>
@@ -55,41 +56,41 @@ export default {
         draggable,
         SidebarFormRow
     },
-    props:['listSelector', 'listColumns'],
-    data(){
-        return{
-        columns: this.listColumns,
+    data: () => ({
+        columns: [{}],
+        dragOptions: {
+                animation: 200,
+                group: "description",
+                disabled: false,
+                ghostClass: "ghost"
+        },
         valid: true,
-        listName: this.listSelector.name,
+        listName: '',
         listNameRules: [
         v => !!v || 'Name is required',
-      ]
-    }
-    },
+      ],
+    }),
     methods:{
         addColumn(){
             if (this.columns.length < 4){
                 this.columns.push({});
             }
         },
-        editList(){
+        createNewList(){
             if (this.$refs.form.validate()) {
-                console.log(this.columns)
                 let columns = this.columns
                 let listName = this.listName
-                let id = this.listSelector.id
-                let listSelector = this.listSelector
-                this.$store.dispatch('editList', {listSelector, listName, columns}).then(() => {
+                this.$store.dispatch('createNewList', {listName, columns}).then(() => {
                     this.$emit('close-dialog')
+                    this.$refs.form.reset()
                 })
 
             }
         },
         updateColumnName(event){
-            console.log("updating name")
             this.columns[event.index]['name'] = event.newName
         },
-        updatetColumnType(event){
+        updateColumnType(event){
             this.columns[event.index]['type'] = event.newType.toLowerCase();
         },
         removeColumn(index){
@@ -97,15 +98,6 @@ export default {
                 this.columns.splice(index, 1)
             }
         }
-    },
-    watch:{
-        listSelector: function(newVal, oldVal) {
-            this.listName = newVal.name
-        },
-        listColumns: function(newVal, oldVal) {
-            console.log("change")
-            this.columns = newVal
-        },
     }
 }
 </script>
