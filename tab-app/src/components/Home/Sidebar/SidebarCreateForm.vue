@@ -72,14 +72,14 @@ export default {
         ],
         templates:[
             {
-                imageSrc: require('@/assets/template-images/simple-checklist.png'),
+                imageSrc: require('@/assets/template-images/notepad.jpeg'),
                 title: 'Simple Checklist',
                 description:'Good when tasks have no specific due date.',
                 examples:'(Ex. Shopping lists)',
                 columns:[{name: 'Item', type: 'string'}]
             },
             {
-                imageSrc: require('@/assets/template-images/tasks-with-priority.png'),
+                imageSrc: require('@/assets/template-images/notepad-prio-calendar.png'),
                 title: 'Tasks (with Priority)',
                 description: 'Good for managing tasks with Due Dates and varying Priority',
                 examples: '(Ex. Homework, Goals, General task management)',
@@ -89,7 +89,7 @@ export default {
 
             },
             {
-                imageSrc: require('@/assets/template-images/tasks-without-priority.png'),
+                imageSrc: require('@/assets/template-images/notepad-calendar.png'),
                 title: 'Tasks (without Priority)',
                 description: 'Good for managing equally important tasks with Due Dates',
                 examples: '(Ex. Homework, Goals, General task management)',

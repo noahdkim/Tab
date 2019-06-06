@@ -3,7 +3,7 @@
         <v-img
           :src="imageSrc"
           contain
-          min-height="200px"
+          
         >
         </v-img>
         <v-divider></v-divider>
