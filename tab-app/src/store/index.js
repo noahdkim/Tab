@@ -294,7 +294,7 @@ export const store = new Vuex.Store({
             let listMetaRef = db.collection('lists_meta')
                                 .doc(state.user.uid)
                                 .collection('personal_lists')
-                                .doc(list.id)
+                                .doc(list.listMetaKey)
             let listContentRef = db.collection('lists_content')
                                     .doc(list.listContentKey)
             // let recursiveDelete = firebase.functions().httpsCallable('recursiveDelete');
@@ -324,7 +324,7 @@ export const store = new Vuex.Store({
             let listMeta = db.collection("lists_meta")
                                 .doc(state.user.uid)
                                 .collection("personal_lists")
-                                .doc(listSelector.id)
+                                .doc(listSelector.listMetaKey)
                                 .update(newListData);
             let listColumnsRef = db.collection("lists_content")
                                             .doc(listSelector.listContentKey)
@@ -482,7 +482,7 @@ export const store = new Vuex.Store({
             let batch = db.batch();
             for (var i = 0, n = state.personalLists.length; i < n; i++){
                 let list = state.personalLists[i];
-                let listDocRef = db.collection('lists_meta').doc(state.user.uid).collection('personal_lists').doc(list.id);
+                let listDocRef = db.collection('lists_meta').doc(state.user.uid).collection('personal_lists').doc(list.listMetaKey);
                 batch.set(listDocRef, list, {merge: true});
             }
             batch.commit().then().catch(error=>{console.log(error)});
