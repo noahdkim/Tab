@@ -15,20 +15,42 @@
              >
             </sidebar-tile>
         </draggable>
+
+        <!-- Constant sidebar tiles -->
          <v-list-tile
             class="create-new-list-tile"
             @click="openCreateListDialog"
          >
-            <v-list-tile-action>
+            <v-list-tile-avatar>
                 <v-icon class="create-new-list-icon">add</v-icon>
-            </v-list-tile-action>
+            </v-list-tile-avatar>
             <v-list-tile-content>
                 <v-list-tile-title >Create New List</v-list-tile-title>
             </v-list-tile-content>
          </v-list-tile>
-         <v-dialog v-model="dialog"  max-width="600px">
-             <sidebar-form @close-dialog="dialog=false">
-             </sidebar-form>
+
+         <v-list-tile
+         >
+            <v-switch
+                v-model="showChecked"
+                label="Show Checked Items"
+                >
+            </v-switch>
+
+         </v-list-tile>
+
+         <!-- Create new list dialog form -->
+         <v-dialog v-model="createDialog"  max-width="80%">
+             <sidebar-create-form @close-dialog="createDialog=false">
+             </sidebar-create-form>
+         </v-dialog>
+
+         <!-- Edit list dialog form -->
+         <v-dialog v-model="editDialog"  max-width="600px">
+             <sidebar-edit-form @close-dialog="editDialog=false"
+                                    :listSelector="editDialog ? this.listSelector : {}"
+                                    :listColumns="editDialog ? this.columns : []">
+             </sidebar-edit-form>
          </v-dialog>
    </v-list>
 </v-container>
@@ -36,24 +58,33 @@
 </template>
 
 <script>
-import SidebarForm from './Sidebar/SidebarForm'
+import draggable from 'vuedraggable'
+import SidebarCreateForm from './Sidebar/SidebarCreateForm'
+import SidebarEditForm from './Sidebar/SidebarEditForm'
 import SidebarTile from './Sidebar/SidebarTile'
 import router from '@/router'
 
-import draggable from 'vuedraggable'
+
+require('@/assets/styles/SidebarForm.css');
 
 
 export default {
+    name: 'TheSidebar',
+
     components: {
-        SidebarForm,
+        SidebarCreateForm,
+        SidebarEditForm,
         SidebarTile,
         draggable
     },
     data() {
             return {
                 userEmail: this.$store.state.user.email,
-                dialog: false,
+                createDialog: true,
+                editDialog: false,
                 showHandle: false,
+                listSelector: {},
+                columns: [],
 
             }
     },
@@ -69,17 +100,44 @@ export default {
                 ghostClass: "ghost"
             };
         },
+        showChecked:{
+            get(){
+                console.log(this.$store.state.selectedListSettings.showChecked)
+                return this.$store.state.selectedListSettings.showChecked
+            },
+            set(newValue){
+                this.$store.state.filtering = true;
+                this.$store.commit('setShowChecked', newValue)
+            }
+        }
     },
     props:{
         show: Boolean,
     },
     mounted() {
-                this.loadUserLists();
+            this.loadUserLists();
+            this.$root.$on('editList', this.editListListener);
+    },
+    destroyed(){
+            this.$root.$off('editList', this.editListListener);
     },
     methods: {
         loadUserLists() {
             console.log("loading user lists....")
             this.$store.dispatch('loadPersonalListData');
+        },
+        loadListColumnInformation(listID){
+
+        },
+        editListListener(listSelector){
+            this.$store.dispatch('loadListColumns', listSelector.listContentKey).then(columns=>{
+                this.columns = columns
+                this.columns.forEach((column)=>{
+                    column.isOriginal = true
+                })
+                this.listSelector=listSelector
+                this.editDialog=true
+            })
         },
         endDrag() {
             this.drag = false;
@@ -96,10 +154,9 @@ export default {
             });
         },
         openCreateListDialog() {
-            this.dialog = true
+            this.createDialog = true
         },
     },
-    name: 'TheSidebar'
 }
 </script>
-<style scoped src="@/assets/styles/thesidebar.css"></style>
+<style scoped src="@/assets/styles/TheSidebar.css"></style>

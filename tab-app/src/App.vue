@@ -2,7 +2,7 @@
 <v-app>
     <v-toolbar flat app class="toolbar pa-0 ma-0" color="#197BBD" style="color: #fff">
         <!-- Sidebar Icon -->
-        <span v-if="isAuthenticated" class="hidden-lg-and-up">
+        <span v-if="isAuthenticated" class="">
             <v-toolbar-side-icon class="white--text" @click="emitToggleShowSidebar">
             </v-toolbar-side-icon>
         </span>
@@ -25,7 +25,7 @@
         </v-btn>
 
         <!-- Calendar Icon -->
-        <span v-if="isAuthenticated" class="hidden-lg-and-up">
+        <span v-if="isAuthenticated && dateColumnExists" class="">
             <v-toolbar-side-icon class="white--text" @click="emitToggleShowCalendar">
                 <span class="mdi mdi-calendar" style="transform: scale(1.5)"></span>
             </v-toolbar-side-icon>
@@ -85,6 +85,9 @@ export default {
 
                 ]
             }
+        },
+        dateColumnExists(){
+            return this.$store.state.dateColumnExists
         }
     },
     methods: {

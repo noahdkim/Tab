@@ -3,8 +3,8 @@
                           @input="updateCellValue"
                           v-model="textValue"
                           :readonly="!item.item_meta.active"
-                          :id="header.name"
-                          ref="{{item.id}}-{{header.text}}"
+                          :id="column.name"
+                          ref="{{item.id}}-{{column.text}}"
                           single-line
                           hide-details
                           solo
@@ -12,19 +12,19 @@
                           rows="1"
                           row-height=10
                           auto-grow
-                          placeholder=".....">
+                          placeholder="________________________">
     </v-textarea>
 </template>
 
 <script>
 export default {
-    props: ['item', 'header'],
+    props: ['item', 'column'],
 
     data () {
         return{
             /* this is currently not being used */
             checkbox: true,
-            listCellTextValue: this.item.values[this.header.id]
+            listCellTextValue: this.item.values[this.column.id]
 
         }
     },
@@ -60,4 +60,4 @@ v-text-field    {
 }
 
 </style>
-<style scoped src="@/assets/styles/listcell.css"></style>
+<style scoped src="@/assets/styles/ListCell.css"></style>

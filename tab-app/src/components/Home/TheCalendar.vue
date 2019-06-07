@@ -56,7 +56,7 @@ export default  {
                 this.dateWeights = {};
                 this.totalWeights = 0;
                 let listDates = this.$store.state.selectedListItems.map((item) =>{
-                    let date = item.values[this.dateFilterHeader.id].toDate().toISOString().substr(0, 10)
+                    let date = item.values[this.dateFilterColumn.id].toDate().toISOString().substr(0, 10)
                     let priority = item.values[this.selectedIntegerField.id];
                     priority = priority ? parseInt(item.values[this.selectedIntegerField.id]) : 0;
                     this.totalWeights += priority;
@@ -66,12 +66,12 @@ export default  {
                 return listDates;
             }
         },
-        dateFilterHeader: {
+        dateFilterColumn: {
             get() {
-                return this.$store.state.dateFilterHeader;
+                return this.$store.state.dateFilterColumn;
             },
-            set(newDateHeader) {
-                this.$store.state.dateFilterHeader = newDateHeader
+            set(newDateColumn) {
+                this.$store.state.dateFilterColumn = newDateColumn
             }
         },
         selectedIntegerField: {
@@ -93,21 +93,21 @@ export default  {
         dateFields:{
             get() {
                 let dateFieldsArr = [];
-                this.$store.state.selectedListHeaders.forEach(header => {
-                    if (header.type === "date"){
-                        dateFieldsArr.push(header);
+                this.$store.state.selectedListColumns.forEach(column => {
+                    if (column.type === "date"){
+                        dateFieldsArr.push(column);
                     }
                 })
-                this.dateFilterHeader = dateFieldsArr[0];
+                this.dateFilterColumn = dateFieldsArr[0];
                 return dateFieldsArr
             }
         },
         integerFields:{
             get() {
                 let integerFields = [];
-                this.$store.state.selectedListHeaders.forEach(header => {
-                    if (header.type === "integer"){
-                        integerFields.push(header);
+                this.$store.state.selectedListColumns.forEach(column => {
+                    if (column.type === "integer"){
+                        integerFields.push(column);
                     }
                 })
                 this.selectedIntegerField = integerFields[0];

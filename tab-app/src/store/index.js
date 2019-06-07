@@ -16,7 +16,9 @@ firebase.initializeApp({
 
 export const db = firebase.firestore();
 var functions = firebase.functions();
-
+var provider = new firebase.auth.GoogleAuthProvider();
+provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+firebase.auth().useDeviceLanguage();
 
 
 /*
@@ -33,11 +35,11 @@ function findIndexOfItem(list, id) {
     return foundIndex;
 }
 
-export const store = new Vuex.Store({
-    state: {
+function initialState(){
+    return {
         activeItemID: 0,
         appTitle: 'Tab',
-        dateFilterHeader: {},
+        dateFilterColumn: {},
         dateColumnExists: false,
         filterByDate: false,
         selectedDate: '',
@@ -48,9 +50,37 @@ export const store = new Vuex.Store({
         personalLists: [],
         selectedList: {},
         selectedListItems: [],
-        selectedListHeaders: [],
+        selectedListColumns: [],
+        selectedListSettings: [],
+        showChecked: false,
         sortColumnIndex: -1,
-        sortDescending: true
+        sortDescending: true,
+        sorting: false
+    }
+}
+
+export const store = new Vuex.Store({
+    state: {
+        activeItemID: 0,
+        appTitle: 'Tab',
+        dateFilterColumn: {},
+        dateColumnExists: false,
+        filterByDate: false,
+        filtering: false,
+        selectedDate: '',
+        selectedIntegerField: '',
+        error: null,
+        loading: false,
+        user: null,
+        personalLists: [],
+        selectedList: {},
+        selectedListItems: [],
+        selectedListColumns: [],
+        selectedListSettings: [],
+        showChecked: true,
+        sortColumnIndex: -1,
+        sortDescending: true,
+        sorting: false
     },
     /* change state values */
     mutations: {
@@ -74,6 +104,19 @@ export const store = new Vuex.Store({
         setError(state, payload) {
             state.error = payload;
         },
+        setFiltering(state, payload){
+            state.filtering = payload
+        },
+        setFilterByDate(state, payload){
+            Vue.set(state.selectedListSettings, 'filterByDate', payload)
+            // state.selectedListSettings.filterByDate = payload;
+            let listMetaKey = state.selectedList.listMetaKey
+            let listMetaRef = db.collection("lists_meta")
+                                    .doc(state.user.uid)
+                                    .collection('personal_lists')
+                                    .doc(listMetaKey)
+            listMetaRef.update(state.selectedListSettings)
+        },
         setLoading(state, payload) {
             state.loading = payload;
         },
@@ -86,11 +129,23 @@ export const store = new Vuex.Store({
         setSelectedListItems(state, payload) {
             state.selectedListItems = payload;
         },
-        setSelectedListHeaders(state, payload) {
-            state.selectedListHeaders = payload;
+        setSelectedListColumns(state, payload) {
+            state.selectedListColumns = payload;
         },
         setSelectedIntegerField(state, payload) {
             state.selectedIntegerField = payload;
+        },
+        setSelectedListSettings(state, payload) {
+            state.selectedListSettings = payload;
+        },
+        setShowChecked(state, payload) {
+            state.selectedListSettings.showChecked = payload;
+            let listMetaKey = state.selectedList.listMetaKey
+            let listMetaRef = db.collection("lists_meta")
+                                    .doc(state.user.uid)
+                                    .collection('personal_lists')
+                                    .doc(listMetaKey)
+            listMetaRef.update(state.selectedListSettings)
         },
         setUser(state, payload) {
             state.user = payload;
@@ -100,6 +155,16 @@ export const store = new Vuex.Store({
         },
         setSortDescending(state, newValue) {
             state.sortDescending = newValue
+        },
+        setSorting(state, newValue){
+            state.sorting = newValue
+        },
+        reset (state) {
+          // acquire initial state
+          const s = initialState()
+          Object.keys(s).forEach(key => {
+            state[key] = s[key]
+          })
         }
     },
     actions: {
@@ -127,8 +192,13 @@ export const store = new Vuex.Store({
         changeSelectedList({ state, commit, dispatch }, selectedList){
             let indexOfList = this.state.personalLists.findIndex((list)=>{return list === selectedList})
             commit('setSelectedList', this.state.personalLists[indexOfList]);
-            dispatch('loadSelectedListHeaders');
+            dispatch('loadListColumns', state.selectedList.listContentKey).then(columns=>{
+                commit('setSelectedListColumns', columns);
+            });
             dispatch('loadSelectedListItems');
+            dispatch('loadListSettings', selectedList.listMetaKey).then(settings => {
+                commit('setSelectedListSettings', settings)
+            })
         },
         createNewItem({ state, commit, dispatch }, params){
             let myRef = firebase.database().ref().push();
@@ -141,17 +211,17 @@ export const store = new Vuex.Store({
             let newItem = {
                             item_meta:{
                                 active: false,
-                                checkbox: false,
+                                checked: false,
                                 id: key,
                                 index: state.selectedListItems.length,
                             },
                             values: {}
             }
-            state.selectedListHeaders.forEach((header) =>{
-                if (header.type === "date"){
-                    newItem.values[header.id] = todayTimestamp;
+            state.selectedListColumns.forEach((column) =>{
+                if (column.type === "date"){
+                    newItem.values[column.id] = todayTimestamp;
                 } else {
-                    newItem.values[header.id] = "";
+                    newItem.values[column.id] = "";
                 }
             }
 
@@ -162,7 +232,7 @@ export const store = new Vuex.Store({
         },
         createNewList({ state, commit }, params){
             let listName = params.listName;
-            let columnOptions = params.columnOptions;
+            let columns = params.columns;
 
             let myRef = firebase.database().ref().push();
             var listMetaKey = myRef.key;
@@ -170,31 +240,40 @@ export const store = new Vuex.Store({
             myRef = firebase.database().ref().push();
             let listContentKey = myRef.key;
             let newListData = {listContentKey: listContentKey,
-                                  name: listName,
-                                  id: listMetaKey}
+                                    filterByDate: false,
+                                    listMetaKey: listMetaKey,
+                                    name: listName,
+                                    index: state.personalLists.length,
+                                    showChecked: false,
+                            }
             // create in db first and then switch in UI or the other way?
             let newListMeta = db.collection("lists_meta")
                                 .doc(state.user.uid)
                                 .collection("personal_lists")
                                 .doc(listMetaKey)
                                 .set(newListData);
-            let newListHeadersRef = db.collection("lists_content")
+            let newListColumnsRef = db.collection("lists_content")
                                             .doc(listContentKey)
-                                            .collection("headers")
+                                            .collection("columns")
+
 
             let batch = db.batch();
-            for(let i=0; i<columnOptions.length; ++i){
-                let headerRef = firebase.database().ref().push();
-                var newHeaderKey = headerRef.key;
-                columnOptions[i].index = i;
-                columnOptions[i].id = newHeaderKey;
-                batch.set(newListHeadersRef.doc(newHeaderKey), (columnOptions[i]));
+            for(let i=0; i<columns.length; ++i){
+                let columnRef = firebase.database().ref().push();
+                var newColumnKey = columnRef.key;
+                columns[i].index = i;
+                columns[i].id = newColumnKey;
+                batch.set(newListColumnsRef.doc(newColumnKey), (columns[i]));
             }
-            batch.commit().then(function () {
+            batch.commit().then(function (result) {
                 let personalLists = state.personalLists
+                console.log(result)
                 personalLists.push(newListData)
                 commit('setPersonalLists', personalLists)
+            }).catch(function(error) {
+                console.log("Transaction failed: ", error);
             });
+
         },
         deleteItem({ state, commit, dispatch }, item){
             // using found index is better than item.item_meta.index bc it allows us to be ahead of the db
@@ -235,6 +314,51 @@ export const store = new Vuex.Store({
                                 console.error("Error removing document: ", error);
                             });
         },
+        editList({ state, commit, dispatch }, params){
+            let columns = params.columns;
+            let listSelector = params.listSelector;
+            let listName = params.listName;
+            let newListData = {name: listName}
+
+            // create in db first and then switch in UI or the other way?
+            let listMeta = db.collection("lists_meta")
+                                .doc(state.user.uid)
+                                .collection("personal_lists")
+                                .doc(listSelector.id)
+                                .update(newListData);
+            let listColumnsRef = db.collection("lists_content")
+                                            .doc(listSelector.listContentKey)
+                                            .collection("columns")
+
+            // batch set all columns
+            let batch = db.batch();
+            for(let i=0; i<columns.length; ++i){
+                let myRef = firebase.database().ref().push();
+                let columnKey = columns[i].id ? columns[i].id : myRef.key;;
+                columns[i].index = i;
+                columns[i].id = columnKey;
+                batch.set(listColumnsRef.doc(columnKey), columns[i]);
+            }
+
+            // commit, update in store, change to that list
+            batch.commit().then(function (result) {
+                let personalLists = state.personalLists
+                listSelector.name = listName
+                personalLists[listSelector.index] = listSelector
+                dispatch('changeSelectedList', personalLists[listSelector.index])
+            }).catch(function(error) {
+                console.log("Transaction failed: ", error);
+            });
+
+        },
+        listDragSwap({state, commit}, newList){
+            let selectedListItems = state.selectedListItems
+            newList.forEach((item, index) => {
+                let itemIndex = findIndexOfItem(selectedListItems, item.item_meta.id);
+                [selectedListItems[index], selectedListItems[itemIndex]] = [selectedListItems[itemIndex], selectedListItems[index]];
+            })
+            commit('setSelectedListItems', selectedListItems)
+        },
         loadGroupListData({ state, commit }) {
             let user_meta = db.collection("lists_meta").doc(state.user.uid);
             let personal_lists_ref = user_meta.collection("personal_lists");
@@ -257,7 +381,13 @@ export const store = new Vuex.Store({
                 });
                 commit('setPersonalLists', personalLists);
                 commit('setSelectedList', personalLists[0]);
-                dispatch('loadSelectedListHeaders');
+                console.log('preload')
+                dispatch('loadListColumns', state.selectedList.listContentKey).then(columns => {
+                    commit('setSelectedListColumns', columns);
+                });
+                dispatch('loadListSettings', state.selectedList.listMetaKey).then(settings => {
+                    commit('setSelectedListSettings', settings)
+                })
                 dispatch('loadSelectedListItems');
             });
         },
@@ -271,11 +401,7 @@ export const store = new Vuex.Store({
             var selectedListItems = [];
             list_items.get().then(querySnapshot => {
                 querySnapshot.forEach(doc => {
-                    //  // Convert Firestore timestamp field to Date class
-                    // let timestamp = new Date(item.date.seconds * 1000);
-                    // item.date = timestamp;
                     let item = doc.data();
-                    // item.item_meta.id = doc.id;
                     item.item_meta.active = false;
                     selectedListItems.push(item);
                 });
@@ -284,22 +410,31 @@ export const store = new Vuex.Store({
 
             commit('setSelectedListItems', selectedListItems);
         },
-        loadSelectedListHeaders({ state, commit }) {
-            let list_items = db.collection("lists_content")
-                               .doc(state.selectedList.listContentKey)
-                               .collection("headers")
+        loadListColumns({ state, commit }, listContentKey) {
+            let listItems = db.collection("lists_content")
+                               .doc(listContentKey)
+                               .collection("columns")
                                .orderBy("index");
 
-            let newSelectedListHeaders = [];
-            list_items.get().then(querySnapshot => {
+            let listColumns = [];
+            return listItems.get().then(querySnapshot => {
                 querySnapshot.forEach(doc =>    {
-                    let header = doc.data();
-                    newSelectedListHeaders.push(header);
+                    let column = doc.data();
+                    listColumns.push(column);
                 });
+                return listColumns
 
             });
-
-            commit('setSelectedListHeaders', newSelectedListHeaders);
+        },
+        loadListSettings({ state, commit }, listMetaKey){
+            let listMetaRef = db.collection("lists_meta")
+                                    .doc(state.user.uid)
+                                    .collection('personal_lists')
+                                    .doc(listMetaKey)
+            return listMetaRef.get().then(querySnapshot => {
+                console.log(querySnapshot.data())
+                return querySnapshot.data()
+            })
         },
         saveItem({ state, commit }, item){
             if(item == null){
@@ -356,18 +491,19 @@ export const store = new Vuex.Store({
             let item = params.item;
             let itemIndex = findIndexOfItem(state.selectedListItems, item.item_meta.id)
             let newSelectedListItems = state.selectedListItems;
-            newSelectedListItems[itemIndex]['values'][params.headerId] = params.newValue;
+            newSelectedListItems[itemIndex]['values'][params.columnId] = params.newValue;
             commit('setSelectedListItems', newSelectedListItems);
         },
-        userSignIn({
+        userSignInWithEmail({
             commit
         }, payload) {
             commit('setLoading', true)
             firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
-                .then(firebaseUser => {
+                .then(result => {
+                    let user = result.user;
                     commit('setUser', {
-                        email: firebaseUser.user.email,
-                        uid: firebaseUser.user.uid
+                        email: user.email,
+                        uid: user.uid
                     })
                     commit('setLoading', false)
                     commit('setError', null)
@@ -377,6 +513,31 @@ export const store = new Vuex.Store({
                     commit('setError', error.message)
                     commit('setLoading', false)
                 })
+        },
+        userSignInWithGoogle({ commit }, payload){
+            firebase.auth().signInWithPopup(provider).then(function(result) {
+              // This gives you a Google Access Token. You can use it to access the Google API.
+              var token = result.credential.accessToken;
+              // The signed-in user info.
+              var user = result.user;
+              // ...
+              commit('setUser', {
+                  email: user.email,
+                  uid: user.uid
+              })
+              commit('setLoading', false)
+              commit('setError', null)
+              router.push('/Home')
+            }).catch(function(error) {
+              // Handle Errors here.
+              var errorCode = error.code;
+              var errorMessage = error.message;
+              // The email of the user's account used.
+              var email = error.email;
+              // The firebase.auth.AuthCredential type that was used.
+              var credential = error.credential;
+              // ...
+            });
         },
         userSignUp({
             commit
@@ -388,8 +549,7 @@ export const store = new Vuex.Store({
                     db.collection('lists_meta').doc(firebaseUser.user.uid).set({
                         "email": firebaseUser.user.email,
                     })
-                    /* add new user to list_names collection */
-                    db.collection('lists_content').doc(firebaseUser.user.uid).set({
+                    db.collection('settings').doc(firebaseUser.user.uid).set({
                         "email": firebaseUser.user.email,
                     })
                     commit('setUser', {
@@ -411,6 +571,7 @@ export const store = new Vuex.Store({
             firebase.auth().signOut()
             .then(()=>{
                 commit('setUser', null)
+                commit('reset')
                 router.push('/')
             })
             .catch(error => {
@@ -428,11 +589,11 @@ export const store = new Vuex.Store({
         getSelectedListItems(state) {
             return state.selectedListItems;
         },
-        getSelectedListHeaders(state) {
-            return state.selectedListHeaders;
+        getSelectedListColumns(state) {
+            return state.selectedListColumns;
         },
-        getDateFilterHeader: (state) => {
-            return state.dateFilterHeader;
+        getDateFilterColumn: (state) => {
+            return state.dateFilterColumn;
         },
         getSelectedDate: (state) => {
             return state.selectedDate;

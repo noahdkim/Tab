@@ -1,24 +1,24 @@
 <template>
     <v-container class="listcell">
-        <ListCellDate v-if="header.type === 'date'"
+        <ListCellDate v-if="column.type === 'date'"
                             :item= "item"
-                            :header= "header"
+                            :column= "column"
                             @update="updateCellValue"
-                            :ref="item.item_meta.id + '-' + header.id"
+                            :ref="item.item_meta.id + '-' + column.id"
                             single-line>
         </ListCellDate>
-        <ListCellInt v-if="header.type === 'integer'"
+        <ListCellInt v-if="column.type === 'integer'"
                             :item= "item"
-                            :header= "header"
+                            :column= "column"
                             @update="updateCellValue"
-                            :ref="item.item_meta.id + '-' + header.id"
+                            :ref="item.item_meta.id + '-' + column.id"
                             single-line>
         </ListCellInt>
-        <ListCellText v-if="header.type === 'string'"
+        <ListCellText v-if="column.type === 'string'"
                               :item= "item"
-                              :header= "header"
+                              :column= "column"
                               @update="updateCellValue"
-                              :ref="item.item_meta.id + '-' + header.id"
+                              :ref="item.item_meta.id + '-' + column.id"
                               single-line>
         </ListCellText>
     </v-container>
@@ -31,13 +31,13 @@ import ListCellText from './ListCell/ListCellText'
 
 export default {
     components: {ListCellDate, ListCellInt, ListCellText},
-    props: ['item', 'header'],
+    props: ['item', 'column'],
 
     data () {
         return{
             /* this is currently not being used */
             checkbox: true,
-            value: this.item.values[this.header.id]
+            value: this.item.values[this.column.id]
         }
     },
     computed:{
@@ -46,7 +46,7 @@ export default {
                 return this.value;
             },
             set: function(newValue){
-                this.$refs[this.item.item_meta.id+'-'+this.header.id].setValue(newValue)
+                this.$refs[this.item.item_meta.id+'-'+this.column.id].setValue(newValue)
                 this.value = newValue
             }
         }
@@ -56,10 +56,10 @@ export default {
             this.cellValue = newValue
         },
         getValue(){
-            return this.$refs[this.item.item_meta.id+'-'+this.header.id].getValue()
+            return this.$refs[this.item.item_meta.id+'-'+this.column.id].getValue()
         },
         setValue(newValue){
-            this.$refs[this.item.item_meta.id+'-'+this.header.id].setValue(newValue)
+            this.$refs[this.item.item_meta.id+'-'+this.column.id].setValue(newValue)
         }
     }
   }

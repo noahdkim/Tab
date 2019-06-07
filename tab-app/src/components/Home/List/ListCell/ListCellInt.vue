@@ -3,15 +3,15 @@
                           :mask="mask"
                           @input="updateCellValue"
                           v-model="intValue"
-                          :value="item.values[header.id]"
+                          :value="item.values[column.id]"
                           :readonly="!item.item_meta.active"
-                          :id="header.name"
-                          ref="{{item.id}}-{{header.text}}"
+                          :id="column.name"
+                          ref="{{item.id}}-{{column.text}}"
                           single-line
                           hide-details
                           solo
                           flat
-                          placeholder="#">
+                          placeholder="###">
 
                           <!-- :outline="!item.item_meta.active" -->
     </v-text-field>
@@ -19,13 +19,13 @@
 
 <script>
 export default {
-    props: ['item', 'header'],
+    props: ['item', 'column'],
 
     data () {
         return{
             checkbox: true,
             /* Only three digit number allowed */
-            listCellIntValue: this.item.values[this.header.id],
+            listCellIntValue: this.item.values[this.column.id],
             mask: '###'
 
         }
@@ -62,4 +62,4 @@ v-text-field    {
 }
 
 </style>
-<style scoped src="@/assets/styles/listcell.css"></style>
+<style scoped src="@/assets/styles/ListCell.css"></style>
