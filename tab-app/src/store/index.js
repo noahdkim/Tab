@@ -51,6 +51,7 @@ function initialState(){
         selectedList: {},
         selectedListItems: [],
         selectedListColumns: [],
+        selectedListSettings: [],
         showChecked: false,
         sortColumnIndex: -1,
         sortDescending: true,
@@ -75,6 +76,7 @@ export const store = new Vuex.Store({
         selectedList: {},
         selectedListItems: [],
         selectedListColumns: [],
+        selectedListSettings: [],
         showChecked: true,
         sortColumnIndex: -1,
         sortDescending: true,
@@ -105,6 +107,16 @@ export const store = new Vuex.Store({
         setFiltering(state, payload){
             state.filtering = payload
         },
+        setFilterByDate(state, payload){
+            Vue.set(state.selectedListSettings, 'filterByDate', payload)
+            // state.selectedListSettings.filterByDate = payload;
+            let listMetaKey = state.selectedList.listMetaKey
+            let listMetaRef = db.collection("lists_meta")
+                                    .doc(state.user.uid)
+                                    .collection('personal_lists')
+                                    .doc(listMetaKey)
+            listMetaRef.update(state.selectedListSettings)
+        },
         setLoading(state, payload) {
             state.loading = payload;
         },
@@ -122,6 +134,18 @@ export const store = new Vuex.Store({
         },
         setSelectedIntegerField(state, payload) {
             state.selectedIntegerField = payload;
+        },
+        setSelectedListSettings(state, payload) {
+            state.selectedListSettings = payload;
+        },
+        setShowChecked(state, payload) {
+            state.selectedListSettings.showChecked = payload;
+            let listMetaKey = state.selectedList.listMetaKey
+            let listMetaRef = db.collection("lists_meta")
+                                    .doc(state.user.uid)
+                                    .collection('personal_lists')
+                                    .doc(listMetaKey)
+            listMetaRef.update(state.selectedListSettings)
         },
         setUser(state, payload) {
             state.user = payload;
@@ -172,6 +196,9 @@ export const store = new Vuex.Store({
                 commit('setSelectedListColumns', columns);
             });
             dispatch('loadSelectedListItems');
+            dispatch('loadListSettings', selectedList.listMetaKey).then(settings => {
+                commit('setSelectedListSettings', settings)
+            })
         },
         createNewItem({ state, commit, dispatch }, params){
             let myRef = firebase.database().ref().push();
@@ -213,9 +240,12 @@ export const store = new Vuex.Store({
             myRef = firebase.database().ref().push();
             let listContentKey = myRef.key;
             let newListData = {listContentKey: listContentKey,
-                                  name: listName,
-                                  id: listMetaKey,
-                                  index: state.personalLists.length}
+                                    filterByDate: false,
+                                    listMetaKey: listMetaKey,
+                                    name: listName,
+                                    index: state.personalLists.length,
+                                    showChecked: false,
+                            }
             // create in db first and then switch in UI or the other way?
             let newListMeta = db.collection("lists_meta")
                                 .doc(state.user.uid)
@@ -352,9 +382,12 @@ export const store = new Vuex.Store({
                 commit('setPersonalLists', personalLists);
                 commit('setSelectedList', personalLists[0]);
                 console.log('preload')
-                dispatch('loadListColumns', state.selectedList.listContentKey).then(columns=>{
+                dispatch('loadListColumns', state.selectedList.listContentKey).then(columns => {
                     commit('setSelectedListColumns', columns);
                 });
+                dispatch('loadListSettings', state.selectedList.listMetaKey).then(settings => {
+                    commit('setSelectedListSettings', settings)
+                })
                 dispatch('loadSelectedListItems');
             });
         },
@@ -378,13 +411,13 @@ export const store = new Vuex.Store({
             commit('setSelectedListItems', selectedListItems);
         },
         loadListColumns({ state, commit }, listContentKey) {
-            let list_items = db.collection("lists_content")
+            let listItems = db.collection("lists_content")
                                .doc(listContentKey)
                                .collection("columns")
                                .orderBy("index");
 
             let listColumns = [];
-            return list_items.get().then(querySnapshot => {
+            return listItems.get().then(querySnapshot => {
                 querySnapshot.forEach(doc =>    {
                     let column = doc.data();
                     listColumns.push(column);
@@ -392,6 +425,16 @@ export const store = new Vuex.Store({
                 return listColumns
 
             });
+        },
+        loadListSettings({ state, commit }, listMetaKey){
+            let listMetaRef = db.collection("lists_meta")
+                                    .doc(state.user.uid)
+                                    .collection('personal_lists')
+                                    .doc(listMetaKey)
+            return listMetaRef.get().then(querySnapshot => {
+                console.log(querySnapshot.data())
+                return querySnapshot.data()
+            })
         },
         saveItem({ state, commit }, item){
             if(item == null){
@@ -478,7 +521,6 @@ export const store = new Vuex.Store({
               // The signed-in user info.
               var user = result.user;
               // ...
-              console.log(user.email)
               commit('setUser', {
                   email: user.email,
                   uid: user.uid

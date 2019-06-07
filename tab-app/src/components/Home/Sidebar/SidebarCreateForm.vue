@@ -20,8 +20,9 @@
                 <span class="subheading"> Select Template </span>
             </v-subheader>
             <v-layout pt-2 row wrap>
-                <v-flex  v-for="(template, index) in templates" xs6 pa-1
+                <v-flex  v-for="(template, index) in templates" xs4 pa-1
                          @click="select(index)"
+                         :key="index"
                         >
                 <div  :class="{selected: selectedTemplateIndex === index}" class='template-card' >
                     <sidebar-form-list-template

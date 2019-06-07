@@ -40,7 +40,7 @@
          </v-list-tile>
 
          <!-- Create new list dialog form -->
-         <v-dialog v-model="createDialog"  max-width="600px">
+         <v-dialog v-model="createDialog"  max-width="80%">
              <sidebar-create-form @close-dialog="createDialog=false">
              </sidebar-create-form>
          </v-dialog>
@@ -102,11 +102,12 @@ export default {
         },
         showChecked:{
             get(){
-                return this.$store.state.showChecked
+                console.log(this.$store.state.selectedListSettings.showChecked)
+                return this.$store.state.selectedListSettings.showChecked
             },
             set(newValue){
                 this.$store.state.filtering = true;
-                this.$store.state.showChecked = newValue;
+                this.$store.commit('setShowChecked', newValue)
             }
         }
     },

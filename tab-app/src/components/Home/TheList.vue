@@ -91,11 +91,11 @@
             },
             filterByDate:{
                 get(){
-                    return this.dateColumnExists ? this.$store.state.filterByDate : false;
+                    return this.dateColumnExists ? this.$store.state.selectedListSettings.filterByDate : false;
                 },
                 set(newValue){
                     this.filtering = true;
-                    this.$store.state.filterByDate = newValue;
+                    this.$store.commit('setFilterByDate', newValue);
                 }
             },
             filteredListItems: {
