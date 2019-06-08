@@ -1,41 +1,29 @@
 <template>
-	<v-layout column align-center>
-		<v-layout row class="column-row">
-			<span class="spacer-handle"></span>
-            <v-icon @click="modifySort('checked')">check</v-icon>
-			<span class="spacer-checkbox"></span>
-			<v-layout col
-			v-for="column in columns"
-			:key="column.id"
-			justify-start
-			>
-                    <v-textarea class="column-field"
-                    :value="column.name"
-                    :id="column.id"
-                    :ref="column.id"
-                    single-line
-                    hide-details
-                    readonly
-                    solo
-                    flat
-                    rows="1"
-                    no-resize
-                    @click="modifySort(column.index)"
-                    >
-                </v-textarea>
-
-            </v-layout>
-            <div class="spacer-delete"></div>
-    	</v-layout>
-    </v-layout>
+    <ListColumnHeaderDate v-if="column.type === 'date'"
+                        :column= "column"
+                        :ref="column.id"
+                        single-line>
+    </ListColumnHeaderDate>
+    <ListColumnHeaderInt v-else-if="column.type === 'integer'"
+                        :column= "column"
+                        :ref="column.id"
+                        single-line>
+    </ListColumnHeaderInt>
+    <ListColumnHeaderString v-else-if="column.type === 'string'"
+                          :column= "column"
+                          :ref="column.id"
+                          single-line>
+    </ListColumnHeaderString>
 </template>
 
 <script>
-	import ListCell from './ListCell'
+	import ListColumnHeaderDate from './ListColumnHeader/ListColumnHeaderDate'
+    import ListColumnHeaderInt from './ListColumnHeader/ListColumnHeaderInt'
+    import ListColumnHeaderString from './ListColumnHeader/ListColumnHeaderString'
 
 	export default {
-		components: {ListCell},
-		props: ['columns'],
+		components: {ListColumnHeaderDate, ListColumnHeaderInt, ListColumnHeaderString},
+		props: ['column'],
         methods:{
             modifySort(columnIndex){
                 this.$store.commit('setSorting', true)

@@ -1,20 +1,24 @@
 <template>
-    <v-text-field class="text-field"
-                          :mask="mask"
-                          @input="updateCellValue"
-                          v-model="intValue"
-                          :value="item.values[column.id]"
-                          :readonly="!item.item_meta.active"
-                          :id="column.name"
-                          ref="{{item.id}}-{{column.text}}"
-                          single-line
-                          hide-details
-                          solo
-                          flat
-                          placeholder="###">
+    <v-flex
+        xs2
+        align-start
+        class="listcells" pa-0 ma-0>
+        <v-text-field
+                              :mask="mask"
+                              @input="updateCellValue"
+                              v-model="intValue"
+                              :value="item.values[column.id]"
+                              :readonly="!item.item_meta.active"
+                              :id="column.name"
+                              ref="{{item.id}}-{{column.text}}"
+                              solo
+                              flat
+                              reverse
+                              placeholder="###">
 
-                          <!-- :outline="!item.item_meta.active" -->
-    </v-text-field>
+                              <!-- :outline="!item.item_meta.active" -->
+        </v-text-field>
+    </v-flex>
 </template>
 
 <script>

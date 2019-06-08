@@ -16,11 +16,8 @@
                 </v-flex>
             </v-layout>
             <v-divider></v-divider>
-            <v-subheader>
-                <span class="subheading"> Select Template </span>
-            </v-subheader>
             <v-layout pt-2 row wrap>
-                <v-flex  v-for="(template, index) in templates" xs4 pa-1
+                <v-flex  v-for="(template, index) in templates" xs6 md4 pa-1
                          @click="select(index)"
                          :key="index"
                         >
@@ -113,6 +110,7 @@ export default {
                 this.$store.dispatch('createNewList', {listName, columns}).then(() => {
                     this.$emit('close-dialog')
                     this.$refs.form.reset()
+                    this.selectedTemplateIndex = -1
                 })
 
             }

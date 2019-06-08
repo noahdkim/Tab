@@ -1,6 +1,6 @@
 <template>
     <v-layout row wrap>
-        <v-flex xs8 sm8 d-flex>
+        <v-flex xs12 d-flex>
             <v-text-field
               label="Column Name"
               prepend-icon="remove"
@@ -18,7 +18,7 @@
         </v-text-field>
         </v-flex>
 
-        <v-flex xs4 sm4 d-flex>
+        <!-- <v-flex xs4 sm4 d-flex>
             <v-overflow-btn editable
             required
               :items="types"
@@ -27,7 +27,7 @@
               :value="column.type"
               @change="updateColumnType"
             ></v-overflow-btn>
-        </v-flex>
+        </v-flex> -->
     </v-layout>
 
 </template>

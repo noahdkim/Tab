@@ -1,6 +1,6 @@
 <template>
-    <v-layout class="ma-0 pt-2 the-list-parent" justify-center>
-            <v-layout column class="ma-0 pa-0 list-all">
+    <v-container class="ma-0 pt-2 the-list-parent" >
+            <!-- <v-layout column class="ma-0 pa-0 list-all"> -->
                 <v-layout row class="ma-0 pa-0 list-title">
                     <v-flex>
                         <div class="list-title">
@@ -11,10 +11,13 @@
                         <v-switch v-if="dateColumnExists" v-model="filterByDate" label="Filter by Date"></v-switch>
                     </v-flex>
                 </v-layout>
+
                 <v-layout row class="ma-0 pa-0 list-head">
-                    <list-column-header-row :columns="selectedListColumns"></list-column-header-row>
+                    <v-icon @click="modifySort('checked')">check</v-icon>
+                    <list-column-header v-for="column in selectedListColumns" :key="column.id" :column="column"></list-column-header>
                 </v-layout>
-                <v-layout row class="ma-0 pa-0 list-body">
+
+                <v-container fluid class="ma-0 pa-0 list-body">
                     <draggable
                     class="list-group"
                     handle=".handle"
@@ -24,18 +27,19 @@
                     :list="filteredAndSortedListItems"
                     >
                         <transition-group type="transition" :name="sorting || filtering || drag ? 'flip-list' : null">
-                            <div class="listRows" v-for="item in filteredAndSortedListItems" :key="item.item_meta.id">
                                 <list-row
-                                :item="item"
-                                :columns="selectedListColumns"
-                                :ref="item.item_meta.id"
-                                class="draggable-row align-start"
+                                    v-for="item in filteredAndSortedListItems"
+                                    :key="item.item_meta.id"
+                                    :item="item"
+                                    :columns="selectedListColumns"
+                                    :ref="item.item_meta.id"
+                                    class="draggable-row align-start"
                                 >
                                 </list-row>
-                            </div>
                         </transition-group>
                     </draggable>
-                </v-layout>
+                </v-container>
+
                 <v-layout row class="ma-0 list-footer">
                     <v-container class="ma-0 add-item-container">
                         <a v-on:click="addNewItem" class="add-item-anchor">
@@ -44,15 +48,15 @@
                         </a>
                     </v-container>
                 </v-layout>
-            </v-layout>
+            <!-- </v-layout> -->
 
-</v-layout>
+</v-container>
 
 </template>
 
 <script>
     import draggable from 'vuedraggable'
-    import ListColumnHeaderRow from './List/ListColumnHeaderRow'
+    import ListColumnHeader from './List/ListColumnHeader'
     import ListRow from './List/ListRow'
     import { mapGetters } from 'vuex'
 
@@ -63,7 +67,7 @@
     export default {
         components: {
             draggable,
-            ListColumnHeaderRow,
+            ListColumnHeader,
             ListRow
         },
         data: () => ({

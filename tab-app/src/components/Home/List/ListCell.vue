@@ -1,5 +1,4 @@
 <template>
-    <v-container class="listcell">
         <ListCellDate v-if="column.type === 'date'"
                             :item= "item"
                             :column= "column"
@@ -7,30 +6,29 @@
                             :ref="item.item_meta.id + '-' + column.id"
                             single-line>
         </ListCellDate>
-        <ListCellInt v-if="column.type === 'integer'"
+        <ListCellInt v-else-if="column.type === 'integer'"
                             :item= "item"
                             :column= "column"
                             @update="updateCellValue"
                             :ref="item.item_meta.id + '-' + column.id"
                             single-line>
         </ListCellInt>
-        <ListCellText v-if="column.type === 'string'"
+        <ListCellString v-else-if="column.type === 'string'"
                               :item= "item"
                               :column= "column"
                               @update="updateCellValue"
                               :ref="item.item_meta.id + '-' + column.id"
                               single-line>
-        </ListCellText>
-    </v-container>
+        </ListCellString>
 </template>
 
 <script>
 import ListCellDate from './ListCell/ListCellDate'
 import ListCellInt from './ListCell/ListCellInt'
-import ListCellText from './ListCell/ListCellText'
+import ListCellString from './ListCell/ListCellString'
 
 export default {
-    components: {ListCellDate, ListCellInt, ListCellText},
+    components: {ListCellDate, ListCellInt, ListCellString},
     props: ['item', 'column'],
 
     data () {

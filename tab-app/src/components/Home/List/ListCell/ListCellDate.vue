@@ -1,34 +1,37 @@
 <template>
-<div>
-    <v-menu
-        ref="menu"
-        v-model="menu"
-        :close-on-content-click="false"
-        :nudge-right="40"
-        :return-value.sync="dateValue"
-        lazy
-        transition="scale-transition"
-        offset-y
-        full-width
-        min-width="290px"
-      >
-          <v-text-field
-            v-model="dateValue"
-            readonly
-            slot="activator"
-            hide-details
-            class="text-field"
-            solo
-            flat
-            placeholder="####-##-##"
-          ></v-text-field>
-        <v-date-picker v-model="dateValue" no-title scrollable>
-          <v-spacer></v-spacer>
-          <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
-          <v-btn flat color="primary" @click="$refs.menu.save(dateValue)">OK</v-btn>
-        </v-date-picker>
-      </v-menu>
-</div>
+    <v-flex
+        xs3
+        class="listcells">
+        <v-menu
+            ref="menu"
+            v-model="menu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            :return-value.sync="dateValue"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            min-width="290px"
+          >
+              <v-text-field
+                v-model="dateValue"
+                readonly
+                slot="activator"
+                hide-details
+                class="text-field"
+                reverse
+                solo
+                flat
+                placeholder="####-##-##"
+              ></v-text-field>
+            <v-date-picker v-model="dateValue" no-title scrollable>
+              <v-spacer></v-spacer>
+              <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
+              <v-btn flat color="primary" @click="$refs.menu.save(dateValue)">OK</v-btn>
+            </v-date-picker>
+          </v-menu>
+  </v-flex>
 </template>
 
 <script>

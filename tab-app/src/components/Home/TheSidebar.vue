@@ -80,7 +80,7 @@ export default {
     data() {
             return {
                 userEmail: this.$store.state.user.email,
-                createDialog: true,
+                createDialog: false,
                 editDialog: false,
                 showHandle: false,
                 listSelector: {},
