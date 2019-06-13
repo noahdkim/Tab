@@ -1,6 +1,6 @@
 <template>
     <v-flex
-    justify-center
+    text-xs-center
     xs2
     :key="column.id"
     justify-start

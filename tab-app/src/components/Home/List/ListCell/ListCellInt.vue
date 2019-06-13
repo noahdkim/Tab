@@ -4,17 +4,18 @@
         align-start
         class="listcells" pa-0 ma-0>
         <v-text-field
-                              :mask="mask"
-                              @input="updateCellValue"
-                              v-model="intValue"
-                              :value="item.values[column.id]"
-                              :readonly="!item.item_meta.active"
-                              :id="column.name"
-                              ref="{{item.id}}-{{column.text}}"
-                              solo
-                              flat
-                              reverse
-                              placeholder="###">
+            :box="item.item_meta.active"
+            :mask="mask"
+            @input="updateCellValue"
+            v-model="intValue"
+            :value="item.values[column.id]"
+            :readonly="!item.item_meta.active"
+            :id="column.name"
+            ref="{{item.id}}-{{column.text}}"
+            solo
+            flat
+            reverse
+            placeholder="###">
 
                               <!-- :outline="!item.item_meta.active" -->
         </v-text-field>

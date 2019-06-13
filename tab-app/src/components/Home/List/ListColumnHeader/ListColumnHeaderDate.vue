@@ -1,12 +1,12 @@
 <template>
     <v-flex
-    justify-center
+    text-xs-center
     xs3
     :key="column.id"
     justify-start
     @click="modifySort(column.index)"
     >
-    <span class="font-weight-black">{{column.name}}</span>
+        <span class="font-weight-black">{{column.name}}</span>
     </v-flex>
 </template>
 

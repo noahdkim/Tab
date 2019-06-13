@@ -1,7 +1,7 @@
 <template>
-    <v-container class="ma-0 pt-2 the-list-parent" >
+    <v-container pt-2 >
             <!-- <v-layout column class="ma-0 pa-0 list-all"> -->
-                <v-layout row class="ma-0 pa-0 list-title">
+                <v-layout row ma-0 pa-0 class=" list-title">
                     <v-flex>
                         <div class="list-title">
                             <span class="list-title list-title-text">{{ this.$store.state.selectedList.name }}</span>
@@ -12,19 +12,21 @@
                     </v-flex>
                 </v-layout>
 
-                <v-layout row class="ma-0 pa-0 list-head">
-                    <v-icon @click="modifySort('checked')">check</v-icon>
-                    <list-column-header v-for="column in selectedListColumns" :key="column.id" :column="column"></list-column-header>
+                <v-layout row ma-0 pa-0 class="list-head">
+                    <list-column-header-row
+                        :columns="selectedListColumns">
+                    </list-column-header-row>
                 </v-layout>
-
-                <v-container fluid class="ma-0 pa-0 list-body">
+                <v-divider light></v-divider>
+                <v-layout row ma-0 pa-0 class="list-body">
                     <draggable
-                    class="list-group"
                     handle=".handle"
                     v-bind="dragOptions"
                     @start="startDrag()"
                     @end="endDrag()"
                     :list="filteredAndSortedListItems"
+                    ref="draggable"
+                    style="width: 100%"
                     >
                         <transition-group type="transition" :name="sorting || filtering || drag ? 'flip-list' : null">
                                 <list-row
@@ -38,15 +40,15 @@
                                 </list-row>
                         </transition-group>
                     </draggable>
-                </v-container>
+                </v-layout>
 
-                <v-layout row class="ma-0 list-footer">
-                    <v-container class="ma-0 add-item-container">
+                <v-layout row ma-0 class="list-footer">
+                    <v-flex xs-12 class="ma-0 add-item-container">
                         <a v-on:click="addNewItem" class="add-item-anchor">
                             <span class="mdi mdi-plus-circle add-item-icon"></span>
                             <span class="add-item-text">Add Item</span>
                         </a>
-                    </v-container>
+                    </v-flex>
                 </v-layout>
             <!-- </v-layout> -->
 
@@ -56,10 +58,9 @@
 
 <script>
     import draggable from 'vuedraggable'
-    import ListColumnHeader from './List/ListColumnHeader'
+    import ListColumnHeaderRow from './List/ListColumnHeaderRow'
     import ListRow from './List/ListRow'
     import { mapGetters } from 'vuex'
-
     import { EventBus } from '../../store/modules/event-bus.js';
 
     require('@/assets/styles/main.css');
@@ -67,7 +68,7 @@
     export default {
         components: {
             draggable,
-            ListColumnHeader,
+            ListColumnHeaderRow,
             ListRow
         },
         data: () => ({
@@ -171,7 +172,7 @@
             },
             showChecked:{
                 get(){
-                    return this.$store.state.showChecked
+                    return this.$store.state.selectedListSettings.showChecked
                 }
             },
             sortKey: {

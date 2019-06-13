@@ -1,6 +1,7 @@
 <template>
     <v-flex
         xs3
+        slot="activator"
         class="listcells">
         <v-menu
             ref="menu"
@@ -13,9 +14,12 @@
             offset-y
             full-width
             min-width="290px"
+            slot="activator"
           >
+          <v-tooltip bottom right slot="activator">
               <v-text-field
                 v-model="dateValue"
+                :box="item.item_meta.active"
                 readonly
                 slot="activator"
                 hide-details
@@ -25,6 +29,8 @@
                 flat
                 placeholder="####-##-##"
               ></v-text-field>
+              <span>{{tooltipText}}</span>
+          </v-tooltip>
             <v-date-picker v-model="dateValue" no-title scrollable>
               <v-spacer></v-spacer>
               <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
@@ -58,6 +64,30 @@ export default {
                 let newValue = this.parseISOString(newDate);
                 this.listCellDateValue = newDate
             }
+        },
+        tooltipText: {
+            get: function(){
+                let tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+                var localDate = (new Date(Date.now() - tzoffset))
+                let dateDiff = this.calculateDayDiff(new Date(this.listCellDateValue), localDate)
+                let dayOrDays = 'days'
+                if (Math.abs(dateDiff) == 1){
+                    dayOrDays = 'day'
+                }
+                if (dateDiff < 0){
+                    dateDiff = -dateDiff
+                    return `Due ${dateDiff} ${dayOrDays} ago`
+                }
+                else if (dateDiff == 0){
+                    return `Due today`
+                }
+                else{
+                    return `Due in ${dateDiff} ${dayOrDays}`
+                }
+            },
+            set: function(){
+
+            }
         }
 
     },
@@ -75,6 +105,13 @@ export default {
       setValue(newValue){
           this.dateValue = newValue.toDate().toISOString().substring(0,10);
       },
+      calculateDayDiff(day1, day2){
+        let oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+        console.log((day1.getTime() - day2.getTime())/(oneDay))
+        console.log(day1, day2)
+        let diffDays = Math.ceil((day1.getTime() - day2.getTime())/(oneDay));
+        return diffDays
+      }
 
     }
   }
