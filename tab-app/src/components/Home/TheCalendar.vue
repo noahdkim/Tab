@@ -29,6 +29,8 @@
 import firebase from 'firebase'
 import CalendarDateCard from './Calendar/CalendarDateCard'
 import CalendarWeightCard from './Calendar/CalendarWeightCard'
+import { mapGetters } from 'vuex'
+
 require("@/assets/styles/TheCalendar.css");
 
 export default  {
@@ -51,11 +53,16 @@ export default  {
         this.$store.commit('setSelectedDate', localISOTime);
     },
     computed:{
+        ...mapGetters({
+            selectedListColumns: 'getSelectedListColumns',
+            selectedListItems: 'getSelectedListItems',
+            dateFilterColumn: 'getDateFilterColumn',
+        }),
         listDates: {
             get() {
                 this.dateWeights = {};
                 this.totalWeights = 0;
-                let listDates = this.$store.state.selectedListItems.map((item) =>{
+                let listDates = this.selectedListItems.uncheckedItems.map((item) =>{
                     let date = item.values[this.dateFilterColumn.id].toDate().toISOString().substr(0, 10)
                     let priority = item.values[this.selectedIntegerField.id];
                     priority = priority ? parseInt(item.values[this.selectedIntegerField.id]) : 0;
@@ -117,7 +124,7 @@ export default  {
     },
     methods: {
         colorFunction(date){
-            if (this.$store.state.selectedListItems.length > 0 && this.totalWeights === 0){
+            if (this.selectedListItems.uncheckedItems.length > 0 && this.totalWeights === 0){
                 return `rgba(244, 67, 54, .8)`;
             }
             let alpha = this.dateWeights[date] / this.totalWeights;

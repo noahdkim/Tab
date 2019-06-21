@@ -73,7 +73,7 @@
           }),
           computed: {
               isActive () {
-                  return this.listSelector===this.$store.state.selectedList
+                  return this.listSelector===this.$store.state.selectedListMeta
               },
               listDialogOptions(){
                   return [{ title: 'Edit List',

@@ -107,8 +107,6 @@ export default {
       },
       calculateDayDiff(day1, day2){
         let oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-        console.log((day1.getTime() - day2.getTime())/(oneDay))
-        console.log(day1, day2)
         let diffDays = Math.ceil((day1.getTime() - day2.getTime())/(oneDay));
         return diffDays
       }

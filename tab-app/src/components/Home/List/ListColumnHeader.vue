@@ -24,7 +24,7 @@
 		components: {ListColumnHeaderDate, ListColumnHeaderInt, ListColumnHeaderString},
 		props: ['column'],
         methods:{
-            
+
         }
 	};
 </script>

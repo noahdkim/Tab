@@ -2,7 +2,7 @@
     <v-layout row class="ma-0 pa-0 list-head">
         <span class="spacer-handle"></span>
         <v-icon @click="modifySort('checked')">check</v-icon>
-        <list-column-header v-for="column in columns" :key="column.id" :column="column" @click="modifySort(column.index)"></list-column-header>
+        <list-column-header v-for="column in columns" :key="column.id" :column="column" @click.native="modifySort(column)"></list-column-header>
     </v-layout>
 </template>
 
@@ -18,16 +18,14 @@ export default {
     }),
     props: ['columns'],
     methods:{
-        modifySort(columnIndex){
+        modifySort(column){
+            console.log("sorting")
             this.$store.commit('setSorting', true)
-
-            console.log(columnIndex)
-            if(this.$store.state.sortColumnIndex === columnIndex){
-                this.$store.commit('setSortDescending', !this.$store.state.sortDescending)
-            } else{
-                this.$store.commit('setSortColumnIndex', columnIndex)
-                this.$store.commit('setSortDescending', true)
-            }
+            this.$store.dispatch('sortList', column).then(
+                Vue.nextTick(() => {
+                    this.$store.commit('setSorting', false)
+                })
+            )
         }
     }
 }

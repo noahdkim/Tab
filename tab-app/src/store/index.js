@@ -35,6 +35,27 @@ function findIndexOfItem(list, id) {
     return foundIndex;
 }
 
+function listComparator(a, b){
+    let sortResult
+    if (this.sortColumnIndex === 'checked'){
+        sortResult = ((a.item_meta.checked === b.item_meta.checked)? 0 : a.item_meta.checked ? false : true)
+    }
+    else{
+        let columnID = this.selectedListColumns[this.sortColumnIndex].id
+        let columnType = this.selectedListColumns[this.sortColumnIndex].type
+        if(columnType==="date"){
+            sortResult = (a.values[columnID].seconds > b.values[columnID].seconds)
+        } else if(columnType === "integer"){
+            sortResult = (parseInt(a.values[columnID]) < parseInt(b.values[columnID]))
+        }
+        else if(columnType ==="string"){
+            console.log((a.values[columnID] > b.values[columnID]))
+            sortResult = (a.values[columnID] > b.values[columnID])
+        }
+    }
+    return this.sortDescending ? sortResult : !sortResult
+}
+
 function initialState(){
     return {
         activeItemID: 0,
@@ -48,13 +69,18 @@ function initialState(){
         loading: false,
         user: null,
         personalLists: [],
-        selectedList: {},
-        selectedListItems: [],
+        selectedListMeta: {},
+        selectedListItems: {
+            checkedItems: [],
+            uncheckedItems: []
+        },
         selectedListColumns: [],
         selectedListSettings: [],
         showChecked: false,
-        sortColumnIndex: -1,
-        sortDescending: true,
+        sortSettings:{
+            columnID: '...',
+            ascending: true
+        },
         sorting: false
     }
 }
@@ -73,26 +99,31 @@ export const store = new Vuex.Store({
         loading: false,
         user: null,
         personalLists: [],
-        selectedList: {},
-        selectedListItems: [],
+        selectedListMeta: {},
+        selectedListItems: {
+            checkedItems: [],
+            uncheckedItems: []
+        },
         selectedListColumns: [],
         selectedListSettings: [],
         showChecked: true,
-        sortColumnIndex: -1,
-        sortDescending: true,
+        sortSettings:{
+            columnID: '...',
+            ascending: true
+        },
         sorting: false
     },
     /* change state values */
     mutations: {
         changeActiveState(state, payload) {
-            let foundIndex = findIndexOfItem(state.selectedListItems, payload.id)
+            let foundIndex = findIndexOfItem(state.selectedListItems.uncheckedItems, payload.id)
             if (foundIndex < 0){
                 return;
             }
             if (payload.active === true){
                 state.activeItemID = payload.id;
             }
-            state.selectedListItems[foundIndex].item_meta.active = payload.active;
+            state.selectedListItems.uncheckedItems[foundIndex].item_meta.active = payload.active;
 
         },
         setActiveItemID(state, payload){
@@ -110,7 +141,7 @@ export const store = new Vuex.Store({
         setFilterByDate(state, payload){
             Vue.set(state.selectedListSettings, 'filterByDate', payload)
             // state.selectedListSettings.filterByDate = payload;
-            let listMetaKey = state.selectedList.listMetaKey
+            let listMetaKey = state.selectedListMeta.listMetaKey
             let listMetaRef = db.collection("lists_meta")
                                     .doc(state.user.uid)
                                     .collection('personal_lists')
@@ -124,10 +155,14 @@ export const store = new Vuex.Store({
             state.personalLists = payload;
         },
         setSelectedList(state, payload) {
-            state.selectedList = payload;
+            state.selectedListMeta = payload;
         },
-        setSelectedListItems(state, payload) {
-            state.selectedListItems = payload;
+        setSelectedListCheckedItems(state, payload) {
+            state.selectedListItems.checkedItems = payload;
+        },
+        setSelectedListUncheckedItems(state, payload) {
+            console.log(payload)
+            state.selectedListItems.uncheckedItems = payload;
         },
         setSelectedListColumns(state, payload) {
             state.selectedListColumns = payload;
@@ -140,7 +175,7 @@ export const store = new Vuex.Store({
         },
         setShowChecked(state, payload) {
             state.selectedListSettings.showChecked = payload;
-            let listMetaKey = state.selectedList.listMetaKey
+            let listMetaKey = state.selectedListMeta.listMetaKey
             let listMetaRef = db.collection("lists_meta")
                                     .doc(state.user.uid)
                                     .collection('personal_lists')
@@ -150,8 +185,8 @@ export const store = new Vuex.Store({
         setUser(state, payload) {
             state.user = payload;
         },
-        setSortColumnIndex(state, newColumnIndex) {
-            state.sortColumnIndex = newColumnIndex
+        setSortColumnID(state, newColumnID) {
+            state.sortColumnID = newColumnID
         },
         setSortDescending(state, newValue) {
             state.sortDescending = newValue
@@ -179,9 +214,9 @@ export const store = new Vuex.Store({
         changeActiveItem({ state, commit, dispatch }, item){
             /* change previously active item to not active */
             // save the previously active item and set the state of the item to false
-            let prevActiveItemIndex = findIndexOfItem(state.selectedListItems, state.activeItemID)
+            let prevActiveItemIndex = findIndexOfItem(state.selectedListItems.uncheckedItems, state.activeItemID)
             if(prevActiveItemIndex >= 0){
-                dispatch('saveItem', state.selectedListItems[prevActiveItemIndex]);
+                dispatch('saveItem', state.selectedListItems.uncheckedItems[prevActiveItemIndex]);
                 commit('changeActiveState', {active: false, id: state.activeItemID});
             }
 
@@ -192,11 +227,11 @@ export const store = new Vuex.Store({
         changeSelectedList({ state, commit, dispatch }, selectedList){
             let indexOfList = this.state.personalLists.findIndex((list)=>{return list === selectedList})
             commit('setSelectedList', this.state.personalLists[indexOfList]);
-            dispatch('loadListColumns', state.selectedList.listContentKey).then(columns=>{
+            dispatch('loadListColumns', state.selectedListMeta.listContentKey).then(columns=>{
                 commit('setSelectedListColumns', columns);
             });
             dispatch('loadSelectedListItems');
-            dispatch('loadListSettings', selectedList.listMetaKey).then(settings => {
+            dispatch('loadListSettings', this.state.selectedListMeta.listMetaKey).then(settings => {
                 commit('setSelectedListSettings', settings)
             })
         },
@@ -213,7 +248,7 @@ export const store = new Vuex.Store({
                                 active: false,
                                 checked: false,
                                 id: key,
-                                index: state.selectedListItems.length,
+                                index: state.selectedListItems.uncheckedItems.length,
                             },
                             values: {}
             }
@@ -226,7 +261,8 @@ export const store = new Vuex.Store({
             }
 
             )
-            state.selectedListItems.push(newItem);
+            state.selectedListItems.uncheckedItems.push(newItem);
+
             //dispatch('changeActiveItem', newItem);
             return key;
         },
@@ -278,9 +314,9 @@ export const store = new Vuex.Store({
         deleteItem({ state, commit, dispatch }, item){
             // using found index is better than item.item_meta.index bc it allows us to be ahead of the db
             // no lag is experienced for the user. Only user item.item_meta.index to load initial order of items
-            let foundIndex = findIndexOfItem(state.selectedListItems, item.item_meta.id)
-            state.selectedListItems.splice(foundIndex, 1);
-            let itemDocRef = db.collection('lists_content').doc(state.selectedList.listContentKey).collection('items').doc(item.item_meta.id);
+            let foundIndex = findIndexOfItem(state.selectedListItems.uncheckedItems, item.item_meta.id)
+            state.selectedListItems.uncheckedItems.splice(foundIndex, 1);
+            let itemDocRef = db.collection('lists_content').doc(state.selectedListMeta.listContentKey).collection('items').doc(item.item_meta.id);
             itemDocRef.delete()
                 .then(function() {
                     dispatch('saveListOrder');
@@ -306,7 +342,7 @@ export const store = new Vuex.Store({
                                                             .findIndex((personalList)=>{return personalList===list})
                                         personalLists.splice(listIndex, 1);
                                         commit('setPersonalLists', personalLists);
-                                        if (state.selectedList === list){
+                                        if (state.selectedListMeta === list){
                                             dispatch('changeSelectedList', state.personalLists[0]);
 
                                         }
@@ -352,12 +388,12 @@ export const store = new Vuex.Store({
 
         },
         listDragSwap({state, commit}, newList){
-            let selectedListItems = state.selectedListItems
+            let selectedListUncheckedItems = state.selectedListItems.uncheckedItems
             newList.forEach((item, index) => {
-                let itemIndex = findIndexOfItem(selectedListItems, item.item_meta.id);
-                [selectedListItems[index], selectedListItems[itemIndex]] = [selectedListItems[itemIndex], selectedListItems[index]];
+                let itemIndex = findIndexOfItem(selectedListUncheckedItems, item.item_meta.id);
+                [selectedListUncheckedItems[index], selectedListUncheckedItems[itemIndex]] = [selectedListUncheckedItems[itemIndex], selectedListUncheckedItems[index]];
             })
-            commit('setSelectedListItems', selectedListItems)
+            commit('setSelectedListUncheckedItems', selectedListUncheckedItems)
         },
         loadGroupListData({ state, commit }) {
             let user_meta = db.collection("lists_meta").doc(state.user.uid);
@@ -382,10 +418,10 @@ export const store = new Vuex.Store({
                 commit('setPersonalLists', personalLists);
                 commit('setSelectedList', personalLists[0]);
                 console.log('preload')
-                dispatch('loadListColumns', state.selectedList.listContentKey).then(columns => {
+                dispatch('loadListColumns', state.selectedListMeta.listContentKey).then(columns => {
                     commit('setSelectedListColumns', columns);
                 });
-                dispatch('loadListSettings', state.selectedList.listMetaKey).then(settings => {
+                dispatch('loadListSettings', state.selectedListMeta.listMetaKey).then(settings => {
                     commit('setSelectedListSettings', settings)
                 })
                 dispatch('loadSelectedListItems');
@@ -393,22 +429,30 @@ export const store = new Vuex.Store({
         },
         loadSelectedListItems({ state, commit }) {
             console.log("loading selected items")
-            let list_items = db.collection("lists_content")
-                               .doc(state.selectedList.listContentKey)
+            let listItemsRef = db.collection("lists_content")
+                               .doc(state.selectedListMeta.listContentKey)
                                .collection("items")
                                .orderBy("item_meta.index");
 
-            var selectedListItems = [];
-            list_items.get().then(querySnapshot => {
+            let selectedListCheckedItems = [];
+            let selectedListUncheckedItems = [];
+
+            listItemsRef.get().then(querySnapshot => {
                 querySnapshot.forEach(doc => {
                     let item = doc.data();
                     item.item_meta.active = false;
-                    selectedListItems.push(item);
+                    if (item.item_meta.checked) {
+                        selectedListCheckedItems.push(item)
+                    } else{
+                        selectedListUncheckedItems.push(item)
+                    }
                 });
 
             });
+            commit('setSelectedListCheckedItems', selectedListCheckedItems);
+            commit('setSelectedListUncheckedItems', selectedListUncheckedItems);
+            console.log(state.selectedListItems)
 
-            commit('setSelectedListItems', selectedListItems);
         },
         loadListColumns({ state, commit }, listContentKey) {
             let listItems = db.collection("lists_content")
@@ -440,7 +484,7 @@ export const store = new Vuex.Store({
             if(item == null){
                 return;
             }
-            let itemDocRef = db.collection('lists_content').doc(state.selectedList.listContentKey).collection('items').doc(item.item_meta.id);
+            let itemDocRef = db.collection('lists_content').doc(state.selectedListMeta.listContentKey).collection('items').doc(item.item_meta.id);
             itemDocRef.set(item)
             .catch(function(error) {
                 console.error("Error writing document: ", error);
@@ -448,23 +492,23 @@ export const store = new Vuex.Store({
         },
         saveListToFirestore({ state, commit }, params){
             let batch = db.batch();
-            for (var i = 0, n = state.selectedListItems.length; i < n; i++){
-                let item = state.selectedListItems[i];
-                let itemDocRef = db.collection('lists_content').doc(state.selectedList.listContentKey).collection('items').doc(item.item_meta.id);
+            for (var i = 0, n = state.selectedListItems.uncheckedItems.length; i < n; i++){
+                let item = state.selectedListItems.uncheckedItems[i];
+                let itemDocRef = db.collection('lists_content').doc(state.selectedListMeta.listContentKey).collection('items').doc(item.item_meta.id);
                 batch.set(itemDocRef, item, {merge: true});
             }
             batch.commit().then().catch(error=>{console.log(error)});
         },
-        saveListOrder({ state, commit }, params) {
-            let selectedListItems = state.selectedListItems;
-            if(selectedListItems == null) {
+        saveListOrder({ state, commit }, list) {
+            let selectedListUncheckedItems = state.selectedListItems.uncheckedItems;
+            if(list == null) {
                 return false;
             }
 
-            for(let i = 0; i < state.selectedListItems.length; i++)   {
-                selectedListItems[i].item_meta.index = i;
+            for(let i = 0; i < list.length; i++)   {
+                list[i].item_meta.index = i;
             }
-            commit('setSelectedListItems', selectedListItems);
+            //commit('setSelectedListUncheckedItems', selectedListUncheckedItems);
             return "savedListOrder";
         },
         saveSidebarOrder({ state, commit }, params){
@@ -487,12 +531,55 @@ export const store = new Vuex.Store({
             }
             batch.commit().then().catch(error=>{console.log(error)});
         },
+        sortList({ state, commit }, column){
+            let list = this.state.selectedListItems.uncheckedItems
+            // sorting is set in ListColumn
+            let columnID = column.id
+            let columnType = column.type
+            let ascending = this.state.sortSettings.ascending
+            this.state.sortSettings.ascending = (this.state.sortSettings.columnID === columnID) ? !ascending : ascending
+            this.state.sortSettings.columnID = columnID
+
+            if(columnType === "date"){
+                console.log("sorting")
+                list.sort((a, b) => {
+                    [a, b] = ascending ? [b, a] : [a, b];
+                    return  (a.values[columnID].seconds > b.values[columnID].seconds)
+                })
+            }
+            else if(columnType === "integer"){
+                list.sort((a, b) => {
+                    [a, b] = ascending ? [b, a] : [a, b];
+                    return  (parseInt(a.values[columnID]) < parseInt(b.values[columnID]))
+                })
+           }
+           else if(columnType ==="string"){
+               list.sort((a, b) => {
+                   [a, b] = ascending ? [b, a] : [a, b];
+                   return (a.values[columnID] > b.values[columnID])
+               })
+           }
+           return true
+        },
+
+        toggleItemChecked({ state, dispatch }, item){
+            let arrWithItem = item.item_meta.checked ? this.state.selectedListItems.checkedItems : this.state.selectedListItems.uncheckedItems
+            let arrWithoutItem = !item.item_meta.checked ? this.state.selectedListItems.checkedItems : this.state.selectedListItems.uncheckedItems
+
+            item.item_meta.checked = !item.item_meta.checked
+            arrWithoutItem.push(item)
+            console.log(item.item_meta.index)
+            arrWithItem.splice(item.item_meta.index, 1)
+            dispatch('saveListOrder', arrWithItem)
+            dispatch('saveListOrder', arrWithoutItem)
+
+        },
         updateItemState({ state, commit }, params){
             let item = params.item;
-            let itemIndex = findIndexOfItem(state.selectedListItems, item.item_meta.id)
-            let newSelectedListItems = state.selectedListItems;
+            let itemIndex = findIndexOfItem(state.selectedListItems.uncheckedItems, item.item_meta.id)
+            let newSelectedListItems = state.selectedListItems.uncheckedItems;
             newSelectedListItems[itemIndex]['values'][params.columnId] = params.newValue;
-            commit('setSelectedListItems', newSelectedListItems);
+            commit('setSelectedListUncheckedItems', newSelectedListItems);
         },
         userSignInWithEmail({
             commit
@@ -581,13 +668,24 @@ export const store = new Vuex.Store({
         },
 
 
+
     },
     getters: {
         isAuthenticated(state) {
             return state.user !== null && state.user !== undefined
         },
         getSelectedListItems(state) {
+            console.log(state.selectedListItems)
             return state.selectedListItems;
+        },
+        getSelectedListCheckedItems(state) {
+            console.log(state.selectedListItems.checkedItems)
+            return state.selectedListItems.checkedItems;
+        },
+        getSelectedListUncheckedItems(state) {
+            console.log(state.selectedListItems.uncheckedItems)
+
+            return state.selectedListItems.uncheckedItems;
         },
         getSelectedListColumns(state) {
             return state.selectedListColumns;

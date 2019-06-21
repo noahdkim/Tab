@@ -42,7 +42,7 @@
                return this.$store.state.dateColumnExists;
            },
            listIsSelected () {
-               return !(typeof(this.$store.state.selectedList) == 'undefined')
+               return !(typeof(this.$store.state.selectedListMeta) == 'undefined')
            }
        },
        mounted() {

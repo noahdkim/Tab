@@ -4,7 +4,7 @@
                 <v-layout row ma-0 pa-0 class=" list-title">
                     <v-flex>
                         <div class="list-title">
-                            <span class="list-title list-title-text">{{ this.$store.state.selectedList.name }}</span>
+                            <span class="list-title list-title-text">{{ this.$store.state.selectedListMeta.name }}</span>
                         </div>
                     </v-flex>
                     <v-flex>
@@ -24,13 +24,13 @@
                     v-bind="dragOptions"
                     @start="startDrag()"
                     @end="endDrag()"
-                    :list="filteredAndSortedListItems"
+                    :list="uncheckedItems"
                     ref="draggable"
                     style="width: 100%"
                     >
-                        <transition-group type="transition" :name="sorting || filtering || drag ? 'flip-list' : null">
+                        <transition-group type="transition" :name="sorting ? 'flip-list' : null">
                                 <list-row
-                                    v-for="item in filteredAndSortedListItems"
+                                    v-for="item in uncheckedItems"
                                     :key="item.item_meta.id"
                                     :item="item"
                                     :columns="selectedListColumns"
@@ -44,13 +44,36 @@
 
                 <v-layout row ma-0 class="list-footer">
                     <v-flex xs-12 class="ma-0 add-item-container">
-                        <a v-on:click="addNewItem" class="add-item-anchor">
+                        <a v-on:click="createNewItem" class="add-item-anchor">
                             <span class="mdi mdi-plus-circle add-item-icon"></span>
                             <span class="add-item-text">Add Item</span>
                         </a>
                     </v-flex>
                 </v-layout>
             <!-- </v-layout> -->
+            <v-layout v-if="showChecked" row ma-0 pa-0 class="list-body">
+                <draggable
+                handle=".handle"
+                v-bind="dragOptions"
+                @start="startDrag()"
+                @end="endDrag()"
+                :list="checkedItems"
+                ref="draggable"
+                style="width: 100%"
+                >
+                    <transition-group type="transition" :name="sorting || filtering ? 'flip-list' : null">
+                            <list-row
+                                v-for="item in checkedItems.slice().reverse()"
+                                :key="item.item_meta.id"
+                                :item="item"
+                                :columns="selectedListColumns"
+                                :ref="item.item_meta.id"
+                                class="draggable-row align-start"
+                            >
+                            </list-row>
+                    </transition-group>
+                </draggable>
+            </v-layout>
 
 </v-container>
 
@@ -73,6 +96,7 @@
         },
         data: () => ({
             drag: false,
+            itemsToDisplay:[],
         }),
         created() {
 
@@ -80,7 +104,8 @@
         computed: {
             ...mapGetters({
                 selectedListColumns: 'getSelectedListColumns',
-                selectedListItems: 'getSelectedListItems',
+                checkedItems: 'getSelectedListCheckedItems',
+                uncheckedItems: 'getSelectedListUncheckedItems',
                 dateFilterColumn: 'getDateFilterColumn',
             }),
             dragOptions() {
@@ -90,6 +115,18 @@
                     disabled: false,
                     ghostClass: "ghost"
                 };
+            },
+            checkedItems:{
+                get(){
+                    return this.$store.state.selectedListItems.checkedItems
+                }
+            },
+            uncheckedItems:{
+                get(){
+                    console.log("GETTING UNCHECKED ITEMS")
+                    console.log(this.$store.state.selectedListItems)
+                    return this.$store.state.selectedListItems.uncheckedItems
+                }
             },
             dateColumnExists(){
                 return this.$store.state.dateColumnExists
@@ -103,38 +140,12 @@
                     this.$store.commit('setFilterByDate', newValue);
                 }
             },
-            filteredListItems: {
+            sortedListItems: {
                 get(){
-                    let filteredListItems = this.selectedListItems;
-                    if (!this.showChecked){
-                        filteredListItems = filteredListItems.filter((item)=>{
-                            return !item.item_meta.checked;
-                        })
-                    }
-                    if (this.filterByDate){
-                        filteredListItems = filteredListItems.filter((item)=>{
-                            return (item.values[this.dateFilterColumn.id].toDate().getTime() === this.selectedDate.getTime()) ||
-                                        item.item_meta.active
-                        })
-                    }
-                    Vue.nextTick(() => {
-                        this.$store.commit('setFiltering', false)
-                    });
-                    return filteredListItems;
-                }
-            },
-            filteredAndSortedListItems: {
-                get(){
-                    // sorting is set in ListColumn
-                    if((this.sortColumnIndex === "checked" || this.sortColumnIndex > -1) && this.sorting){
-                        this.filteredListItems.sort(this.sortFilteredList)
-                        Vue.nextTick(() => {
-                            this.$store.commit('setSorting', false)
-                        });
-                    } else {
-                        return this.filteredListItems
-                    }
-                    return this.filteredListItems
+
+                },
+                set(test){
+                    console.log("dragged?")
                 }
             },
             filtering:{
@@ -182,10 +193,11 @@
                 set: function(newKey){
                     this.sortKeyData = newKey
                 }
-            }
+            },
+
     },
     methods: {
-        addNewItem() {
+        createNewItem() {
             /* wait for the promise */
             this.$store.dispatch('createNewItem').then((newItemID) => {
                 // wait for the new Item to be rendered and then make it active
@@ -253,9 +265,9 @@
                                 item.item_meta.active
                 })
             }
-            return filteredListIT
+            return this.filteredListItems
         }
-    }
+    },
 };
 </script>
 

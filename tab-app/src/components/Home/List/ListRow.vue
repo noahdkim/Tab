@@ -81,7 +81,9 @@
 					return this.item.item_meta.checked
 				},
 				set: function(newCheckboxValue) {
-					this.item.item_meta.checked = newCheckboxValue
+                    this.$store.dispatch('toggleItemChecked', this.item)
+
+                    this.item.item_meta.checked = newCheckboxValue
 					this.$store.dispatch('saveItem', this.item)
 				}
 			},
