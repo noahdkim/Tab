@@ -1,19 +1,28 @@
 <template>
-    <v-textarea class="text-field ma-0 pa-0"
-                          @input="updateCellValue"
-                          v-model="textValue"
-                          :readonly="!item.item_meta.active"
-                          :id="column.name"
-                          ref="{{item.id}}-{{column.text}}"
-                          single-line
-                          hide-details
-                          solo
-                          flat
-                          rows="1"
-                          row-height=10
-                          auto-grow
-                          placeholder="________________________">
-    </v-textarea>
+    <v-flex
+        xs4
+        shrink
+        align-start
+         pa-0 ma-0>
+        <v-textarea
+              @input="updateCellValue"
+              v-model="textValue"
+              :readonly="!item.item_meta.active"
+              :id="column.name"
+              ref="{{item.id}}-{{column.text}}"
+              auto-grow
+              :filled="item.item_meta.active"
+              flat
+              hide-details
+              rows="1"
+              placeholder=""
+              row-height=10
+              solo
+              slot="activator"
+              >
+        </v-textarea>
+        
+    </v-flex>
 </template>
 
 <script>

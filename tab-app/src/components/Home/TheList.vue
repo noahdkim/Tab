@@ -1,52 +1,81 @@
 <template>
-    <v-layout class="ma-0 pt-2 the-list-parent" justify-center>
-            <v-layout column class="ma-0 pa-0 list-all">
-                <v-layout row class="ma-0 pa-0 list-title">
+    <v-container pt-2 >
+            <!-- <v-layout column class="ma-0 pa-0 list-all"> -->
+                <v-layout row ma-0 pa-0 class=" list-title">
                     <v-flex>
                         <div class="list-title">
-                            <span class="list-title list-title-text">{{ this.$store.state.selectedList.name }}</span>
+                            <span class="list-title list-title-text">{{ this.$store.state.selectedListMeta.name }}</span>
                         </div>
                     </v-flex>
                     <v-flex>
                         <v-switch v-if="dateColumnExists" v-model="filterByDate" label="Filter by Date"></v-switch>
                     </v-flex>
                 </v-layout>
-                <v-layout row class="ma-0 pa-0 list-head">
-                    <list-column-header-row :columns="selectedListColumns"></list-column-header-row>
+
+                <v-layout row ma-0 pa-0 class="list-head">
+                    <list-column-header-row
+                        :columns="selectedListColumns">
+                    </list-column-header-row>
                 </v-layout>
-                <v-layout row class="ma-0 pa-0 list-body">
+                <v-divider light></v-divider>
+                <v-layout row ma-0 pa-0 class="list-body">
                     <draggable
-                    class="list-group"
                     handle=".handle"
                     v-bind="dragOptions"
                     @start="startDrag()"
                     @end="endDrag()"
-                    :list="filteredAndSortedListItems"
+                    :list="uncheckedItems"
+                    ref="draggable"
+                    style="width: 100%"
                     >
-                        <transition-group type="transition" :name="sorting || filtering || drag ? 'flip-list' : null">
-                            <div class="listRows" v-for="item in filteredAndSortedListItems" :key="item.item_meta.id">
+                        <transition-group type="transition" :name="sorting ? 'flip-list' : null">
                                 <list-row
+                                    v-for="item in filteredUncheckedItems"
+                                    :key="item.item_meta.id"
+                                    :item="item"
+                                    :columns="selectedListColumns"
+                                    :ref="item.item_meta.id"
+                                    class="draggable-row align-start"
+                                >
+                                </list-row>
+                        </transition-group>
+                    </draggable>
+                </v-layout>
+
+                <v-layout row ma-0 class="list-footer">
+                    <v-flex xs-12 class="ma-0 add-item-container">
+                        <a v-on:click="createNewItem" class="add-item-anchor">
+                            <span class="mdi mdi-plus-circle add-item-icon"></span>
+                            <span class="add-item-text">Add Item</span>
+                        </a>
+                    </v-flex>
+                </v-layout>
+            <!-- </v-layout> -->
+            <v-layout v-if="showChecked" row ma-0 pa-0 class="list-body">
+                <draggable
+                handle=".handle"
+                v-bind="dragOptions"
+                @start="startDrag()"
+                @end="endDrag()"
+                :list="checkedItems"
+                ref="draggable"
+                style="width: 100%"
+                >
+                    <transition-group type="transition" :name="sorting || filtering ? 'flip-list' : null">
+                            <list-row
+                                v-for="item in checkedItems.slice().reverse()"
+                                :key="item.item_meta.id"
                                 :item="item"
                                 :columns="selectedListColumns"
                                 :ref="item.item_meta.id"
                                 class="draggable-row align-start"
-                                >
-                                </list-row>
-                            </div>
-                        </transition-group>
-                    </draggable>
-                </v-layout>
-                <v-layout row class="ma-0 list-footer">
-                    <v-container class="ma-0 add-item-container">
-                        <a v-on:click="addNewItem" class="add-item-anchor">
-                            <span class="mdi mdi-plus-circle add-item-icon"></span>
-                            <span class="add-item-text">Add Item</span>
-                        </a>
-                    </v-container>
-                </v-layout>
+                            >
+                            </list-row>
+                    </transition-group>
+                </draggable>
             </v-layout>
 
-</v-layout>
+</v-container>
 
 </template>
 
@@ -55,7 +84,6 @@
     import ListColumnHeaderRow from './List/ListColumnHeaderRow'
     import ListRow from './List/ListRow'
     import { mapGetters } from 'vuex'
-
     import { EventBus } from '../../store/modules/event-bus.js';
 
     require('@/assets/styles/main.css');
@@ -68,6 +96,7 @@
         },
         data: () => ({
             drag: false,
+            itemsToDisplay:[],
         }),
         created() {
 
@@ -75,7 +104,8 @@
         computed: {
             ...mapGetters({
                 selectedListColumns: 'getSelectedListColumns',
-                selectedListItems: 'getSelectedListItems',
+                checkedItems: 'getSelectedListCheckedItems',
+                uncheckedItems: 'getSelectedListUncheckedItems',
                 dateFilterColumn: 'getDateFilterColumn',
             }),
             dragOptions() {
@@ -85,6 +115,16 @@
                     disabled: false,
                     ghostClass: "ghost"
                 };
+            },
+            checkedItems:{
+                get(){
+                    return this.$store.state.selectedListItems.checkedItems
+                }
+            },
+            uncheckedItems:{
+                get(){
+                    return this.$store.state.selectedListItems.uncheckedItems
+                }
             },
             dateColumnExists(){
                 return this.$store.state.dateColumnExists
@@ -98,38 +138,24 @@
                     this.$store.commit('setFilterByDate', newValue);
                 }
             },
-            filteredListItems: {
+            filteredUncheckedItems:{
                 get(){
-                    let filteredListItems = this.selectedListItems;
-                    if (!this.showChecked){
-                        filteredListItems = filteredListItems.filter((item)=>{
-                            return !item.item_meta.checked;
-                        })
-                    }
+                    let filteredListItems = this.uncheckedItems;
                     if (this.filterByDate){
                         filteredListItems = filteredListItems.filter((item)=>{
                             return (item.values[this.dateFilterColumn.id].toDate().getTime() === this.selectedDate.getTime()) ||
                                         item.item_meta.active
                         })
                     }
-                    Vue.nextTick(() => {
-                        this.$store.commit('setFiltering', false)
-                    });
-                    return filteredListItems;
+                    return filteredListItems
                 }
             },
-            filteredAndSortedListItems: {
+            sortedListItems: {
                 get(){
-                    // sorting is set in ListColumn
-                    if((this.sortColumnIndex === "checked" || this.sortColumnIndex > -1) && this.sorting){
-                        this.filteredListItems.sort(this.sortFilteredList)
-                        Vue.nextTick(() => {
-                            this.$store.commit('setSorting', false)
-                        });
-                    } else {
-                        return this.filteredListItems
-                    }
-                    return this.filteredListItems
+
+                },
+                set(test){
+                    console.log("dragged?")
                 }
             },
             filtering:{
@@ -167,7 +193,7 @@
             },
             showChecked:{
                 get(){
-                    return this.$store.state.showChecked
+                    return this.$store.state.selectedListSettings.showChecked
                 }
             },
             sortKey: {
@@ -177,15 +203,17 @@
                 set: function(newKey){
                     this.sortKeyData = newKey
                 }
-            }
+            },
+
     },
     methods: {
-        addNewItem() {
+        createNewItem() {
             /* wait for the promise */
             this.$store.dispatch('createNewItem').then((newItemID) => {
                 // wait for the new Item to be rendered and then make it active
                 Vue.nextTick(() => {
                     this.$refs[newItemID][0].makeActive()
+                    let arr = this.$refs[newItemID][0]
                 });
 
             });
@@ -214,43 +242,17 @@
 
             EventBus.$emit('the-list-drag-event', this.drag);
         },
-        sortFilteredList(a, b){
-            let sortResult
-            if (this.sortColumnIndex === 'checked'){
-                sortResult = ((a.item_meta.checked === b.item_meta.checked)? 0 : a.item_meta.checked ? false : true)
-            }
-            else{
-                let columnID = this.selectedListColumns[this.sortColumnIndex].id
-                let columnType = this.selectedListColumns[this.sortColumnIndex].type
-                if(columnType==="date"){
-                    sortResult = (a.values[columnID].seconds > b.values[columnID].seconds)
-                } else if(columnType === "integer"){
-                    sortResult = (parseInt(a.values[columnID]) < parseInt(b.values[columnID]))
-                }
-                else if(columnType ==="string"){
-                    console.log((a.values[columnID] > b.values[columnID]))
-                    sortResult = (a.values[columnID] > b.values[columnID])
-                }
-            }
-            return this.sortDescending ? sortResult : !sortResult
-
-        },
         filterList(){
             let filteredListItems = this.selectedListItems;
-            if (!this.showChecked){
-                filteredListItems = filteredListItems.filter((item)=>{
-                    return !item.item_meta.checked;
-                })
-            }
             if (this.filterByDate){
                 filteredListItems = filteredListItems.filter((item)=>{
                     return (item.values[this.dateFilterColumn.id].toDate().getTime() === this.selectedDate.getTime()) ||
                                 item.item_meta.active
                 })
             }
-            return filteredListIT
+            return this.filteredListItems
         }
-    }
+    },
 };
 </script>
 
