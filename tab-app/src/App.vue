@@ -1,10 +1,10 @@
 <template>
 <v-app>
-    <v-toolbar flat app class="toolbar pa-0 ma-0" color="#197BBD" style="color: #fff">
+    <v-app-bar flat  app class="toolbar pa-0 ma-0" color="#197BBD" style="color: #fff">
         <!-- Sidebar Icon -->
         <span v-if="isAuthenticated" class="">
-            <v-toolbar-side-icon class="white--text" @click="emitToggleShowSidebar">
-            </v-toolbar-side-icon>
+            <v-app-bar-nav-icon class="white--text" @click="emitToggleShowSidebar">
+            </v-app-bar-nav-icon>
         </span>
         <v-toolbar-title>
             <router-link :to="isAuthenticated ? '/Home' : '/'" tag="span" style="cursor: pointer">
@@ -19,18 +19,18 @@
             </v-btn>
 
         </v-toolbar-items>
-        <v-btn dark flat v-if="isAuthenticated" @click="userSignOut">
+        <v-btn dark text v-if="isAuthenticated" @click="userSignOut">
             <v-icon left>exit_to_app</v-icon>
             Sign Out
         </v-btn>
 
         <!-- Calendar Icon -->
         <span v-if="isAuthenticated && dateColumnExists" class="">
-            <v-toolbar-side-icon class="white--text" @click="emitToggleShowCalendar">
+            <v-app-bar-nav-icon class="white--text" @click="emitToggleShowCalendar">
                 <span class="mdi mdi-calendar" style="transform: scale(1.5)"></span>
-            </v-toolbar-side-icon>
+            </v-app-bar-nav-icon>
         </span>
-    </v-toolbar>
+    </v-app-bar>
 
 
 

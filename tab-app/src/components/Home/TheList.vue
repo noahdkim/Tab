@@ -30,7 +30,7 @@
                     >
                         <transition-group type="transition" :name="sorting ? 'flip-list' : null">
                                 <list-row
-                                    v-for="item in uncheckedItems"
+                                    v-for="item in filteredUncheckedItems"
                                     :key="item.item_meta.id"
                                     :item="item"
                                     :columns="selectedListColumns"
@@ -123,8 +123,6 @@
             },
             uncheckedItems:{
                 get(){
-                    console.log("GETTING UNCHECKED ITEMS")
-                    console.log(this.$store.state.selectedListItems)
                     return this.$store.state.selectedListItems.uncheckedItems
                 }
             },
@@ -138,6 +136,18 @@
                 set(newValue){
                     this.filtering = true;
                     this.$store.commit('setFilterByDate', newValue);
+                }
+            },
+            filteredUncheckedItems:{
+                get(){
+                    let filteredListItems = this.uncheckedItems;
+                    if (this.filterByDate){
+                        filteredListItems = filteredListItems.filter((item)=>{
+                            return (item.values[this.dateFilterColumn.id].toDate().getTime() === this.selectedDate.getTime()) ||
+                                        item.item_meta.active
+                        })
+                    }
+                    return filteredListItems
                 }
             },
             sortedListItems: {
@@ -203,6 +213,7 @@
                 // wait for the new Item to be rendered and then make it active
                 Vue.nextTick(() => {
                     this.$refs[newItemID][0].makeActive()
+                    let arr = this.$refs[newItemID][0]
                 });
 
             });
@@ -231,34 +242,8 @@
 
             EventBus.$emit('the-list-drag-event', this.drag);
         },
-        sortFilteredList(a, b){
-            let sortResult
-            if (this.sortColumnIndex === 'checked'){
-                sortResult = ((a.item_meta.checked === b.item_meta.checked)? 0 : a.item_meta.checked ? false : true)
-            }
-            else{
-                let columnID = this.selectedListColumns[this.sortColumnIndex].id
-                let columnType = this.selectedListColumns[this.sortColumnIndex].type
-                if(columnType==="date"){
-                    sortResult = (a.values[columnID].seconds > b.values[columnID].seconds)
-                } else if(columnType === "integer"){
-                    sortResult = (parseInt(a.values[columnID]) < parseInt(b.values[columnID]))
-                }
-                else if(columnType ==="string"){
-                    console.log((a.values[columnID] > b.values[columnID]))
-                    sortResult = (a.values[columnID] > b.values[columnID])
-                }
-            }
-            return this.sortDescending ? sortResult : !sortResult
-
-        },
         filterList(){
             let filteredListItems = this.selectedListItems;
-            if (!this.showChecked){
-                filteredListItems = filteredListItems.filter((item)=>{
-                    return !item.item_meta.checked;
-                })
-            }
             if (this.filterByDate){
                 filteredListItems = filteredListItems.filter((item)=>{
                     return (item.values[this.dateFilterColumn.id].toDate().getTime() === this.selectedDate.getTime()) ||

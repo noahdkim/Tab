@@ -11,7 +11,7 @@
               :id="column.name"
               ref="{{item.id}}-{{column.text}}"
               auto-grow
-              :box="item.item_meta.active"
+              :filled="item.item_meta.active"
               flat
               hide-details
               rows="1"

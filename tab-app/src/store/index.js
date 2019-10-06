@@ -314,8 +314,9 @@ export const store = new Vuex.Store({
         deleteItem({ state, commit, dispatch }, item){
             // using found index is better than item.item_meta.index bc it allows us to be ahead of the db
             // no lag is experienced for the user. Only user item.item_meta.index to load initial order of items
-            let foundIndex = findIndexOfItem(state.selectedListItems.uncheckedItems, item.item_meta.id)
-            state.selectedListItems.uncheckedItems.splice(foundIndex, 1);
+            let list = item.item_meta.checked ? state.selectedListItems.checkedItems : state.selectedListItems.uncheckedItems
+            let foundIndex = findIndexOfItem(list, item.item_meta.id)
+            list.splice(foundIndex, 1);
             let itemDocRef = db.collection('lists_content').doc(state.selectedListMeta.listContentKey).collection('items').doc(item.item_meta.id);
             itemDocRef.delete()
                 .then(function() {
@@ -492,15 +493,24 @@ export const store = new Vuex.Store({
         },
         saveListToFirestore({ state, commit }, params){
             let batch = db.batch();
+            // save uncheckedItems
             for (var i = 0, n = state.selectedListItems.uncheckedItems.length; i < n; i++){
                 let item = state.selectedListItems.uncheckedItems[i];
                 let itemDocRef = db.collection('lists_content').doc(state.selectedListMeta.listContentKey).collection('items').doc(item.item_meta.id);
                 batch.set(itemDocRef, item, {merge: true});
             }
+
+            // save checked items
+            for (var i = 0, n = state.selectedListItems.checkedItems.length; i < n; i++){
+                let item = state.selectedListItems.checkedItems[i];
+                let itemDocRef = db.collection('lists_content').doc(state.selectedListMeta.listContentKey).collection('items').doc(item.item_meta.id);
+                batch.set(itemDocRef, item, {merge: true});
+            }
             batch.commit().then().catch(error=>{console.log(error)});
         },
-        saveListOrder({ state, commit }, list) {
-            let selectedListUncheckedItems = state.selectedListItems.uncheckedItems;
+        saveListOrder({ state, dispatch }, listName) {
+            let selectedListItems = state.selectedListItems
+            let list = listName === 'uncheckedItems' ? selectedListItems.uncheckedItems : selectedListItems.checkedItems
             if(list == null) {
                 return false;
             }
@@ -508,6 +518,7 @@ export const store = new Vuex.Store({
             for(let i = 0; i < list.length; i++)   {
                 list[i].item_meta.index = i;
             }
+            dispatch('saveListToFirestore')
             //commit('setSelectedListUncheckedItems', selectedListUncheckedItems);
             return "savedListOrder";
         },
@@ -570,16 +581,24 @@ export const store = new Vuex.Store({
             arrWithoutItem.push(item)
             console.log(item.item_meta.index)
             arrWithItem.splice(item.item_meta.index, 1)
-            dispatch('saveListOrder', arrWithItem)
-            dispatch('saveListOrder', arrWithoutItem)
+            console.log(item.item_meta.index)
+            dispatch('saveListOrder', 'uncheckedItems')
+            dispatch('saveListOrder', 'checkedItems')
 
         },
         updateItemState({ state, commit }, params){
             let item = params.item;
-            let itemIndex = findIndexOfItem(state.selectedListItems.uncheckedItems, item.item_meta.id)
-            let newSelectedListItems = state.selectedListItems.uncheckedItems;
-            newSelectedListItems[itemIndex]['values'][params.columnId] = params.newValue;
-            commit('setSelectedListUncheckedItems', newSelectedListItems);
+            let list = item.item_meta.checked ? state.selectedListItems.checkedItems : state.selectedListItems.uncheckedItems
+            let itemIndex = findIndexOfItem(list, item.item_meta.id)
+            console.log(itemIndex)
+            console.log(list)
+            list[itemIndex]['values'][params.columnId] = params.newValue;
+            if (item.item_meta.checked){
+                commit('setSelectedListCheckedItems', list);
+            }
+            else{
+                commit('setSelectedListUncheckedItems', list);
+            }
         },
         userSignInWithEmail({
             commit
