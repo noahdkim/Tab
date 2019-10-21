@@ -10,6 +10,7 @@ const routerOptions = [
   { path: '/', component: 'Landing' },
   { path: '/SignIn', component: 'SignIn' },
   { path: '/SignUp', component: 'SignUp' },
+  { path: '/AboutUs', component: 'AboutUs' },
   { path: '/Home', component: 'Home', meta: { requiresAuth: true } },
   { path: '*', component: 'NotFound' }
 ]

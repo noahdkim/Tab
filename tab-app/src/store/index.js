@@ -590,8 +590,6 @@ export const store = new Vuex.Store({
             let item = params.item;
             let list = item.item_meta.checked ? state.selectedListItems.checkedItems : state.selectedListItems.uncheckedItems
             let itemIndex = findIndexOfItem(list, item.item_meta.id)
-            console.log(itemIndex)
-            console.log(list)
             list[itemIndex]['values'][params.columnId] = params.newValue;
             if (item.item_meta.checked){
                 commit('setSelectedListCheckedItems', list);

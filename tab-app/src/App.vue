@@ -1,6 +1,6 @@
 <template>
 <v-app>
-    <v-app-bar flat  app class="toolbar pa-0 ma-0" color="#197BBD" style="color: #fff">
+    <v-app-bar app class="toolbar pa-0 ma-0" color="#197BBD" style="color: #fff">
         <!-- Sidebar Icon -->
         <span v-if="isAuthenticated" class="">
             <v-app-bar-nav-icon class="white--text" @click="emitToggleShowSidebar">
@@ -13,8 +13,8 @@
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items class="hidden-xs-only">
-            <v-btn flat v-for="item in menuItems" :key="item.title" :to="item.path">
-                <v-icon left dark>{{ item.icon }}</v-icon>
+            <v-btn v-for="item in menuItems" :key="item.title" :to="item.path">
+                <v-icon :style={} left dark>{{ item.icon }}</v-icon>
                 {{ item.title }}
             </v-btn>
 

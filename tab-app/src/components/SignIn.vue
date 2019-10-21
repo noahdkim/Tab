@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-layout row wrap justify-center>
-      <v-flex class="text-xs-center" xs12>
+      <v-flex class="text-center" xs12>
         <h3 class="display-2">Sign in to Tab</h3>
       </v-flex>
 
@@ -17,7 +17,7 @@
 
       <h2 class="divider-text"><span class="divider-line body-2">Or</span></h2>
 
-      <v-flex class="text-xs-center" xs12 sm6 mt-3>
+      <v-flex class="text-center" xs12 sm6 mt-3>
         <h3>Enter your email address and password</h3>
         <form @submit.prevent="userSignIn">
           <v-layout column>

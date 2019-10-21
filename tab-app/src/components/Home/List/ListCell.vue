@@ -51,8 +51,8 @@ export default {
           cellType = "String";
           break;
         default:
-          console.log(type)
-          throw new TypeError("Unknown cell type", type)
+          console.log(type);
+          throw new TypeError("Unknown cell type", type);
       }
 
       return "ListCell" + cellType;

@@ -7,6 +7,7 @@
       @mouseover="mouseOver()"
       @mouseleave="mouseLeave()"
     >
+      <!-- Handle -->
       <v-flex shrink>
         <div style="display:inline-block">
           <span class="fa fa-align-justify handle" :style="{ opacity: showHandle ? 0.3 : 0 }">::</span>
@@ -15,6 +16,8 @@
           <v-checkbox @click.stop="checked=!checked" class="checkbox" default v-model="checked"></v-checkbox>
         </div>
       </v-flex>
+
+      <!-- Cells in row -->
       <list-cell
         v-for="column in columns"
         :key="column.id"
@@ -23,13 +26,14 @@
         :ref="column.id"
         single-line
         :class="{ 'activeRow': item.item_meta.active }"
-      ></list-cell>
+      />
       <v-flex xs1>
         <v-btn text icon @click.stop="deleteItem" :style="{ opacity: showHandle ? 0.3 : 0 }">
           <v-icon class="deleteIcon">delete</v-icon>
         </v-btn>
       </v-flex>
     </v-layout>
+
     <!-- Hidden Options Row is shown when row is active -->
     <v-layout row class="hiddenOptionsRow" v-show="item.item_meta.active">
       <v-flex xs2 class="pa-0" id="saveCancelContainer">
@@ -99,7 +103,6 @@ export default {
       this.$store.dispatch("saveItem", this.item);
     },
     focusRow() {
-      console.log("focusRow");
       this.$refs[this.columns[0].id].makeActive();
     },
     deleteItem(event) {

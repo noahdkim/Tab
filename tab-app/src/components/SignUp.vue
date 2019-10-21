@@ -2,7 +2,7 @@
     <v-app>
         <v-container fluid>
             <v-layout row wrap justify-center>
-                <v-flex xs12 class="text-xs-center" mt-1>
+                <v-flex xs12 class="text-center" mt-1>
                     <h1>Tab</h1>
                     <h2>Simple, Powerful, Flexible</h2>
                 </v-flex>
@@ -16,7 +16,7 @@
                       </v-img>
               </v-flex>
               <h2 class="divider-text"><span class="divider-line body-2">Or</span></h2>
-                <v-flex class="text-xs-center" xs12 sm6>
+                <v-flex class="text-center" xs12 sm6>
                     <h3>Create an Account</h3>
 
                     <v-form

@@ -1,17 +1,5 @@
 <template>
-  <ListColumnHeaderDate v-if="column.type === 'date'" :column="column" :ref="column.id" single-line></ListColumnHeaderDate>
-  <ListColumnHeaderInt
-    v-else-if="column.type === 'integer'"
-    :column="column"
-    :ref="column.id"
-    single-line
-  ></ListColumnHeaderInt>
-  <ListColumnHeaderString
-    v-else-if="column.type === 'string'"
-    :column="column"
-    :ref="column.id"
-    single-line
-  ></ListColumnHeaderString>
+  <component :column="column" :ref="column.id" single-line :is="computedHeader" />
 </template>
 <script>
 import ListColumnHeaderDate from "./ListColumnHeader/ListColumnHeaderDate";
@@ -25,6 +13,27 @@ export default {
     ListColumnHeaderString
   },
   props: ["column"],
+  computed: {
+    computedHeader: function() {
+      const { type } = this.column;
+      let headerType = "";
+      switch (type) {
+        case "integer":
+          headerType = "Int";
+          break;
+        case "date":
+          headerType = "Date";
+          break;
+        case "string":
+          headerType = "String";
+          break;
+        default:
+          console.log(type);
+          throw new TypeError("Unknown cell type", type);
+      }
+      return "ListColumnHeader" + headerType;
+    }
+  },
   methods: {}
 };
 </script>
