@@ -117,7 +117,6 @@ export default {
         },
         select(index){
             this.selectedTemplateIndex = index
-            console.log(index)
         }
     }
 }

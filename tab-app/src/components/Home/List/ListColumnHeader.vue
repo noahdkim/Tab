@@ -28,7 +28,6 @@ export default {
           headerType = "String";
           break;
         default:
-          console.log(type);
           throw new TypeError("Unknown cell type", type);
       }
       return "ListColumnHeader" + headerType;

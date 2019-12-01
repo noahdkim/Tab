@@ -50,7 +50,6 @@ export default {
                 this.$emit('updateColumnName', {newName, index});
             },
             updateColumnType (newType){
-                console.log(newType)
                 let index = this.index
                 this.$emit('updateColumnType', {newType, index});
             },

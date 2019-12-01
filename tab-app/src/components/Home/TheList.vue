@@ -155,7 +155,6 @@
 
                 },
                 set(test){
-                    console.log("dragged?")
                 }
             },
             filtering:{
@@ -231,7 +230,6 @@
         },
         saveListOrder()  {
             this.$store.dispatch('saveListOrder').then((result) => {
-                console.log(result);
             });
         },
         startDrag() {

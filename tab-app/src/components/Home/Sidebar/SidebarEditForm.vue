@@ -74,7 +74,6 @@ export default {
         },
         editList(){
             if (this.$refs.form.validate()) {
-                console.log(this.columns)
                 let columns = this.columns
                 let listName = this.listName
                 let id = this.listSelector.id
@@ -86,7 +85,6 @@ export default {
             }
         },
         updateColumnName(event){
-            console.log("updating name")
             this.columns[event.index]['name'] = event.newName
         },
         updatetColumnType(event){
@@ -103,7 +101,6 @@ export default {
             this.listName = newVal.name
         },
         listColumns: function(newVal, oldVal) {
-            console.log("change")
             this.columns = newVal
         },
     }

@@ -84,7 +84,6 @@ export default {
     },
     showChecked: {
       get() {
-        console.log(this.$store.state.selectedListSettings.showChecked);
         return this.$store.state.selectedListSettings.showChecked;
       },
       set(newValue) {
@@ -105,7 +104,6 @@ export default {
   },
   methods: {
     loadUserLists() {
-      console.log("loading user lists....");
       this.$store.dispatch("loadPersonalListData");
     },
     loadListColumnInformation(listID) {},
@@ -132,7 +130,6 @@ export default {
     },
     saveSidebarOrder() {
       this.$store.dispatch("saveSidebarOrder").then(result => {
-        console.log(result);
       });
     },
     openCreateListDialog() {
