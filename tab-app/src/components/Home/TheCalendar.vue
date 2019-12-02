@@ -139,7 +139,6 @@ export default {
       ) {
         return `rgba(244, 67, 54, .8)`;
       }
-      console.log(this.totalWeights);
       let alpha = this.dateWeights[date] / this.totalWeights;
       alpha = alpha < 0.1 ? 0.1 : alpha;
       alpha = alpha > 0.8 ? 0.8 : alpha;

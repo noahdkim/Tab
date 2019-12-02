@@ -70,7 +70,6 @@ export default {
       this.$store.dispatch('userSignInWithEmail', { email: this.email, password: this.password })
     },
     googleOauth(){
-        console.log("YAY")
         this.$store.dispatch('userSignInWithGoogle')
     }
   },

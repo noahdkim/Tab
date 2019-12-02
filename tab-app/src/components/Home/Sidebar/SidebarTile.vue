@@ -72,7 +72,6 @@ export default {
       this.$store.dispatch("changeSelectedList", this.listSelector);
     },
     deleteList(event) {
-      console.log("deleting list.....");
       this.$store.dispatch("deleteList", this.listSelector).then(() => {
         this.deleteDialog = false;
       });

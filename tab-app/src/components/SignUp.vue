@@ -95,7 +95,6 @@ require('@/assets/styles/SignIn.css')
             this.$store.dispatch('userSignUp', { email: this.email, password: this.password })
         },
         googleOauth(){
-            console.log("YAY")
             this.$store.dispatch('userSignInWithGoogle')
         }
     },

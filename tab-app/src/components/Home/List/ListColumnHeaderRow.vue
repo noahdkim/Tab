@@ -24,7 +24,6 @@ export default {
   props: ["columns"],
   methods: {
     modifySort(column) {
-      console.log("sorting");
       this.$store.commit("setSorting", true);
       this.$store.dispatch("sortList", column).then(() => {
         Vue.nextTick(() => {
